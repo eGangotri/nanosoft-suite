@@ -1,28 +1,30 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TextField, Button, Container, Typography, Box } from '@mui/material'
 
-export default function Login() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [message, setMessage] = useState('')
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
+    const response = await fetch('/api/forgot-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
     })
 
-    if (result?.error) {
-      console.error(result.error)
+    if (response.ok) {
+      setMessage('If an account with that email exists, we have sent a password reset link.')
     } else {
-      router.push('/dashboard')
+      const data = await response.json()
+      setMessage(data.error || 'An error occurred. Please try again.')
     }
   }
 
@@ -37,7 +39,7 @@ export default function Login() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Sign in
+          Forgot Password
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -52,35 +54,23 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign In
+            Reset Password
           </Button>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Link href="/register" passHref>
+          {message && (
+            <Typography color="primary" align="center">
+              {message}
+            </Typography>
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Link href="/login" passHref>
               <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
-                {"Don't have an account? Sign Up"}
-              </Typography>
-            </Link>
-            <Link href="/forgot-password" passHref>
-              <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
-                {"Forgot password?"}
+                {"Back to Sign In"}
               </Typography>
             </Link>
           </Box>

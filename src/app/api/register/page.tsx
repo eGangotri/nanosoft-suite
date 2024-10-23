@@ -1,28 +1,31 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TextField, Button, Container, Typography, Box } from '@mui/material'
 
-export default function Login() {
+export default function Register() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password }),
     })
 
-    if (result?.error) {
-      console.error(result.error)
+    if (response.ok) {
+      router.push('/login')
     } else {
-      router.push('/dashboard')
+      const data = await response.json()
+      console.error(data.error)
     }
   }
 
@@ -37,9 +40,21 @@ export default function Login() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign up
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="name"
+            label="Full Name"
+            name="name"
+            autoComplete="name"
+            autoFocus
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
           <TextField
             margin="normal"
             required
@@ -48,7 +63,6 @@ export default function Login() {
             label="Email Address"
             name="email"
             autoComplete="email"
-            autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -60,7 +74,7 @@ export default function Login() {
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -70,17 +84,12 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign In
+            Sign Up
           </Button>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Link href="/register" passHref>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Link href="/login" passHref>
               <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
-                {"Don't have an account? Sign Up"}
-              </Typography>
-            </Link>
-            <Link href="/forgot-password" passHref>
-              <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
-                {"Forgot password?"}
+                {"Already have an account? Sign In"}
               </Typography>
             </Link>
           </Box>
