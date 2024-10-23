@@ -68,7 +68,7 @@ export default function ForgotPassword() {
             </Typography>
           )}
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Link href="/login" passHref>
+            <Link href="/login" passHref legacyBehavior>
               <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
                 {"Back to Sign In"}
               </Typography>

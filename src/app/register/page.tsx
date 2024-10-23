@@ -87,7 +87,7 @@ export default function Register() {
             Sign Up
           </Button>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Link href="/login" passHref>
+            <Link href="/login" passHref legacyBehavior>
               <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
                 {"Already have an account? Sign In"}
               </Typography>

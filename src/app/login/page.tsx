@@ -73,12 +73,12 @@ export default function Login() {
             Sign In
           </Button>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Link href="/register" passHref>
+            <Link href="/register" passHref legacyBehavior>
               <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
                 {"Don't have an account? Sign Up"}
               </Typography>
             </Link>
-            <Link href="/forgot-password" passHref>
+            <Link href="/forgot-password" passHref legacyBehavior>
               <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
                 {"Forgot password?"}
               </Typography>

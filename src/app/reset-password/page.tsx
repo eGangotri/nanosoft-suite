@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { TextField, Button, Container, Typography, Box } from '@mui/material'
 
 export default function ResetPassword() {
@@ -59,9 +60,16 @@ export default function ResetPassword() {
           Reset Password
         </Typography>
         {message ? (
-          <Typography color="primary" align="center" sx={{ mt: 2 }}>
-            {message}
-          </Typography>
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <Typography color="primary">{message}</Typography>
+            {message.includes('successfully') && (
+              <Link href="/login" passHref legacyBehavior>
+                <Typography variant="body2" component="a" sx={{ cursor: 'pointer', mt: 2, display: 'inline-block' }}>
+                  Back to Login
+                </Typography>
+              </Link>
+            )}
+          </Box>
         ) : (
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -96,6 +104,13 @@ export default function ResetPassword() {
             >
               Reset Password
             </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Link href="/login" passHref legacyBehavior>
+                <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
+                  Back to Login
+                </Typography>
+              </Link>
+            </Box>
           </Box>
         )}
       </Box>

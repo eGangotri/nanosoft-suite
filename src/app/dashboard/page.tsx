@@ -37,17 +37,21 @@ export default function Dashboard() {
         <Image src="/logo-placeholder.svg" alt="NanoSoft Suite Logo" width={150} height={50} />
       </div>
       <List>
-        {['Dashboard', 'Employees', 'Tasks', 'Settings'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index === 0 && <DashboardIcon />}
-              {index === 1 && <PeopleIcon />}
-              {index === 2 && <AssignmentIcon />}
-              {index === 3 && <SettingsIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        {['Dashboard', 'Employees', 'Tasks', 'Settings'].map((text, index) => {
+          return (
+            <ListItem key={text} component="button">
+              <ListItemIcon>
+                {index === 0 && <DashboardIcon />}
+                {index === 1 && <PeopleIcon />}
+                {index === 2 && <AssignmentIcon />}
+                {index === 3 && <SettingsIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          )
+        }
+        )
+        }
       </List>
     </div>
   )
