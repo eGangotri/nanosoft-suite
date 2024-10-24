@@ -39,7 +39,7 @@ export default function Dashboard() {
       <List>
         {['Dashboard', 'Employees', 'Tasks', 'Settings'].map((text, index) => {
           return (
-            <ListItem key={text} component="button">
+            <ListItem key={text} component="div">
               <ListItemIcon>
                 {index === 0 && <DashboardIcon />}
                 {index === 1 && <PeopleIcon />}
