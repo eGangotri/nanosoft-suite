@@ -8,6 +8,7 @@ import { UserRole } from "@/types/next-auth"
 const prisma = new PrismaClient()
 
 const authOptions: AuthOptions = {
+  /* eslint-disable @typescript-eslint/no-explicit-any*/
   adapter: PrismaAdapter(prisma) as any, // Type assertion to avoid mismatch
   providers: [
     CredentialsProvider({
