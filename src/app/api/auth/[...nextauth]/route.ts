@@ -1,13 +1,27 @@
-import NextAuth, { AuthOptions } from "next-auth"
+import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
 import { PrismaClient, UserRole } from "@prisma/client"
+import { Adapter } from "next-auth/adapters"
 
 const prisma = new PrismaClient()
 
+// Extend the built-in session type
+interface ExtendedSession extends DefaultSession {
+  user?: {
+    id: string;
+    role: UserRole;
+  } & DefaultSession["user"]
+}
+
+// Extend the built-in token type
+interface ExtendedToken {
+  role?: UserRole;
+}
+
 const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -51,15 +65,16 @@ const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role
+        token.role = user.role;
       }
-      return token
+      return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: ExtendedSession, token: ExtendedToken }) {
       if (session?.user) {
-        session.user.role = token.role as UserRole
+        session.user.id = token.sub as string;
+        session.user.role = token.role as UserRole;
       }
-      return session
+      return session;
     }
   },
   session: {
