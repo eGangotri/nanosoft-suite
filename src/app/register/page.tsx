@@ -1,32 +1,41 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TextField, Button, Container, Typography, Box, Select, MenuItem, InputLabel, FormControl } from '@mui/material'
+import { TextField, Button, Typography, Container, Box, CircularProgress, Alert } from '@mui/material'
 
 export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState('EMPLOYEE')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password, role }),
-    })
+    setIsLoading(true)
+    setError('')
 
-    if (response.ok) {
-      router.push('/login')
-    } else {
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role: 'EMPLOYEE' }),
+      })
+
       const data = await response.json()
-      console.error(data.error)
+
+      if (response.ok) {
+        router.push('/login')
+      } else {
+        setError(data.error || 'Registration failed. Please try again.')
+        setIsLoading(false)
+      }
+    } catch (error) {
+      setError('An error occurred. Please try again.')
+      setIsLoading(false)
     }
   }
 
@@ -43,7 +52,12 @@ export default function Register() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
           <TextField
             margin="normal"
             required
@@ -79,35 +93,18 @@ export default function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="role-label">Role</InputLabel>
-            <Select
-              labelId="role-label"
-              id="role"
-              value={role}
-              label="Role"
-              onChange={(e) => setRole(e.target.value)}
-            >
-              <MenuItem value="EMPLOYEE">Employee</MenuItem>
-              <MenuItem value="MANAGER">Manager</MenuItem>
-              <MenuItem value="SUPERVISOR">Supervisor</MenuItem>
-              <MenuItem value="ADMIN">Admin</MenuItem>
-              <MenuItem value="SUPERADMIN">Super Admin</MenuItem>
-            </Select>
-          </FormControl>
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={isLoading}
           >
-            Sign Up
+            {isLoading ? <CircularProgress size={24} /> : 'Sign Up'}
           </Button>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Link href="/login" passHref legacyBehavior>
-              <Typography variant="body2" component="a" sx={{ cursor: 'pointer' }}>
-                {"Already have an account? Sign In"}
-              </Typography>
+          <Box sx={{ mt: 2 }}>
+            <Link href="/login">
+              {"Already have an account? Sign In"}
             </Link>
           </Box>
         </Box>
