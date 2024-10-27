@@ -9,7 +9,7 @@ export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [, setError] = useState('')
+  const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
@@ -33,8 +33,8 @@ export default function Register() {
         setError(data.error || 'Registration failed. Please try again.')
         setIsLoading(false)
       }
-    } catch (error) {
-      setError(`An error occurred. Please try again.${error}`)
+    } catch (err) {
+      setError(`An error occurred. Please try again.${err}`)
       setIsLoading(false)
     }
   }
