@@ -95,7 +95,7 @@ export default function Dashboard() {
         {menuItems.map((item) => (
           <React.Fragment key={item.text}>
             <ListItem 
-              button 
+              component={item.text === 'Products' ? 'div' : 'a'}
               onClick={item.text === 'Products' ? handleProductsClick : () => handleMenuClick(item.text)}
             >
               <ListItemIcon>
@@ -109,7 +109,7 @@ export default function Dashboard() {
                 <List component="div" disablePadding>
                   {item.subItems.map((subItem) => (
                     <ListItem 
-                      button 
+                      component={subItem.text === 'Settings' ? 'div' : 'a'} 
                       key={subItem.text} 
                       sx={{ pl: 4 }}
                       onClick={() => handleMenuClick(subItem.text)}
