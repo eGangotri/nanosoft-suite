@@ -8,6 +8,22 @@ import { Menu as MenuIcon, Dashboard as DashboardIcon, Settings as SettingsIcon,
 import Image from 'next/image'
 import { signOut } from 'next-auth/react'
 
+// Import components
+import DashboardContent from '@/components/dashboard/DashboardContent'
+import PayrollManagement from '@/components/products/PayrollManagement'
+import LeaveManagement from '@/components/products/LeaveManagement'
+import ClaimManagement from '@/components/products/ClaimManagement'
+import EmployeeDatabase from '@/components/products/EmployeeDatabase'
+import TimesheetAttendance from '@/components/products/TimesheetAttendance'
+import SchedulingShifts from '@/components/products/SchedulingShifts'
+import MobileTabletApps from '@/components/products/MobileTabletApps'
+import Biometrics from '@/components/products/Biometrics'
+import PerformanceAppraisals from '@/components/products/PerformanceAppraisals'
+import ApplicantTrackingSystem from '@/components/products/ApplicantTrackingSystem'
+import LMS from '@/components/products/LMS'
+import ReportsAnalytics from '@/components/products/ReportsAnalytics'
+import Settings from '@/components/Settings'
+
 const drawerWidth = 240
 
 export default function Dashboard() {
@@ -115,48 +131,40 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (selectedMenu) {
       case 'Dashboard':
-        return (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h2 className="text-xl font-bold mb-2">Employee Overview</h2>
-              <p>Total Employees: 150</p>
-              <p>Active: 140</p>
-              <p>On Leave: 10</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h2 className="text-xl font-bold mb-2">Task Summary</h2>
-              <p>Total Tasks: 75</p>
-              <p>Completed: 50</p>
-              <p>In Progress: 25</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h2 className="text-xl font-bold mb-2">Announcements</h2>
-              <p>New project kickoff meeting tomorrow at 10 AM</p>
-            </div>
-          </div>
-        )
+        return <DashboardContent />
+      case 'Payroll Mgmt':
+        return <PayrollManagement />
+      case 'Leave Management':
+        return <LeaveManagement />
+      case 'Claim Management':
+        return <ClaimManagement />
+      case 'Employee Database':
+        return <EmployeeDatabase />
+      case 'Timesheet and Attendance':
+        return <TimesheetAttendance />
+      case 'Scheduling and Shifts':
+        return <SchedulingShifts />
+      case 'Mobile and Tablet Apps':
+        return <MobileTabletApps />
+      case 'Biometrics':
+        return <Biometrics />
+      case 'Performance Appraisals':
+        return <PerformanceAppraisals />
+      case 'Applicant Tracking System':
+        return <ApplicantTrackingSystem />
+      case 'LMS':
+        return <LMS />
+      case 'Reports and Analytics':
+        return <ReportsAnalytics />
       case 'Settings':
         if (!isAdminOrSuperAdmin) {
           return (
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-              <p>You do not have permission to view this page.</p>
-            </div>
+            <Typography variant="h6" color="error">Access Denied: You do not have permission to view this page.</Typography>
           )
         }
-        return (
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-4">Settings</h2>
-            <p>Configure your NanoSoft Suite settings here.</p>
-          </div>
-        )
+        return <Settings />
       default:
-        return (
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-4">{selectedMenu}</h2>
-            <p>Content for {selectedMenu} goes here.</p>
-          </div>
-        )
+        return <Typography variant="h6">Select a menu item to view content.</Typography>
     }
   }
 
