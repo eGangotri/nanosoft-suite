@@ -5,7 +5,7 @@ const PayrollManagement: React.FC = () => {
   return (
     <Paper className="p-4 rounded-lg shadow">
       <Typography variant="h6" className="mb-2">Payroll Management</Typography>
-      <Typography>Manage your company's payroll efficiently.</Typography>
+      <Typography>Manage</Typography>
       {/* Add more payroll management specific content here */}
     </Paper>
   );
