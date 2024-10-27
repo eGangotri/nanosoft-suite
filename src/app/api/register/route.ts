@@ -6,9 +6,9 @@ const prisma = new PrismaClient()
 
 export async function POST(req: Request) {
   const body = await req.json()
-  const { name, email, password } = body
+  const { name, email, password, role } = body
 
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !role) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
@@ -27,8 +27,9 @@ export async function POST(req: Request) {
       name,
       email,
       password: hashedPassword,
+      role: role as 'EMPLOYEE' | 'MANAGER' | 'SUPERVISOR' | 'ADMIN' | 'SUPERADMIN',
     },
   })
 
-  return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email } })
+  return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } })
 }
