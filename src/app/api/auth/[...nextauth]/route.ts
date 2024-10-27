@@ -8,7 +8,7 @@ import { UserRole } from "@/types/next-auth"
 const prisma = new PrismaClient()
 
 const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as any, // Type assertion to avoid mismatch
   providers: [
     CredentialsProvider({
       name: "Credentials",
