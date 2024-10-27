@@ -2,14 +2,12 @@ import NextAuth, { AuthOptions } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
-import { PrismaClient } from "@prisma/client"
-import { UserRole } from "@/types/next-auth"
+import { PrismaClient, UserRole } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 const authOptions: AuthOptions = {
-  /* eslint-disable @typescript-eslint/no-explicit-any*/
-  adapter: PrismaAdapter(prisma) as any, // Type assertion to avoid mismatch
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Credentials",

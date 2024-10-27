@@ -2,6 +2,7 @@
 
 // next-auth.d.ts
 import NextAuth, { DefaultSession } from "next-auth"
+import { UserRole } from "@prisma/client"
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -16,12 +17,4 @@ declare module "next-auth" {
   interface User {
     role: UserRole
   }
-}
-
-export enum UserRole {
-  EMPLOYEE = "EMPLOYEE",
-  MANAGER = "MANAGER",
-  SUPERVISOR = "SUPERVISOR",
-  ADMIN = "ADMIN",
-  SUPERADMIN = "SUPERADMIN"
 }
