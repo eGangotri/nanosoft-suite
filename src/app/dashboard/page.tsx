@@ -1,14 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, Box, CssBaseline, useTheme, useMediaQuery, Button, Collapse } from '@mui/material'
+import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, Box, CssBaseline, useTheme, useMediaQuery, Button, Collapse, Modal, CircularProgress } from '@mui/material'
 import { Menu as MenuIcon, Dashboard as DashboardIcon, Settings as SettingsIcon, ExpandLess, ExpandMore, Apps as ProductsIcon, AttachMoney as PayrollIcon, EventNote as LeaveIcon, ReceiptLong as ClaimIcon, Group as EmployeeIcon, AccessTime as TimesheetIcon, CalendarToday as SchedulingIcon, PhoneAndroid as MobileIcon, Fingerprint as BiometricsIcon, Assessment as PerformanceIcon, PersonSearch as ApplicantIcon, School as LMSIcon, BarChart as ReportsIcon } from '@mui/icons-material'
 import Image from 'next/image'
-import { signOut } from 'next-auth/react'
 
-// Import components
+// Import your components here
 import DashboardContent from '@/components/dashboard/DashboardContent'
 import PayrollManagement from '@/components/products/PayrollManagement'
 import LeaveManagement from '@/components/products/LeaveManagement'
@@ -30,6 +29,7 @@ export default function Dashboard() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [productsOpen, setProductsOpen] = useState(false)
   const [selectedMenu, setSelectedMenu] = useState('Dashboard')
+  const [isSigningOut, setIsSigningOut] = useState(false)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const { data: session, status } = useSession()
@@ -45,8 +45,9 @@ export default function Dashboard() {
     setMobileOpen(!mobileOpen)
   }
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/login' })
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+    await signOut({ callbackUrl: '/login' })
   }
 
   const handleProductsClick = () => {
@@ -230,6 +231,31 @@ export default function Dashboard() {
         </Typography>
         {renderContent()}
       </Box>
+      <Modal
+        open={isSigningOut}
+        aria-labelledby="sign-out-modal"
+        aria-describedby="modal-modal-description"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Box sx={{ 
+          bgcolor: 'background.paper', 
+          boxShadow: 24, 
+          p: 4, 
+          borderRadius: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
+          <CircularProgress size={60} />
+          <Typography id="sign-out-modal" variant="h6" sx={{ mt: 2 }}>
+            Signing out...
+          </Typography>
+        </Box>
+      </Modal>
     </Box>
   )
 }
