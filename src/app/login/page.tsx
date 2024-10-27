@@ -9,7 +9,7 @@ import { TextField, Button, Typography, Container, Box, CircularProgress, Alert 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [, setError] = useState('')
+  const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
@@ -31,8 +31,8 @@ export default function Login() {
       } else {
         router.push('/dashboard')
       }
-    } catch (error) {
-      setError(`An error occurred. Please try again.${error}`)
+    } catch (err) {
+      setError(`An error occurred. Please try again.${err}`)
       setIsLoading(false)
     }
   }
