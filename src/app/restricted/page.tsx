@@ -31,7 +31,7 @@ export default function RestrictedPage() {
         }
         if (status === 'unauthenticated') {
             router.push('/login')
-        } else if (session?.user?.isWithinCBD) {
+        } else if (session?.user?.isWithinGeoFence) {
             router.push('/dashboard')
         }
     }, [session, status, router])

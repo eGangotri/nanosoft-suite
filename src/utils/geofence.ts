@@ -17,7 +17,7 @@ export const isWithinBounds = (lat: number, lon: number, bounds: GeoFenceBounds)
         lon >= bounds.west
     );
 
-    if(lat === 0 || lon === 0) {
+    if (lat === 0 || lon === 0) {
         console.warn("Geolocation Headers Aren’t Enabled. In Vercel Dashbaord, go to Settings > General > Headers and add the following headers: x-vercel-ip-latitude and x-vercel-ip-longitude")
         console.warn("Ignore for local development")
     }
@@ -30,11 +30,12 @@ export const isWithinBounds = (lat: number, lon: number, bounds: GeoFenceBounds)
 }
 
 //should be changed to isWithinGeoFence
-export function isWithinCBD(latitude: number, longitude: number): boolean {
+export function isWithinGeoFence(latitude: number, longitude: number): boolean {
     console.log(`
-        isWithinCBD: GEO_FENCING_ON ?: ${GEO_FENCING_ON} for ${getChosenGeoFence()}`)
+        isWithinGeoFence: GEO_FENCING_ON ?: ${GEO_FENCING_ON} for ${getChosenGeoFence()}`)
     if (GEO_FENCING_ON) {
-        return isWithinBounds(latitude, longitude, CHOSEN_BOUNDS);
+        const res = isWithinBounds(latitude, longitude, CHOSEN_BOUNDS);
+        console.log(`isWIthinGeoFence ?: ${res}`)
     }
     return true;
 }

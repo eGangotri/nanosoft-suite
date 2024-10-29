@@ -5,7 +5,7 @@ import bcrypt from "bcrypt"
 import { PrismaClient, UserRole } from "@prisma/client"
 import { Adapter } from "next-auth/adapters"
 import { JWT } from "next-auth/jwt"
-import { isWithinCBD } from "@/utils/geofence"
+import { isWithinGeoFence } from "@/utils/geofence"
 
 const prisma = new PrismaClient()
 
@@ -13,13 +13,13 @@ interface ExtendedSession extends DefaultSession {
   user: {
     id: string;
     role: UserRole;
-    isWithinCBD: boolean;
+    isWithinGeoFence: boolean;
   } & DefaultSession["user"]
 }
 
 interface ExtendedToken extends JWT {
   role?: UserRole;
-  isWithinCBD?: boolean;
+  isWithinGeoFence?: boolean;
 }
 
 const authOptions: AuthOptions = {
@@ -64,7 +64,7 @@ const authOptions: AuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
-          isWithinCBD: isWithinCBD(latitude, longitude)
+          isWithinGeoFence: isWithinGeoFence(latitude, longitude)
         }
       }
     })
@@ -73,7 +73,7 @@ const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
-        token.isWithinCBD = user.isWithinCBD;
+        token.isWithinGeoFence = user.isWithinGeoFence;
       }
       return token as ExtendedToken;
     },
@@ -81,7 +81,7 @@ const authOptions: AuthOptions = {
       if (session?.user) {
         session.user.id = token.sub as string;
         session.user.role = token.role as UserRole;
-        session.user.isWithinCBD = token.isWithinCBD as boolean;
+        session.user.isWithinGeoFence = token.isWithinGeoFence as boolean;
       }
       return session as ExtendedSession;
     }

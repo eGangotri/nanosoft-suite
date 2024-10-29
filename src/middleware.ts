@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
-import { isWithinCBD } from './utils/geofence'
+import { isWithinGeoFence } from './utils/geofence'
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request })
@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   console.log("Latitude:", latitude, "Longitude:", longitude);
 
   // If the user is not within the CBD, redirect to the restriction page
-  if (!isWithinCBD(latitude, longitude)) {
+  if (!isWithinGeoFence(latitude, longitude)) {
     return NextResponse.redirect(new URL('/restricted', request.url))
   }
 

@@ -10,20 +10,20 @@ declare module "next-auth" {
     user: {
       id: string
       role: UserRole
-      isWithinCBD: boolean
+      isWithinGeoFence: boolean
 
     } & DefaultSession["user"]
   }
 
   interface User {
     role: UserRole
-    isWithinCBD: boolean
+    isWithinGeoFence: boolean
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     role?: UserRole
-    isWithinCBD?: boolean
+    isWithinGeoFence?: boolean
   }
 }
