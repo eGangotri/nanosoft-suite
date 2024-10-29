@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Typography, Container, Box } from '@mui/material'
 import { CHOSEN_BOUNDS, getChosenGeoFence, isWithinBounds } from '@/utils/geofence'
+import Link from 'next/link'
 
 export default function RestrictedPage() {
     const { data: session, status } = useSession()
@@ -55,6 +56,7 @@ export default function RestrictedPage() {
                     </Typography>
                     <Typography variant="body1" sx={{ mt: 2 }}>
                         GeoFencse Status Message: <span className="font-bold">{locationStatus}</span>
+                        <div><a href="/">Try Again</a></div>
                     </Typography>
                 </Box>
             </Box>
