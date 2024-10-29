@@ -28,7 +28,7 @@ export default function RestrictedPage() {
           Access Restricted
         </Typography>
         <Typography variant="body1">
-          We're sorry, but access to this website is currently restricted to users within Singapore's Central Business District (CBD).
+          We\'re sorry, but access to this website is currently restricted to users within Singapore\'s Central Business District (CBD).
         </Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
           If you believe you are seeing this message in error, please contact our support team.

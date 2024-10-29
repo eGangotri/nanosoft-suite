@@ -5,17 +5,20 @@ const CHOSEN_BOUNDS = GEO_FENCES.SINGAPORE_BOUNDS;
 const GEO_FENCING_ON = true;
 
 
-function getChosenBoundName() {
+export const getChosenGeoFence = () => {
+    if (!GEO_FENCING_ON) {
+        return "Off";
+    }
     for (const [key, value] of Object.entries(GEO_FENCES)) {
         if (value === CHOSEN_BOUNDS) {
             return key;
         }
     }
-    return null;
+    return "Off";
 }
 //should be changed to isWithinGeoFence
 export function isWithinCBD(latitude: number, longitude: number): boolean {
-    console.log(`isWithinCBD: GEO_FENCING_ON ?: ${GEO_FENCING_ON} for ${getChosenBoundName()}`)
+    console.log(`isWithinCBD: GEO_FENCING_ON ?: ${GEO_FENCING_ON} for ${getChosenGeoFence()}`)
     if (GEO_FENCING_ON) {
         return (
             latitude <= CHOSEN_BOUNDS.north &&

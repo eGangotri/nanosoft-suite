@@ -22,6 +22,7 @@ import ApplicantTrackingSystem from '@/components/products/ApplicantTrackingSyst
 import LMS from '@/components/products/LMS'
 import ReportsAnalytics from '@/components/products/ReportsAnalytics'
 import Settings from '@/components/Settings'
+import { getChosenGeoFence } from '@/utils/geofence'
 
 const drawerWidth = 240
 
@@ -196,6 +197,9 @@ export default function Dashboard() {
           </Typography>
           <Typography variant="body1" sx={{ mr: 2 }}>
             {session?.user?.name} ({session?.user?.role})
+          </Typography>
+          <Typography variant="body1" sx={{ mr: 2 }}>
+            GeoFencing: {getChosenGeoFence()}
           </Typography>
           <Button color="inherit" onClick={handleSignOut}>
             Sign Out
