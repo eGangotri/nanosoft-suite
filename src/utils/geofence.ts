@@ -1,6 +1,6 @@
 import { GEO_FENCES } from "./consts";
 
-const CHOSEN_BOUNDS = GEO_FENCES.CHANGI_BOUNDS;
+const CHOSEN_BOUNDS = GEO_FENCES.JALAN_BESAR_BOUNDS;
 const GEO_FENCING_ON = true;
 
 
