@@ -10,16 +10,20 @@ declare module "next-auth" {
     user: {
       id: string
       role: UserRole
+      isWithinCBD: boolean
+
     } & DefaultSession["user"]
   }
 
   interface User {
     role: UserRole
+    isWithinCBD: boolean
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     role?: UserRole
+    isWithinCBD?: boolean
   }
 }
