@@ -30,12 +30,12 @@ export const isWithinBounds = (lat: number, lon: number, bounds: GeoFenceBounds)
 }
 
 //should be changed to isWithinGeoFence
-export function isWithinGeoFence(latitude: number, longitude: number): boolean {
+export function  isWithinGeoFence(latitude: number, longitude: number): boolean {
     console.log(`
-        isWithinGeoFence: GEO_FENCING_ON ?: ${GEO_FENCING_ON} for ${getChosenGeoFence()}`)
+        isWithinGeoFence(1): GEO_FENCING_ON ?: ${GEO_FENCING_ON} for ${getChosenGeoFence()}`)
     if (GEO_FENCING_ON) {
         const res = isWithinBounds(latitude, longitude, CHOSEN_BOUNDS);
-        console.log(`isWIthinGeoFence ?: ${res}`)
+        console.log(`isWIthinGeoFence(2) ?: ${res}`)
         return res;
     }
     return true;
