@@ -1,7 +1,6 @@
-import { CHANGI_BOUNDS, GEO_FENCES, JALAN_BESAR_BOUNDS } from "./consts";
+import { GEO_FENCES } from "./consts";
 
-//const CHOSEN_BOUNDS = GEO_FENCES.SINGAPORE_BOUNDS
-const CHOSEN_BOUNDS = GEO_FENCES.SINGAPORE_BOUNDS;
+const CHOSEN_BOUNDS = GEO_FENCES.CHANGI_BOUNDS;
 const GEO_FENCING_ON = true;
 
 
@@ -16,6 +15,7 @@ export const getChosenGeoFence = () => {
     }
     return "Off";
 }
+
 //should be changed to isWithinGeoFence
 export function isWithinCBD(latitude: number, longitude: number): boolean {
     console.log(`isWithinCBD: GEO_FENCING_ON ?: ${GEO_FENCING_ON} for ${getChosenGeoFence()}`)
@@ -28,22 +28,4 @@ export function isWithinCBD(latitude: number, longitude: number): boolean {
         );
     }
     return true;
-}
-
-export function isWithinChangi(latitude: number, longitude: number): boolean {
-    return (
-        latitude <= CHANGI_BOUNDS.north &&
-        latitude >= CHANGI_BOUNDS.south &&
-        longitude <= CHANGI_BOUNDS.east &&
-        longitude >= CHANGI_BOUNDS.west
-    );
-}
-
-export function isWithinJalanBesar(latitude: number, longitude: number): boolean {
-    return (
-        latitude <= JALAN_BESAR_BOUNDS.north &&
-        latitude >= JALAN_BESAR_BOUNDS.south &&
-        longitude <= JALAN_BESAR_BOUNDS.east &&
-        longitude >= JALAN_BESAR_BOUNDS.west
-    );
 }
