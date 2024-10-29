@@ -19,7 +19,7 @@ export const CHANGI_BOUNDS = {
 // Approximate coordinates for Jalan Besar neighborhood, Singapore
 export const JALAN_BESAR_BOUNDS = {
     name: "Jalan Besar",
-    north: 1.3150, // Northernmost point (approximately north of Lavender MRT)
+    north: 1.3180, // Northernmost point (approximately north of Lavender MRT)
     south: 1.3020, // Southernmost point (approximately south of Bendemeer MRT)
     east: 103.8650, // Easternmost point (approximately east of Kallang River)
     west: 103.8520 // Westernmost point (approximately west of Farrer Park MRT)

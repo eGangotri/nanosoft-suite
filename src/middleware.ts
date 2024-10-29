@@ -20,6 +20,8 @@ export async function middleware(request: NextRequest) {
   const latitude = parseFloat(request.headers.get('x-vercel-ip-latitude') || '0')
   const longitude = parseFloat(request.headers.get('x-vercel-ip-longitude') || '0')
 
+  console.log("Latitude:", latitude, "Longitude:", longitude);
+
   // If the user is not within the CBD, redirect to the restriction page
   if (!isWithinCBD(latitude, longitude)) {
     return NextResponse.redirect(new URL('/restricted', request.url))
