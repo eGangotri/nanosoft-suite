@@ -36,6 +36,7 @@ export function isWithinGeoFence(latitude: number, longitude: number): boolean {
     if (GEO_FENCING_ON) {
         const res = isWithinBounds(latitude, longitude, CHOSEN_BOUNDS);
         console.log(`isWIthinGeoFence ?: ${res}`)
+        return res;
     }
     return true;
 }
