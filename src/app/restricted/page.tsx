@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { Typography, Container, Box } from '@mui/material'
+import { getChosenGeoFence } from '@/utils/geofence'
 
 export default function RestrictedPage() {
   const { data: session, status } = useSession()
@@ -28,7 +29,7 @@ export default function RestrictedPage() {
           Access Restricted
         </Typography>
         <Typography variant="body1">
-          We\'re sorry, but access to this website is currently restricted to users within Singapore\'s Central Business District (CBD).
+          We're sorry, but access to this website is currently restricted to users within {getChosenGeoFence()}.
         </Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
           If you believe you are seeing this message in error, please contact our support team.

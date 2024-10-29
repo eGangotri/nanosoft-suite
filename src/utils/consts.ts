@@ -1,5 +1,6 @@
 // Approximate coordinates for Singapore's CBD
 export const CBD_BOUNDS = {
+    name: "Central Business District-SG",
     north: 1.2930,
     south: 1.2720,
     east: 103.8570,
@@ -8,6 +9,7 @@ export const CBD_BOUNDS = {
 
 // Approximate coordinates for Changi neighborhood, Singapore
 export const CHANGI_BOUNDS = {
+    name: "Changi",
     north: 1.3900, // Northernmost point (approximately north of Changi Airport)
     south: 1.3200, // Southernmost point (approximately south of Changi Beach Park)
     east: 104.0100, // Easternmost point (east of Changi Point)
@@ -16,6 +18,7 @@ export const CHANGI_BOUNDS = {
 
 // Approximate coordinates for Jalan Besar neighborhood, Singapore
 export const JALAN_BESAR_BOUNDS = {
+    name: "Jalan Besar",
     north: 1.3150, // Northernmost point (approximately north of Lavender MRT)
     south: 1.3020, // Southernmost point (approximately south of Bendemeer MRT)
     east: 103.8650, // Easternmost point (approximately east of Kallang River)
@@ -23,6 +26,7 @@ export const JALAN_BESAR_BOUNDS = {
 };
 
 export const SINGAPORE_BOUNDS = {
+    name: "Singapore",
     north: 1.4705, // Northernmost point (approximately north of Pulau Ubin)
     south: 1.1300, // Southernmost point (approximately south of Pulau Satumu)
     east: 104.0950, // Easternmost point (approximately east of Pedra Branca)
