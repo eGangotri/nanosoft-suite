@@ -7,6 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+model Employee {
+  id                 Int      @id @default(autoincrement())
+  firstName          String      @map("first_name")
+  lastName           String   @map("last_name")
+  designation        String
+  dateOfBirth        DateTime @map("date_of_birth")
+  nationality        String
+  email              String   @unique
+  mobile             String
+  citizenshipStatus  String   @map("citizenship_status")
+  nricOrFinNo        String   @unique @map("nric_or_fin_no")
+  expiryDate         DateTime? @map("expiry_date")
+  maritalStatus      String   @map("marital_status")
+  addressLine1       String   @map("address_line1")
+  addressLine2       String?  @map("address_line2")
+  city               String
+  country            String
+  postalCode         String   @map("postal_code")
+
+  @@map("employee")
+}
+
 enum UserRole {
   EMPLOYEE
   MANAGER

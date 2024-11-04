@@ -4,7 +4,27 @@ import React, { useState, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, Box, CssBaseline, useTheme, useMediaQuery, Button, Collapse, Modal, CircularProgress } from '@mui/material'
-import { Menu as MenuIcon, Dashboard as DashboardIcon, Settings as SettingsIcon, ExpandLess, ExpandMore, Apps as ProductsIcon, AttachMoney as PayrollIcon, EventNote as LeaveIcon, ReceiptLong as ClaimIcon, Group as EmployeeIcon, AccessTime as TimesheetIcon, CalendarToday as SchedulingIcon, PhoneAndroid as MobileIcon, Fingerprint as BiometricsIcon, Assessment as PerformanceIcon, PersonSearch as ApplicantIcon, School as LMSIcon, BarChart as ReportsIcon } from '@mui/icons-material'
+import {
+  Menu as MenuIcon,
+  Dashboard as DashboardIcon,
+  Settings as SettingsIcon,
+  ExpandLess, ExpandMore,
+  Apps as ProductsIcon,
+  AttachMoney as PayrollIcon,
+  EventNote as LeaveIcon,
+  ReceiptLong as ClaimIcon,
+  Group as EmployeeIcon,
+  AccessTime as TimesheetIcon,
+  CalendarToday as SchedulingIcon,
+  PhoneAndroid as MobileIcon,
+  Fingerprint as BiometricsIcon,
+  Assessment as PerformanceIcon,
+  PersonSearch as ApplicantIcon,
+  School as LMSIcon,
+  BarChart as ReportsIcon,
+  People as PeopleIcon
+} from '@mui/icons-material'
+
 import Image from 'next/image'
 
 // Import your components here
@@ -23,6 +43,7 @@ import LMS from '@/components/products/LMS'
 import ReportsAnalytics from '@/components/products/ReportsAnalytics'
 import Settings from '@/components/Settings'
 import { getChosenGeoFence } from '@/utils/geofence'
+import HRManagement from '@/components/HRManagement'
 
 const drawerWidth = 240
 
@@ -66,6 +87,7 @@ export default function Dashboard() {
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon /> },
+    { text: 'HR Mgmt', icon: <PeopleIcon /> },
     {
       text: 'Products',
       icon: <ProductsIcon />,
@@ -95,7 +117,7 @@ export default function Dashboard() {
       <List>
         {menuItems.map((item) => (
           <React.Fragment key={item.text}>
-            <ListItem 
+            <ListItem
               component={item.text === 'Products' ? 'div' : 'a'}
               onClick={item.text === 'Products' ? handleProductsClick : () => handleMenuClick(item.text)}
             >
@@ -109,9 +131,9 @@ export default function Dashboard() {
               <Collapse in={productsOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {item.subItems.map((subItem) => (
-                    <ListItem 
-                      component={subItem.text === 'Settings' ? 'div' : 'a'} 
-                      key={subItem.text} 
+                    <ListItem
+                      component={subItem.text === 'Settings' ? 'div' : 'a'}
+                      key={subItem.text}
                       sx={{ pl: 4 }}
                       onClick={() => handleMenuClick(subItem.text)}
                     >
@@ -134,6 +156,8 @@ export default function Dashboard() {
     switch (selectedMenu) {
       case 'Dashboard':
         return <DashboardContent />
+      case 'HR Mgmt':
+        return <HRManagement />
       case 'Payroll Mgmt':
         return <PayrollManagement />
       case 'Leave Management':
@@ -245,10 +269,10 @@ export default function Dashboard() {
           justifyContent: 'center',
         }}
       >
-        <Box sx={{ 
-          bgcolor: 'background.paper', 
-          boxShadow: 24, 
-          p: 4, 
+        <Box sx={{
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
           borderRadius: 2,
           display: 'flex',
           flexDirection: 'column',
