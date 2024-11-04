@@ -2,8 +2,8 @@ import { GEO_FENCES } from "./consts";
 import { GeoFenceBounds } from "./type";
 
 //TODO: Make both a Setting
-export const CHOSEN_BOUNDS = GEO_FENCES.CHANGI_BOUNDS;
-export const GEO_FENCING_ON = true;
+export const CHOSEN_BOUNDS = GEO_FENCES.SINGAPORE_BOUNDS;
+export const GEO_FENCING_ON = false;
 
 export const getChosenGeoFence = () => {
     return GEO_FENCING_ON ? CHOSEN_BOUNDS.name : "Off";
