@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller, Control, FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { TextField, Button, Box, Typography, Switch, FormControlLabel } from '@mui/material'
@@ -9,8 +9,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { parseISO } from 'date-fns'
+import { TextFieldProps } from '@mui/material/TextField'
 
-// Define the schema for form validation
 const employeeSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
@@ -29,8 +29,8 @@ interface EmployeeFormProps {
   onSubmit: (data: EmployeeFormData) => void
 }
 
-export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProps) {
-  const [isEditMode] = useState(!!initialData)
+export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProps): React.ReactElement {
+  const [isEditMode] = useState<boolean>(!!initialData)
 
   const {
     control,
@@ -42,7 +42,9 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
     defaultValues: initialData
       ? {
           ...initialData,
-          dateOfBirth: parseISO(initialData.dateOfBirth as unknown as string), // Parse the date string
+          dateOfBirth: initialData.dateOfBirth instanceof Date 
+            ? initialData.dateOfBirth 
+            : parseISO(initialData.dateOfBirth as string),
         }
       : {
           firstName: '',
@@ -54,7 +56,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
         },
   })
 
-  const onSubmitForm = (data: EmployeeFormData) => {
+  const onSubmitForm = (data: EmployeeFormData): void => {
     onSubmit(data)
     if (!isEditMode) {
       reset()
@@ -68,86 +70,94 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
           {isEditMode ? 'Edit Employee' : 'Add New Employee'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
-          <Controller
+          <Controller<EmployeeFormData>
             name="firstName"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }): React.ReactElement => (
               <TextField
                 {...field}
                 label="First Name"
                 variant="outlined"
                 fullWidth
-                error={!!errors.firstName}
-                helperText={errors.firstName?.message}
+                error={!!error}
+                helperText={error?.message}
               />
             )}
           />
-          <Controller
+          <Controller<EmployeeFormData>
             name="lastName"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }): React.ReactElement => (
               <TextField
                 {...field}
                 label="Last Name"
                 variant="outlined"
                 fullWidth
-                error={!!errors.lastName}
-                helperText={errors.lastName?.message}
+                error={!!error}
+                helperText={error?.message}
               />
             )}
           />
-          <Controller
+          <Controller<EmployeeFormData>
             name="email"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }): React.ReactElement => (
               <TextField
                 {...field}
                 label="Email"
                 variant="outlined"
                 fullWidth
-                error={!!errors.email}
-                helperText={errors.email?.message}
+                error={!!error}
+                helperText={error?.message}
               />
             )}
           />
-                <Controller
+          <Controller<EmployeeFormData>
             name="dateOfBirth"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }): React.ReactElement => (
               <DatePicker
                 {...field}
                 label="Date of Birth"
-                renderInput={(params: TextFieldProps) => (
-                    <TextField
+                renderInput={(params: TextFieldProps): React.ReactElement => (
+                  <TextField
                     {...params}
                     fullWidth
-                    error={!!errors.dateOfBirth}
-                    helperText={errors.dateOfBirth?.message}
+                    error={!!error}
+                    helperText={error?.message}
                   />
                 )}
+                onChange={(date: Date | null): void => field.onChange(date)}
+                value={field.value}
               />
             )}
           />
-          <Controller
+          <Controller<EmployeeFormData>
             name="department"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }): React.ReactElement => (
               <TextField
                 {...field}
                 label="Department"
                 variant="outlined"
                 fullWidth
-                error={!!errors.department}
-                helperText={errors.department?.message}
+                error={!!error}
+                helperText={error?.message}
               />
             )}
           />
-          <Controller
+          <Controller<EmployeeFormData>
             name="isActive"
             control={control}
-            render={({ field }) => (
+            render={({ field }): React.ReactElement => (
               <FormControlLabel
-                control={<Switch {...field} checked={field.value} />}
+                control={
+                  <Switch
+                    {...field}
+                    checked={field.value}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => field.onChange(e.target.checked)}
+                  />
+                }
                 label="Active Employee"
               />
             )}
