@@ -7,6 +7,8 @@ git status
 git add src/*
 git add *.json
 git add pnpm-lock.yaml
+git add prisma/*
+git add push_to_git.bat
 git commit -m %commit_msg%
 git push origin master
 git status
