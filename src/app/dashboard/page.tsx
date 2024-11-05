@@ -43,7 +43,7 @@ import LMS from '@/components/products/LMS'
 import ReportsAnalytics from '@/components/products/ReportsAnalytics'
 import Settings from '@/components/Settings'
 import { getChosenGeoFence } from '@/utils/geofence'
-import HRManagement from '@/components/HRManagement'
+import HRManagement from '@/components/hr/HRManagement'
 
 const drawerWidth = 240
 

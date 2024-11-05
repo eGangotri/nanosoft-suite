@@ -99,7 +99,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
       }
     } catch (error) {
       setSnackbar({ open: true, message: 'Error submitting employee data. Please try again.', severity: 'error' })
-      console.error('Error submitting form:', error)
+      console.error('onSubmitForm:Error submitting form:', error)
     }
   }
 

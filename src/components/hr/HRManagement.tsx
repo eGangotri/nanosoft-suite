@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Paper } from '@mui/material';
-import AddEmployeePage from '@/app/leave-mgmt/add-employee/page';
-import EditEmployeePage from '@/app/leave-mgmt/edit-employee/[id]/page';
+import AddEmployeePage from '@/components/hr/add-employee/page';
+import EditEmployeePage from '@/components/hr/edit-employee/[id]/page';
 
 const HRManagement: React.FC = () => {
   return (
