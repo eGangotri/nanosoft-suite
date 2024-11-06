@@ -3,7 +3,7 @@
 import React from 'react'
 import EmployeeForm from '../employee-form'
 import { EmployeeFormData } from '../employee-form' // Make sure to export this type from employee-form.tsx
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 export default function AddEmployeePage() {
   const router = useRouter()

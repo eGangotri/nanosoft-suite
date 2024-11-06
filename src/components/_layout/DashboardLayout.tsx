@@ -21,16 +21,48 @@ import {
   Collapse,
   CircularProgress
 } from '@mui/material'
+
+import Image from 'next/image'
+import Footer from './footer'
+
 import {
-  Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
+  Menu as MenuIcon,
   Dashboard as DashboardIcon,
   Settings as SettingsIcon,
-  ExpandLess,
-  ExpandMore,
+  ExpandLess, ExpandMore,
   Apps as ProductsIcon,
+  AttachMoney as PayrollIcon,
+  EventNote as LeaveIcon,
+  ReceiptLong as ClaimIcon,
+  Group as EmployeeIcon,
+  AccessTime as TimesheetIcon,
+  CalendarToday as SchedulingIcon,
+  PhoneAndroid as MobileIcon,
+  Fingerprint as BiometricsIcon,
+  Assessment as PerformanceIcon,
+  PersonSearch as ApplicantIcon,
+  School as LMSIcon,
+  BarChart as ReportsIcon,
+  People as PeopleIcon
 } from '@mui/icons-material'
-import Image from 'next/image'
+
+import DashboardContent from '@/components/dashboard/DashboardContent'
+import PayrollManagement from '@/components/products/PayrollManagement'
+import LeaveManagement from '@/components/products/LeaveManagement'
+import ClaimManagement from '@/components/products/ClaimManagement'
+import EmployeeDatabase from '@/components/products/EmployeeDatabase'
+import TimesheetAttendance from '@/components/products/TimesheetAttendance'
+import SchedulingShifts from '@/components/products/SchedulingShifts'
+import MobileTabletApps from '@/components/products/MobileTabletApps'
+import Biometrics from '@/components/products/Biometrics'
+import PerformanceAppraisals from '@/components/products/PerformanceAppraisals'
+import ApplicantTrackingSystem from '@/components/products/ApplicantTrackingSystem'
+import LMS from '@/components/products/LMS'
+import ReportsAnalytics from '@/components/products/ReportsAnalytics'
+import Settings from '@/components/Settings'
+import { getChosenGeoFence } from '@/utils/geofence'
+import EmployeeListPage from '@/components/hr/list'
 
 const drawerWidth = 240
 
@@ -89,18 +121,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const isAdminOrSuperAdmin = session?.user?.role === 'ADMIN' || session?.user?.role === 'SUPERADMIN'
 
   const menuItems: MenuItem[] = [
-    { text: 'Dashboard', icon: <DashboardIcon />, route: '/' },
-    {
-      text: 'Products',
-      icon: <ProductsIcon />,
-      subItems: [
-        { text: 'Product List', icon: <ProductsIcon />, route: '/products' },
-        { text: 'Add Product', icon: <ProductsIcon />, route: '/products/add' },
-      ]
-    },
-    ...(isAdminOrSuperAdmin ? [{ text: 'Settings', icon: <SettingsIcon />, route: '/settings' }] : []),
-  ]
-
+      { text: 'Dashboard', icon: <DashboardIcon /> },
+      { text: 'HR Mgmt', icon: <PeopleIcon /> },
+      {
+        text: 'Products',
+        icon: <ProductsIcon />,
+        subItems: [
+          { text: 'Payroll Mgmt', icon: <PayrollIcon /> },
+          { text: 'Leave Management', icon: <LeaveIcon /> },
+          { text: 'Claim Management', icon: <ClaimIcon /> },
+          { text: 'Employee Database', icon: <EmployeeIcon /> },
+          { text: 'Timesheet and Attendance', icon: <TimesheetIcon /> },
+          { text: 'Scheduling and Shifts', icon: <SchedulingIcon /> },
+          { text: 'Mobile and Tablet Apps', icon: <MobileIcon /> },
+          { text: 'Biometrics', icon: <BiometricsIcon /> },
+          { text: 'Performance Appraisals', icon: <PerformanceIcon /> },
+          { text: 'Applicant Tracking System', icon: <ApplicantIcon /> },
+          { text: 'LMS', icon: <LMSIcon /> },
+          { text: 'Reports and Analytics', icon: <ReportsIcon /> },
+        ]
+      },
+      ...(isAdminOrSuperAdmin ? [{ text: 'Settings', icon: <SettingsIcon /> }] : []),
+    ]
+  
   const drawer = (
     <div>
       <div className="p-4 flex justify-center">
@@ -164,10 +207,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <Box className="flex flex-col min-h-screen">
       <AppBar
         position="fixed"
-        className={`z-[1201] transition-all duration-300 ease-in-out ${
-          sidebarOpen ? `w-[calc(100%-${drawerWidth}px)]` : 'w-full'
-        }`}
-        sx={{ marginLeft: sidebarOpen ? `${drawerWidth}px` : 0 }}
+        className={`z-[1201] transition-all duration-300 ease-in-out w-full`}
       >
         <Toolbar>
           <IconButton
@@ -190,7 +230,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Button>
         </Toolbar>
       </AppBar>
-      <Box className="flex flex-grow">
+      <Box className="flex flex-grow" sx={{ marginTop: '64px' }}>
         <Drawer
           variant="permanent"
           open={sidebarOpen}
@@ -209,21 +249,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           }}
         >
           <Toolbar />
-          {sidebarOpen ? drawer : (
-            <Box className="flex flex-col items-center py-4">
-              {menuItems.map((item) => (
-                <IconButton
-                  key={item.text}
-                  component={Link}
-                  href={item.route || '#'}
-                  onClick={() => handleMenuClick(item.text)}
-                  className="my-2"
-                >
-                  {item.icon}
-                </IconButton>
-              ))}
-            </Box>
-          )}
+          {drawer}
         </Drawer>
         <Box
           component="main"
@@ -253,11 +279,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Box>
         </Box>
       )}
-      <footer className="bg-gray-200 p-4 text-center mt-auto">
-        <Typography variant="body2">
-          © 2024 Your Company Name. All rights reserved.
-        </Typography>
-      </footer>
+      <Footer />
     </Box>
   )
 }
