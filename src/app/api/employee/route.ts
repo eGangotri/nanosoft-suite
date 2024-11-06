@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export async function POST(request: Request) {
+  console.log('Request body:', JSON.stringify(request.body));
   try {
     const body = await request.json()
     const employee = await prisma.employee.create({
@@ -26,9 +27,15 @@ export async function POST(request: Request) {
         postalCode: body.postalCode,
       },
     })
-    return NextResponse.json(employee)
+    return NextResponse.json(employee, { status: 201 })
   } catch (error) {
     console.error('Error creating employee:', error)
-    return NextResponse.json({ error: 'Error creating employee' }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : String(error),
+        msg: `Error creating employee`
+      },
+      { status: 400 }
+    )
   }
 }

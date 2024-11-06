@@ -3,8 +3,11 @@
 import React from 'react'
 import EmployeeForm from '../employee-form'
 import { EmployeeFormData } from '../employee-form' // Make sure to export this type from employee-form.tsx
+import { useRouter } from 'next/router'
 
 export default function AddEmployeePage() {
+  const router = useRouter()
+
   const handleSubmit = async (data: EmployeeFormData) => {
     try {
       const response = await fetch('/api/employee', {
@@ -14,15 +17,19 @@ export default function AddEmployeePage() {
         },
         body: JSON.stringify(data),
       });
-  
+      console.log('response.ok ?', JSON.stringify(response));
+
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create employee')
       }
-  
-      const result = await response.json();
-      console.log('Submitted employee data:', JSON.stringify(result));
+
+      const _data = await response.json()
+      console.log('Employee created:', _data)
+      router.push('/employees')
     } catch (error) {
-      console.error('Error submitting employee data:', JSON.stringify(error));
+      console.error('Error:', error)
+      //setError(error instanceof Error ? error.message : 'An unexpected error occurred')
     }
   };
   return (

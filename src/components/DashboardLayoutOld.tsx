@@ -1,11 +1,33 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, ReactNode } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, Box, CssBaseline, useTheme, useMediaQuery, Button, Collapse, Modal, CircularProgress } from '@mui/material'
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Box,
+  CssBaseline,
+  useTheme,
+  useMediaQuery,
+  Button,
+  Collapse,
+  CircularProgress
+} from '@mui/material'
+
+// Import your components here
+import DashboardContent from '@/components/dashboard/DashboardContent'
+import Settings from '@/components/Settings'
 import {
   Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
   Dashboard as DashboardIcon,
   Settings as SettingsIcon,
   ExpandLess, ExpandMore,
@@ -26,29 +48,18 @@ import {
 } from '@mui/icons-material'
 
 import Image from 'next/image'
-
-// Import your components here
-import DashboardContent from '@/components/dashboard/DashboardContent'
-import PayrollManagement from '@/components/products/PayrollManagement'
-import LeaveManagement from '@/components/products/LeaveManagement'
-import ClaimManagement from '@/components/products/ClaimManagement'
-import EmployeeDatabase from '@/components/products/EmployeeDatabase'
-import TimesheetAttendance from '@/components/products/TimesheetAttendance'
-import SchedulingShifts from '@/components/products/SchedulingShifts'
-import MobileTabletApps from '@/components/products/MobileTabletApps'
-import Biometrics from '@/components/products/Biometrics'
-import PerformanceAppraisals from '@/components/products/PerformanceAppraisals'
-import ApplicantTrackingSystem from '@/components/products/ApplicantTrackingSystem'
-import LMS from '@/components/products/LMS'
-import ReportsAnalytics from '@/components/products/ReportsAnalytics'
-import Settings from '@/components/Settings'
-import { getChosenGeoFence } from '@/utils/geofence'
-import EmployeeListPage from '@/components/hr/list'
+import EmployeeListPage from './hr/list'
 
 const drawerWidth = 240
 
-export default function Dashboard() {
-  const [mobileOpen, setMobileOpen] = useState(false)
+interface MenuItem {
+  text: string
+  icon: ReactNode
+  subItems?: MenuItem[]
+}
+
+export default function DashboardLayout2() {
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [productsOpen, setProductsOpen] = useState(false)
   const [selectedMenu, setSelectedMenu] = useState('Dashboard')
   const [isSigningOut, setIsSigningOut] = useState(false)
@@ -57,14 +68,14 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
     }
   }, [status, router])
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
   }
 
   const handleSignOut = async () => {
@@ -79,13 +90,13 @@ export default function Dashboard() {
   const handleMenuClick = (menuText: string) => {
     setSelectedMenu(menuText)
     if (isMobile) {
-      setMobileOpen(false)
+      setSidebarOpen(false)
     }
   }
 
   const isAdminOrSuperAdmin = session?.user?.role === 'ADMIN' || session?.user?.role === 'SUPERADMIN'
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     { text: 'Dashboard', icon: <DashboardIcon /> },
     { text: 'HR Mgmt', icon: <PeopleIcon /> },
     {
@@ -109,30 +120,31 @@ export default function Dashboard() {
     ...(isAdminOrSuperAdmin ? [{ text: 'Settings', icon: <SettingsIcon /> }] : []),
   ]
 
+
   const drawer = (
     <div>
       <div className="p-4 flex justify-center">
-        <Image src="/nanosoft-logo-v2-1.png" alt="NanoSoft Suite Logo" width={150} height={50} />
+        <Image src="/nanosoft-logo.png" alt="Nanosoft" width={150} height={50} />
       </div>
       <List>
         {menuItems.map((item) => (
           <React.Fragment key={item.text}>
             <ListItem
-              component={item.text === 'Products' ? 'div' : 'a'}
-              onClick={item.text === 'Products' ? handleProductsClick : () => handleMenuClick(item.text)}
+              button
+              onClick={item.subItems ? handleProductsClick : () => handleMenuClick(item.text)}
             >
               <ListItemIcon>
                 {item.icon}
               </ListItemIcon>
               <ListItemText primary={item.text} />
-              {item.text === 'Products' && (productsOpen ? <ExpandLess /> : <ExpandMore />)}
+              {item.subItems && (productsOpen ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
             {item.subItems && (
               <Collapse in={productsOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {item.subItems.map((subItem) => (
                     <ListItem
-                      component={subItem.text === 'Settings' ? 'div' : 'a'}
+                      button
                       key={subItem.text}
                       sx={{ pl: 4 }}
                       onClick={() => handleMenuClick(subItem.text)}
@@ -158,30 +170,6 @@ export default function Dashboard() {
         return <DashboardContent />
       case 'HR Mgmt':
         return <EmployeeListPage />
-      case 'Payroll Mgmt':
-        return <PayrollManagement />
-      case 'Leave Management':
-        return <LeaveManagement />
-      case 'Claim Management':
-        return <ClaimManagement />
-      case 'Employee Database':
-        return <EmployeeDatabase />
-      case 'Timesheet and Attendance':
-        return <TimesheetAttendance />
-      case 'Scheduling and Shifts':
-        return <SchedulingShifts />
-      case 'Mobile and Tablet Apps':
-        return <MobileTabletApps />
-      case 'Biometrics':
-        return <Biometrics />
-      case 'Performance Appraisals':
-        return <PerformanceAppraisals />
-      case 'Applicant Tracking System':
-        return <ApplicantTrackingSystem />
-      case 'LMS':
-        return <LMS />
-      case 'Reports and Analytics':
-        return <ReportsAnalytics />
       case 'Settings':
         if (!isAdminOrSuperAdmin) {
           return (
@@ -195,7 +183,11 @@ export default function Dashboard() {
   }
 
   if (status === 'loading') {
-    return <div>Loading...</div>
+    return (
+      <Box className="flex items-center justify-center h-screen">
+        <CircularProgress />
+      </Box>
+    )
   }
 
   if (status === 'unauthenticated') {
@@ -203,55 +195,63 @@ export default function Dashboard() {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box className="flex h-screen">
       <CssBaseline />
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        position="fixed"
+        className={`z-[1201] transition-all duration-300 ease-in-out ${sidebarOpen ? `w-[calc(100%-${drawerWidth}px)]` : 'w-full'
+          } ml-auto`}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
-            aria-label="open drawer"
+            aria-label="toggle drawer"
             edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            onClick={toggleSidebar}
+            className="mr-2"
           >
-            <MenuIcon />
+            {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            NanoSoft Suite
+          <Typography variant="h6" noWrap component="div" className="flex-grow">
+            Dashboard
           </Typography>
-          <Typography variant="body1" sx={{ mr: 2 }}>
+          <Typography variant="body1" className="mr-2">
             {session?.user?.name} ({session?.user?.role})
-          </Typography>
-          <Typography variant="body1" sx={{ mr: 2 }}>
-            GeoFencing: {getChosenGeoFence()}
           </Typography>
           <Button color="inherit" onClick={handleSignOut}>
             Sign Out
           </Button>
         </Toolbar>
       </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
+      <Drawer
+        variant="permanent"
+        open={sidebarOpen}
+        className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-[240px]' : 'w-[64px]'
+          }`}
+        classes={{
+          paper: `transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-[240px]' : 'w-[64px]'
+            }`,
+        }}
       >
-        <Drawer
-          variant={isMobile ? 'temporary' : 'permanent'}
-          open={isMobile ? mobileOpen : true}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Box>
+        <Toolbar />
+        {sidebarOpen ? drawer : (
+          <Box className="flex flex-col items-center py-4">
+            {menuItems.map((item) => (
+              <IconButton
+                key={item.text}
+                onClick={() => handleMenuClick(item.text)}
+                className="my-2"
+              >
+                {item.icon}
+              </IconButton>
+            ))}
+          </Box>
+        )}
+      </Drawer>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        className={`flex-grow p-3 transition-all duration-300 ease-in-out ${sidebarOpen ? `ml-[${drawerWidth}px]` : 'ml-[64px]'
+          }`}
       >
         <Toolbar />
         <Typography variant="h4" gutterBottom>
@@ -259,31 +259,22 @@ export default function Dashboard() {
         </Typography>
         {renderContent()}
       </Box>
-      <Modal
-        open={isSigningOut}
-        aria-labelledby="sign-out-modal"
-        aria-describedby="modal-modal-description"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Box sx={{
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}>
-          <CircularProgress size={60} />
-          <Typography id="sign-out-modal" variant="h6" sx={{ mt: 2 }}>
-            Signing out...
-          </Typography>
+      {isSigningOut && (
+        <Box className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <Box className="bg-white p-4 rounded-lg shadow-lg flex flex-col items-center">
+            <CircularProgress size={60} />
+            <Typography variant="h6" className="mt-2">
+              Signing out...
+            </Typography>
+          </Box>
         </Box>
-      </Modal>
+      )}
+      <footer className={`bg-gray-200 p-4 text-center transition-all duration-300 ease-in-out ${sidebarOpen ? `ml-[${drawerWidth}px]` : 'ml-[64px]'
+        }`}>
+        <Typography variant="body2">
+          © 2024 Your Company Name. All rights reserved.
+        </Typography>
+      </footer>
     </Box>
   )
 }

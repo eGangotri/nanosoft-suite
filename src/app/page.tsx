@@ -1,8 +1,10 @@
-
-
-
-import { redirect } from 'next/navigation'
+import DashboardLayout from '@/components/DashboardLayout'
+import DashboardContent from '@/components/dashboard/DashboardContent'
 
 export default function Home() {
-  redirect('/dashboard')
+  return (
+    <DashboardLayout>
+      <DashboardContent />
+    </DashboardLayout>
+  )
 }
