@@ -43,7 +43,7 @@ import LMS from '@/components/products/LMS'
 import ReportsAnalytics from '@/components/products/ReportsAnalytics'
 import Settings from '@/components/Settings'
 import { getChosenGeoFence } from '@/utils/geofence'
-import EmployeeListPage from '@/components/hr/list'
+import EmployeeListPage from '@/components/employee/page'
 
 const drawerWidth = 240
 

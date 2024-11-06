@@ -106,7 +106,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const menuItems: MenuItem[] = [
     { text: 'Dashboard', icon: <DashboardIcon />, route: '/' },
-    { text: 'HR Mgmt', icon: <PeopleIcon />, route: '/hr' },
+    { text: 'HR Mgmt', icon: <PeopleIcon />, route: '/employee' },
     {
       text: 'Products',
       icon: <ProductsIcon />,
@@ -261,7 +261,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             } overflow-auto`}
         >
           <Toolbar />
-          <Box className="p-5 flex-grow">
+          <Box className="flex-grow">
             <span>{children}</span>
           </Box>
         </Box>

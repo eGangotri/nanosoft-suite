@@ -33,12 +33,13 @@ export default function EmployeeListPage() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await fetch('/api/employees')
+        const response = await fetch('/api/employee/list')
         if (!response.ok) {
           throw new Error('Failed to fetch employees')
         }
         const data = await response.json()
         setEmployees(data)
+        console.log('Employees:', JSON.stringify(data))
       } catch (error) {
         console.error('Error fetching employees:', error)
       }
@@ -50,7 +51,7 @@ export default function EmployeeListPage() {
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
       try {
-        const response = await fetch(`/api/employees/${id}`, { method: 'DELETE' })
+        const response = await fetch(`/api/employee/${id}`, { method: 'DELETE' })
         if (!response.ok) {
           throw new Error('Failed to delete employee')
         }
@@ -64,12 +65,12 @@ export default function EmployeeListPage() {
   const handleDeactivate = async (id: number) => {
     if (window.confirm('Are you sure you want to deactivate this employee?')) {
       try {
-        const response = await fetch(`/api/employees/${id}/deactivate`, { method: 'POST' })
+        const response = await fetch(`/api/employee/${id}/deactivate`, { method: 'POST' })
         if (!response.ok) {
           throw new Error('Failed to deactivate employee')
         }
         // Refresh the employee list after deactivation
-        const updatedEmployees = await fetch('/api/employees').then(res => res.json())
+        const updatedEmployees = await fetch('/api/employee').then(res => res.json())
         setEmployees(updatedEmployees)
       } catch (error) {
         console.error('Error deactivating employee:', error)

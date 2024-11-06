@@ -15,7 +15,7 @@ export default function EditEmployeePage({ params }: EditEmployeePageProps) {
     // Fetch employee data here
     // This is just a placeholder, replace with your actual API call
     const fetchData = async () => {
-      // const response = await fetch(`/api/employees/${employeeId}`)
+      // const response = await fetch(`/api/employee/${employeeId}`)
       // const data: EmployeeFormData = await response.json()
       // setEmployeeData(data)
       console.log('Fetching employee data for ID:', id)

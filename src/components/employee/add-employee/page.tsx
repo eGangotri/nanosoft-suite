@@ -26,7 +26,7 @@ export default function AddEmployeePage() {
 
       const _data = await response.json()
       console.log('Employee created:', _data)
-      router.push('/employees')
+      router.push('/employee')
     } catch (error) {
       console.error('Error:', error)
       //setError(error instanceof Error ? error.message : 'An unexpected error occurred')
