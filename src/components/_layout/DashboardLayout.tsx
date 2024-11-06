@@ -23,14 +23,14 @@ import {
 } from '@mui/material'
 
 import Image from 'next/image'
-import Footer from './footer'
 
 import {
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
   Settings as SettingsIcon,
-  ExpandLess, ExpandMore,
+  ExpandLess,
+  ExpandMore,
   Apps as ProductsIcon,
   AttachMoney as PayrollIcon,
   EventNote as LeaveIcon,
@@ -46,23 +46,6 @@ import {
   BarChart as ReportsIcon,
   People as PeopleIcon
 } from '@mui/icons-material'
-
-import DashboardContent from '@/components/dashboard/DashboardContent'
-import PayrollManagement from '@/components/products/PayrollManagement'
-import LeaveManagement from '@/components/products/LeaveManagement'
-import ClaimManagement from '@/components/products/ClaimManagement'
-import EmployeeDatabase from '@/components/products/EmployeeDatabase'
-import TimesheetAttendance from '@/components/products/TimesheetAttendance'
-import SchedulingShifts from '@/components/products/SchedulingShifts'
-import MobileTabletApps from '@/components/products/MobileTabletApps'
-import Biometrics from '@/components/products/Biometrics'
-import PerformanceAppraisals from '@/components/products/PerformanceAppraisals'
-import ApplicantTrackingSystem from '@/components/products/ApplicantTrackingSystem'
-import LMS from '@/components/products/LMS'
-import ReportsAnalytics from '@/components/products/ReportsAnalytics'
-import Settings from '@/components/Settings'
-import { getChosenGeoFence } from '@/utils/geofence'
-import EmployeeListPage from '@/components/hr/list'
 
 const drawerWidth = 240
 
@@ -91,8 +74,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [status, router])
 
   useEffect(() => {
-    const menuItem = menuItems.find(item => item.route === pathname) || 
-                     menuItems.find(item => item.subItems?.some(subItem => subItem.route === pathname))
+    const menuItem = menuItems.find(item => item.route === pathname) ||
+      menuItems.find(item => item.subItems?.some(subItem => subItem.route === pathname))
     if (menuItem) {
       setSelectedMenu(menuItem.text)
     }
@@ -121,29 +104,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const isAdminOrSuperAdmin = session?.user?.role === 'ADMIN' || session?.user?.role === 'SUPERADMIN'
 
   const menuItems: MenuItem[] = [
-      { text: 'Dashboard', icon: <DashboardIcon /> },
-      { text: 'HR Mgmt', icon: <PeopleIcon /> },
-      {
-        text: 'Products',
-        icon: <ProductsIcon />,
-        subItems: [
-          { text: 'Payroll Mgmt', icon: <PayrollIcon /> },
-          { text: 'Leave Management', icon: <LeaveIcon /> },
-          { text: 'Claim Management', icon: <ClaimIcon /> },
-          { text: 'Employee Database', icon: <EmployeeIcon /> },
-          { text: 'Timesheet and Attendance', icon: <TimesheetIcon /> },
-          { text: 'Scheduling and Shifts', icon: <SchedulingIcon /> },
-          { text: 'Mobile and Tablet Apps', icon: <MobileIcon /> },
-          { text: 'Biometrics', icon: <BiometricsIcon /> },
-          { text: 'Performance Appraisals', icon: <PerformanceIcon /> },
-          { text: 'Applicant Tracking System', icon: <ApplicantIcon /> },
-          { text: 'LMS', icon: <LMSIcon /> },
-          { text: 'Reports and Analytics', icon: <ReportsIcon /> },
-        ]
-      },
-      ...(isAdminOrSuperAdmin ? [{ text: 'Settings', icon: <SettingsIcon /> }] : []),
-    ]
-  
+    { text: 'Dashboard', icon: <DashboardIcon />, route: '/' },
+    { text: 'HR Mgmt', icon: <PeopleIcon />, route: '/hr' },
+    {
+      text: 'Products',
+      icon: <ProductsIcon />,
+      subItems: [
+        { text: 'Payroll Mgmt', icon: <PayrollIcon />, route: '/products/payroll' },
+        { text: 'Leave Management', icon: <LeaveIcon />, route: '/products/leave' },
+        { text: 'Claim Management', icon: <ClaimIcon />, route: '/products/claim' },
+        { text: 'Employee Database', icon: <EmployeeIcon />, route: '/products/employee' },
+        { text: 'Timesheet and Attendance', icon: <TimesheetIcon />, route: '/products/timesheet' },
+        { text: 'Scheduling and Shifts', icon: <SchedulingIcon />, route: '/products/scheduling' },
+        { text: 'Mobile and Tablet Apps', icon: <MobileIcon />, route: '/products/mobile' },
+        { text: 'Biometrics', icon: <BiometricsIcon />, route: '/products/biometrics' },
+        { text: 'Performance Appraisals', icon: <PerformanceIcon />, route: '/products/performance' },
+        { text: 'Applicant Tracking System', icon: <ApplicantIcon />, route: '/products/applicant' },
+        { text: 'LMS', icon: <LMSIcon />, route: '/products/lms' },
+        { text: 'Reports and Analytics', icon: <ReportsIcon />, route: '/products/reports' },
+      ]
+    },
+    ...(isAdminOrSuperAdmin ? [{ text: 'Settings', icon: <SettingsIcon />, route: '/settings' }] : []),
+  ]
+
   const drawer = (
     <div>
       <div className="p-4 flex justify-center">
@@ -207,7 +190,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <Box className="flex flex-col min-h-screen">
       <AppBar
         position="fixed"
-        className={`z-[1201] transition-all duration-300 ease-in-out w-full`}
+        className="z-[1201] transition-all duration-300 ease-in-out"
+        sx={{
+          width: { sm: `calc(100% - ${sidebarOpen ? drawerWidth : 0}px)` },
+          ml: { sm: `${sidebarOpen ? drawerWidth : 0}px` },
+        }}
       >
         <Toolbar>
           <IconButton
@@ -215,58 +202,78 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             aria-label="toggle drawer"
             edge="start"
             onClick={toggleSidebar}
-            className="mr-2"
+            className="mr-2 sm:hidden"
           >
             {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
           <Typography variant="h6" noWrap component="div" className="flex-grow">
             Dashboard
           </Typography>
-          <Typography variant="body1" className="mr-2">
-            {session?.user?.name} ({session?.user?.role})
-          </Typography>
-          <Button color="inherit" onClick={handleSignOut}>
-            Sign Out
-          </Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
+            <Typography variant="body1" className="mr-2">
+              {session?.user?.name} ({session?.user?.role})
+            </Typography>
+            <Button color="inherit" onClick={handleSignOut}>
+              Sign Out
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
-      <Box className="flex flex-grow" sx={{ marginTop: '64px' }}>
+      <Box className="flex flex-grow">
         <Drawer
           variant="permanent"
           open={sidebarOpen}
           sx={{
-            width: sidebarOpen ? drawerWidth : 64,
-            flexShrink: 0,
+            display: { xs: 'none', sm: 'block' },
             '& .MuiDrawer-paper': {
-              width: sidebarOpen ? drawerWidth : 64,
               boxSizing: 'border-box',
-              overflowX: 'hidden',
+              width: drawerWidth,
               transition: theme.transitions.create('width', {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
               }),
+              width: sidebarOpen ? drawerWidth : 0,
+              overflowX: 'hidden',
             },
           }}
         >
           <Toolbar />
           {drawer}
         </Drawer>
+        <Drawer
+          variant="temporary"
+          open={sidebarOpen}
+          onClose={toggleSidebar}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          }}
+        >
+          {drawer}
+        </Drawer>
         <Box
           component="main"
-          className="flex-grow p-3"
+          className="flex-grow p-3 flex flex-col"
           sx={{
-            marginLeft: sidebarOpen ? 0 : `-${drawerWidth - 64}px`,
-            transition: theme.transitions.create('margin', {
+            width: { sm: `calc(100% - ${sidebarOpen ? drawerWidth : 0}px)` },
+            ml: { sm: `${sidebarOpen ? drawerWidth : 0}px` },
+            transition: theme.transitions.create(['margin', 'width'], {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
             }),
+            paddingBottom: '64px', // Add padding to account for the footer
           }}
         >
           <Toolbar />
           <Typography variant="h4" gutterBottom>
             {selectedMenu}
           </Typography>
-          {children}
+          <Box className="flex-grow">
+            {children}
+          </Box>
         </Box>
       </Box>
       {isSigningOut && (
@@ -279,7 +286,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Box>
         </Box>
       )}
-      <Footer />
+      <Box
+        component="footer"
+        className="bg-gray-200 p-4 text-center"
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: { sm: sidebarOpen ? drawerWidth : 0 },
+          right: 0,
+          transition: theme.transitions.create('left', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+        }}
+      >
+        <Typography variant="body2">
+          © 2024 Nanosoft. All rights reserved.
+        </Typography>
+      </Box>
     </Box>
   )
 }
