@@ -1,6 +1,5 @@
 'use client'
 
-import '@/styles/globals.css';
 import React, { useState, ReactNode, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
@@ -16,15 +15,13 @@ import {
   ListItemIcon,
   ListItemText,
   Box,
-  useTheme,
   useMediaQuery,
   Button,
   Collapse,
   CircularProgress
 } from '@mui/material'
-
+import { useTheme } from '@mui/material/styles'
 import Image from 'next/image'
-
 import {
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
@@ -47,8 +44,6 @@ import {
   BarChart as ReportsIcon,
   People as PeopleIcon
 } from '@mui/icons-material'
-
-const drawerWidth = 240
 
 interface MenuItem {
   text: string
@@ -129,9 +124,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ]
 
   const drawer = (
-    <div>
+    <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'} overflow-hidden`}>
       <div className="p-4 flex justify-center">
-        <Image src="/logo.png" alt="Company Logo" width={150} height={50} />
+        <Image src="/logo.png" alt="Company Logo" width={sidebarOpen ? 150 : 40} height={50} />
       </div>
       <List>
         {menuItems.map((item) => (
@@ -141,24 +136,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               component={item.route ? Link : 'div'}
               href={item.route || '#'}
               onClick={item.subItems ? handleProductsClick : () => handleMenuClick(item.text)}
+              className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'px-4' : 'px-2 justify-center'}`}
             >
-              <ListItemIcon>
+              <ListItemIcon className={sidebarOpen ? '' : 'min-w-0 mr-0'}>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} />
-              {item.subItems && (productsOpen ? <ExpandLess /> : <ExpandMore />)}
+              {sidebarOpen && <ListItemText primary={item.text} />}
+              {item.subItems && sidebarOpen && (productsOpen ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
-            {item.subItems && (
+            {item.subItems && sidebarOpen && (
               <Collapse in={productsOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {item.subItems.map((subItem) => (
                     <ListItem
                       button
                       key={subItem.text}
-                      sx={{ pl: 4 }}
                       component={Link}
                       href={subItem.route || '#'}
                       onClick={() => handleMenuClick(subItem.text)}
+                      className="pl-8"
                     >
                       <ListItemIcon>
                         {subItem.icon}
@@ -193,8 +189,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         position="fixed"
         className="z-[1201] transition-all duration-300 ease-in-out"
         sx={{
-          width: { sm: `calc(100% - ${sidebarOpen ? drawerWidth : 0}px)` },
-          ml: { sm: `${sidebarOpen ? drawerWidth : 0}px` },
+          width: { sm: `calc(100% - ${sidebarOpen ? '240px' : '64px'})` },
+          ml: { sm: sidebarOpen ? '240px' : '64px' },
         }}
       >
         <Toolbar>
@@ -203,14 +199,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             aria-label="toggle drawer"
             edge="start"
             onClick={toggleSidebar}
-            className="mr-2 sm:hidden"
+            className="mr-2"
           >
             {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
           <Typography variant="h6" noWrap component="div" className="flex-grow">
             Dashboard
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
+          <Box className="flex items-center ml-auto">
             <Typography variant="body1" className="mr-2">
               {session?.user?.name} ({session?.user?.role})
             </Typography>
@@ -224,16 +220,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Drawer
           variant="permanent"
           open={sidebarOpen}
+          className={`transition-all duration-300 ease-in-out ${
+            sidebarOpen ? 'w-60' : 'w-16'
+          } hidden sm:block`}
           sx={{
-            display: { xs: 'none', sm: 'block' },
             '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
               transition: theme.transitions.create('width', {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
               }),
-              width: sidebarOpen ? drawerWidth : 0,
+              width: sidebarOpen ? '240px' : '64px',
               overflowX: 'hidden',
             },
           }}
@@ -246,32 +242,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           open={sidebarOpen}
           onClose={toggleSidebar}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
+          className="block sm:hidden"
           sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': { width: '240px' },
           }}
         >
           {drawer}
         </Drawer>
         <Box
           component="main"
-          className="flex-grow p-3 flex flex-col"
-          sx={{
-            width: { sm: `calc(100% - ${sidebarOpen ? drawerWidth : 0}px)` },
-            ml: { sm: `${sidebarOpen ? drawerWidth : 0}px` },
-            transition: theme.transitions.create(['margin', 'width'], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
-            paddingBottom: '64px', // Add padding to account for the footer
-          }}
+          className={`flex-grow p-3 flex flex-col transition-all duration-300 ease-in-out ${
+            sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
+          }`}
         >
           <Toolbar />
-            <Box className="p-5 flex-grow ">
-              <span>{children} </span>
-            </Box>
+          <Box className="p-5 flex-grow">
+            <span>{children}</span>
+          </Box>
         </Box>
       </Box>
       {isSigningOut && (
@@ -286,17 +275,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
       <Box
         component="footer"
-        className="bg-gray-200 p-4 text-center"
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: { sm: sidebarOpen ? drawerWidth : 0 },
-          right: 0,
-          transition: theme.transitions.create('left', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-          }),
-        }}
+        className={`bg-gray-200 p-4 text-center fixed bottom-0 right-0 transition-all duration-300 ease-in-out ${
+          sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
+        }`}
       >
         <Typography variant="body2">
           © 2024 Nanosoft. All rights reserved.
