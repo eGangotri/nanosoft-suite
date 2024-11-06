@@ -70,7 +70,7 @@ export default function EmployeeListPage() {
           throw new Error('Failed to deactivate employee')
         }
         // Refresh the employee list after deactivation
-        const updatedEmployees = await fetch('/api/employee').then(res => res.json())
+        const updatedEmployees = await fetch('/api/employee/list').then(res => res.json())
         setEmployees(updatedEmployees)
       } catch (error) {
         console.error('Error deactivating employee:', error)

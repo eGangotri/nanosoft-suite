@@ -10,7 +10,7 @@ export default function AddEmployeePage() {
 
   const handleSubmit = async (data: EmployeeFormData) => {
     try {
-      const response = await fetch('/api/employee', {
+      const response = await fetch('/api/employee/add-employee', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export default function AddEmployeePage() {
 
       const _data = await response.json()
       console.log('Employee created:', _data)
-      router.push('/employee')
+      router.push('/employee/list')
     } catch (error) {
       console.error('Error:', error)
       //setError(error instanceof Error ? error.message : 'An unexpected error occurred')
