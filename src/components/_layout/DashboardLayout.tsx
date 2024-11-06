@@ -1,5 +1,6 @@
 'use client'
 
+import '@/styles/globals.css';
 import React, { useState, ReactNode, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
@@ -268,12 +269,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           }}
         >
           <Toolbar />
-          <Typography variant="h4" gutterBottom>
-            {selectedMenu}
-          </Typography>
-          <Box className="flex-grow">
-            {children}
-          </Box>
+            <Box className="p-5 flex-grow ">
+              <span>{children} </span>
+            </Box>
         </Box>
       </Box>
       {isSigningOut && (
