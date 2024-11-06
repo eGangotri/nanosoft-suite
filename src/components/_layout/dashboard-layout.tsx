@@ -54,6 +54,8 @@ interface MenuItem {
 
 const DRAWER_OPEN_WIDTH = '240px'
 const DRAWER_CLOSED_WIDTH = '64px'
+const SIDEBAR_WIDTH_OPEN = 'w-60'
+const SIDEBAR_WIDTH_CLOSED = 'w-16'
 // : 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -127,7 +129,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ]
 
   const drawer = (
-    <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'} overflow-hidden`}>
+    <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? SIDEBAR_WIDTH_OPEN : SIDEBAR_WIDTH_CLOSED} overflow-hidden`}>
       <List>
         {menuItems.map((item) => (
           <React.Fragment key={item.text}>
@@ -184,7 +186,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <Box className="flex flex-col min-h-screen">
+    <Box className="flex flex-col h-screen">
       <AppBar
         position="fixed"
         className="z-[1201] transition-all duration-300 ease-in-out"
@@ -219,11 +221,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Box>
         </Toolbar>
       </AppBar>
-      <Box className="flex flex-grow">
+      <Box className="flex flex-grow overflow-hidden">
         <Drawer
           variant="permanent"
           open={sidebarOpen}
-          className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'
+          className={`transition-all duration-300 ease-in-out ${sidebarOpen ? SIDEBAR_WIDTH_OPEN : SIDEBAR_WIDTH_CLOSED
             } hidden sm:block`}
           sx={{
             '& .MuiDrawer-paper': {
@@ -256,7 +258,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Box
           component="main"
           className={`flex-grow p-3 flex flex-col transition-all duration-300 ease-in-out ${sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
-            }`}
+            } overflow-auto`}
         >
           <Toolbar />
           <Box className="p-5 flex-grow">
@@ -276,7 +278,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
       <Box
         component="footer"
-        className={`bg-gray-200 p-4 text-center fixed bottom-0 right-0 transition-all duration-300 ease-in-out ${sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
+        className={`bg-gray-200 p-4 text-center bottom-0 right-0 transition-all duration-300 ease-in-out ${sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
           }`}
       >
         <Typography variant="body2">
