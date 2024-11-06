@@ -52,6 +52,9 @@ interface MenuItem {
   route?: string
 }
 
+const DRAWER_OPEN_WIDTH = '240px'
+const DRAWER_CLOSED_WIDTH = '64px'
+// : 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [productsOpen, setProductsOpen] = useState(false)
@@ -125,9 +128,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const drawer = (
     <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'} overflow-hidden`}>
-      <div className="p-4 flex justify-center">
-        <Image src="/logo.png" alt="Company Logo" width={sidebarOpen ? 150 : 40} height={50} />
-      </div>
       <List>
         {menuItems.map((item) => (
           <React.Fragment key={item.text}>
@@ -189,8 +189,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         position="fixed"
         className="z-[1201] transition-all duration-300 ease-in-out"
         sx={{
-          width: { sm: `calc(100% - ${sidebarOpen ? '240px' : '64px'})` },
-          ml: { sm: sidebarOpen ? '240px' : '64px' },
+          width: { sm: `calc(100% - ${sidebarOpen ? {DRAWER_OPEN_WIDTH} : {DRAWER_CLOSED_WIDTH}})` },
+          ml: { sm: sidebarOpen ? {DRAWER_OPEN_WIDTH} : {DRAWER_CLOSED_WIDTH} },
         }}
       >
         <Toolbar>
@@ -203,6 +203,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
+          <div className="p-4 flex justify-center">
+            <Image src="/logo.png" alt="Company Logo" width={sidebarOpen ? 150 : 40} height={50} />
+          </div>
           <Typography variant="h6" noWrap component="div" className="flex-grow">
             Dashboard
           </Typography>
@@ -220,16 +223,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Drawer
           variant="permanent"
           open={sidebarOpen}
-          className={`transition-all duration-300 ease-in-out ${
-            sidebarOpen ? 'w-60' : 'w-16'
-          } hidden sm:block`}
+          className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'
+            } hidden sm:block`}
           sx={{
             '& .MuiDrawer-paper': {
               transition: theme.transitions.create('width', {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
               }),
-              width: sidebarOpen ? '240px' : '64px',
+              width: sidebarOpen ? {DRAWER_OPEN_WIDTH} : {DRAWER_CLOSED_WIDTH},
               overflowX: 'hidden',
             },
           }}
@@ -246,16 +248,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           }}
           className="block sm:hidden"
           sx={{
-            '& .MuiDrawer-paper': { width: '240px' },
+            '& .MuiDrawer-paper': { width: {DRAWER_OPEN_WIDTH} },
           }}
         >
           {drawer}
         </Drawer>
         <Box
           component="main"
-          className={`flex-grow p-3 flex flex-col transition-all duration-300 ease-in-out ${
-            sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
-          }`}
+          className={`flex-grow p-3 flex flex-col transition-all duration-300 ease-in-out ${sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
+            }`}
         >
           <Toolbar />
           <Box className="p-5 flex-grow">
@@ -275,9 +276,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
       <Box
         component="footer"
-        className={`bg-gray-200 p-4 text-center fixed bottom-0 right-0 transition-all duration-300 ease-in-out ${
-          sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
-        }`}
+        className={`bg-gray-200 p-4 text-center fixed bottom-0 right-0 transition-all duration-300 ease-in-out ${sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
+          }`}
       >
         <Typography variant="body2">
           © 2024 Nanosoft. All rights reserved.
