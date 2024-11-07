@@ -13,13 +13,13 @@ model Employee {
   firstName          String      @map("first_name")
   lastName           String   @map("last_name")
   designation        String
-  dateOfBirth        Date     @map("date_of_birth")
+  dateOfBirth        DateTime @map("date_of_birth") @db.Date
   nationality        String
   email              String   @unique
   mobile             String
   citizenshipStatus  String   @map("citizenship_status")
   nricOrFinNo        String   @unique @map("nric_or_fin_no")
-  expiryDate         Date?    @map("expiry_date")
+  expiryDate         DateTime? @map("expiry_date")  @db.Date
   maritalStatus      String   @map("marital_status")
   addressLine1       String   @map("address_line1")
   addressLine2       String?  @map("address_line2")
