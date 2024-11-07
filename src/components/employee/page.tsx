@@ -52,7 +52,7 @@ export default function EmployeeListPage() {
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
       try {
-        const response = await fetch(`/api/employee/${id}`, { method: 'DELETE' })
+        const response = await fetch(`/api/employee/list?id=${id}`, { method: 'DELETE' })
         if (!response.ok) {
           throw new Error('Failed to delete employee')
         }
@@ -66,7 +66,7 @@ export default function EmployeeListPage() {
   const handleDeactivate = async (id: number) => {
     if (window.confirm('Are you sure you want to deactivate this employee?')) {
       try {
-        const response = await fetch(`/api/employee/${id}/deactivate`, { method: 'POST' })
+        const response = await fetch(`/api/employee/deactivate?id=${id}`, { method: 'POST' })
         if (!response.ok) {
           throw new Error('Failed to deactivate employee')
         }
