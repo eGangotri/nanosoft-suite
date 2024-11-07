@@ -10,13 +10,14 @@ const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
   const router = useRouter()
 
   const [employeeData, setEmployeeData] = useState<EmployeeFormData | null>(null)
-
+  console.log(`Employee ID: ${id}`)
   useEffect(() => {
     // Fetch employee data here
     // This is just a placeholder, replace with your actual API call
     const fetchData = async () => {
-      const response = await fetch(`/api/employee/edit-employee?id=${id}`)
+      const response = await fetch(`/api/employee/list?id=${id}`)
       const data: EmployeeFormData = await response.json()
+      console.log('Employee data:', JSON.stringify(data))
       setEmployeeData(data)
       console.log('Fetching employee data for ID:', id)
       console.log('Fetching employee data for ID:', JSON.stringify(data))

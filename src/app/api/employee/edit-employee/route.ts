@@ -9,9 +9,9 @@ export async function PATCH(
 ) {
   try {
     const employeeId = parseInt(params.id, 10)
-    console.log()
+    console.log(`Updating employee with ID: ${employeeId}`)
     const body = await request.json()
-
+    console.log('Request body:', JSON.stringify(body))
     const updatedEmployee = await prisma.employee.update({
       where: { id: employeeId },
       data: {
