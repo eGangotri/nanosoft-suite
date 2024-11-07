@@ -108,7 +108,7 @@ export default function EmployeeListPage() {
                 <TableCell>{employee.mobile}</TableCell>
                 <TableCell>{employee.citizenship_status}</TableCell>
                 <TableCell>
-                  <Link href={`/employee/edit-employee/${employee.id}`} passHref>
+                  <Link href={`/employee/edit-employee?id=${employee.id}`} passHref>
                     <IconButton aria-label="edit" color="primary">
                       <EditIcon />
                     </IconButton>

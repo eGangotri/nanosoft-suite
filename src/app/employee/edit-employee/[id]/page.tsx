@@ -1,6 +1,6 @@
 'use client'
 import DashboardLayout from '@/components/_layout/dashboard-layout';
-import EditEmployeePage from '@/components/employee/edit-employee/[id]/page';
+import EditEmployeePage from '@/components/employee/edit-employee/page';
 
 export default function EditEmployee({ params }: { params: { id: string } }) {
 

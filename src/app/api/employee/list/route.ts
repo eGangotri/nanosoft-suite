@@ -1,86 +1,91 @@
-import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
+
+async function fetchEmployeeById(id: number) {
+  if (isNaN(id)) {
+    throw new Error('Invalid employee ID');
+  }
+
+  const employee = await prisma.employee.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!employee) {
+    console.log('No employee found with ID:', id);
+    return null;
+  }
+
+  return employee;
+}
+
+async function fetchEmployees(searchTerm: string, offset: number, limit: number) {
+  const employees = await prisma.employee.findMany({
+    where: {
+      OR: [
+        { firstName: { contains: searchTerm, mode: 'insensitive' } },
+        { lastName: { contains: searchTerm, mode: 'insensitive' } },
+        { email: { contains: searchTerm, mode: 'insensitive' } },
+      ],
+    },
+    skip: offset,
+    take: limit,
+    orderBy: { id: 'asc' },
+  });
+
+  const totalCount = await prisma.employee.count({
+    where: {
+      OR: [
+        { firstName: { contains: searchTerm, mode: 'insensitive' } },
+        { lastName: { contains: searchTerm, mode: 'insensitive' } },
+        { email: { contains: searchTerm, mode: 'insensitive' } },
+      ],
+    },
+  });
+
+  return { employees, totalCount };
+}
 
 export async function GET(request: Request) {
-  console.log('GET request received for employee:list')
+  console.log('GET request received for employee:list');
   try {
-    const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
-    const searchTerm = searchParams.get('searchTerm') || ''
-    const id = searchParams.get('id') || ''
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const searchTerm = searchParams.get('searchTerm') || '';
+    const id = searchParams.get('id') || '0';
+    console.log('Fetching employee with ID:', id);
 
-    // Calculate offset
-    const offset = (page - 1) * limit
+    const offset = (page - 1) * limit;
+
     if (parseInt(id) > 0) {
-      console.log('Fetching employee with ID:', id)
-      // Fetch employees
-      const employees = await prisma.employee.findMany({
-        where: {
-          OR: [
-            { firstName: { contains: searchTerm, mode: 'insensitive' } },
-            { lastName: { contains: searchTerm, mode: 'insensitive' } },
-            { email: { contains: searchTerm, mode: 'insensitive' } },
-          ],
-        },
-        skip: offset,
-        take: limit,
-        orderBy: { id: 'asc' },
-      })
+      const employeeId = parseInt(id);
+      const employee = await fetchEmployeeById(employeeId);
 
+      if (!employee) {
+        return NextResponse.json({ error: 'Employee not found' }, { status: 404 });
+      }
 
-      // Get total count for pagination
-      const totalCount = await prisma.employee.count({
-        where: {
-          OR: [
-            { firstName: { contains: searchTerm, mode: 'insensitive' } },
-            { lastName: { contains: searchTerm, mode: 'insensitive' } },
-            { email: { contains: searchTerm, mode: 'insensitive' } },
-          ],
-        },
-      })
+      return NextResponse.json(employee);
+    } else {
+      const { employees, totalCount } = await fetchEmployees(searchTerm, offset, limit);
 
-      // Return the response
       return NextResponse.json({
         employees,
         totalCount,
         page,
         limit,
-        totalPages: Math.ceil(totalCount / limit)
-      })
-    }
-    else {
-      const employeeId = parseInt(id)
-
-      if (isNaN(employeeId)) {
-        throw new Error('Invalid employee ID')
-      }
-
-      const employee = await prisma.employee.findUnique({
-        where: {
-          id: employeeId
-        }
-      })
-
-      if (!employee) {
-        // Handle case where no employee is found
-        console.log('No employee found with ID:', employeeId)
-        return null
-      }
-
-      return NextResponse.json({
-        employee
-      })
+        totalPages: Math.ceil(totalCount / limit),
+      });
     }
   } catch (error) {
-    console.error('Error fetching employees:', error)
+    console.error('Error fetching employees:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
-    )
-  } finally {
-    await prisma.$disconnect()
+    );
   }
 }

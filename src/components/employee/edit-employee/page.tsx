@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import EmployeeForm, { EmployeeFormData } from '../../employee-form'
+import EmployeeForm, { EmployeeFormData } from '../employee-form'
 import { useRouter } from 'next/navigation'
 
 const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
