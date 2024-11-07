@@ -2,8 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import EmployeeForm, { EmployeeFormData } from '../../employee-form'
+import { useRouter } from 'next/navigation'
 
-  const EditEmployeePage: React.FC<{id:string}> = ({ id }) => {
+const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   const [employeeData, setEmployeeData] = useState<EmployeeFormData | null>(null)
 
@@ -16,23 +20,41 @@ import EmployeeForm, { EmployeeFormData } from '../../employee-form'
       setEmployeeData(data)
       console.log('Fetching employee data for ID:', id)
       console.log('Fetching employee data for ID:', JSON.stringify(data))
-      // // Simulated data
-      // setEmployeeData({
-      //   firstName: 'John',
-      //   lastName: 'Doe',
-      //   email: 'john.doe@example.com',
-      //   dateOfBirth: new Date('1990-01-01'),
-      //   department: 'IT',
-      //   isActive: true,
-      // })
     }
     fetchData()
   }, [id])
 
-  const handleSubmit = (data: EmployeeFormData) => {
-    // Here you would typically send the updated data to your backend
-    console.log('Updated employee data:', data)
-    // You can add your API call here
+  const handleSubmit = async (data: EmployeeFormData) => {
+    setIsLoading(true)
+    setError(null)
+    console.log('Submitting employee data:', JSON.stringify(data));
+    try {
+      const response = await fetch(`/api/employees/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update employee')
+      }
+
+      const updatedEmployee = await response.json()
+      console.log('Employee updated successfully:', updatedEmployee)
+
+      // Update local state with the new data
+      setEmployeeData(updatedEmployee)
+
+      // Optionally, redirect to a different page or show a success message
+      router.push('/employees') // Redirect to employee list page
+    } catch (err) {
+      console.error('Error updating employee:', err)
+      setError(err instanceof Error ? err.message : 'An unknown error occurred')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (!employeeData) {
