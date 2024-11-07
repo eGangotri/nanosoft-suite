@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export async function GET(request: Request) {
+    console.log('GET request received for employee:list')
   try {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
@@ -17,8 +18,8 @@ export async function GET(request: Request) {
     const employees = await prisma.employee.findMany({
       where: {
         OR: [
-          { first_name: { contains: searchTerm, mode: 'insensitive' } },
-          { last_name: { contains: searchTerm, mode: 'insensitive' } },
+          { firstName: { contains: searchTerm, mode: 'insensitive' } },
+          { lastName: { contains: searchTerm, mode: 'insensitive' } },
           { email: { contains: searchTerm, mode: 'insensitive' } },
         ],
       },
@@ -31,8 +32,8 @@ export async function GET(request: Request) {
     const totalCount = await prisma.employee.count({
       where: {
         OR: [
-          { first_name: { contains: searchTerm, mode: 'insensitive' } },
-          { last_name: { contains: searchTerm, mode: 'insensitive' } },
+          { firstName: { contains: searchTerm, mode: 'insensitive' } },
+          { lastName: { contains: searchTerm, mode: 'insensitive' } },
           { email: { contains: searchTerm, mode: 'insensitive' } },
         ],
       },

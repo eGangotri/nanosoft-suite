@@ -29,7 +29,7 @@ export default function Login() {
         setError('Invalid email or password')
         setIsLoading(false)
       } else {
-        router.push('/dashboard')
+        router.push('/')
       }
     } catch (err) {
       setError(`An error occurred. Please try again.${err}`)

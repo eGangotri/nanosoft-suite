@@ -19,8 +19,8 @@ import Link from 'next/link'
 
 interface Employee {
   id: number
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
   designation: string
   email: string
   mobile: string
@@ -38,8 +38,9 @@ export default function EmployeeListPage() {
           throw new Error('Failed to fetch employees')
         }
         const data = await response.json()
-        setEmployees(data)
+        setEmployees(data.employees)
         console.log('Employees:', JSON.stringify(data))
+        console.log('employees:', JSON.stringify(employees))
       } catch (error) {
         console.error('Error fetching employees:', error)
       }
@@ -82,7 +83,7 @@ export default function EmployeeListPage() {
     <Box className="container mx-auto px-4 py-8">
       <Box className="flex justify-between items-center mb-6">
         <Typography variant="h4" component="h1">Employee List</Typography>
-        <Link href="/hr/add-employee" passHref>
+        <Link href="/employee/add-employee" passHref>
           <Button variant="contained" color="primary">Add New Employee</Button>
         </Link>
       </Box>
@@ -101,13 +102,13 @@ export default function EmployeeListPage() {
           <TableBody>
             {employees.map((employee) => (
               <TableRow key={employee.id}>
-                <TableCell>{`${employee.first_name} ${employee.last_name}`}</TableCell>
+                <TableCell>{`${employee.firstName} ${employee.lastName}`}</TableCell>
                 <TableCell>{employee.designation}</TableCell>
                 <TableCell>{employee.email}</TableCell>
                 <TableCell>{employee.mobile}</TableCell>
                 <TableCell>{employee.citizenship_status}</TableCell>
                 <TableCell>
-                  <Link href={`/hr/edit-employee/${employee.id}`} passHref>
+                  <Link href={`/employee/edit-employee/${employee.id}`} passHref>
                     <IconButton aria-label="edit" color="primary">
                       <EditIcon />
                     </IconButton>

@@ -32,7 +32,7 @@ export default function RestrictedPage() {
         if (status === 'unauthenticated') {
             router.push('/login')
         } else if (session?.user?.isWithinGeoFence) {
-            router.push('/dashboard')
+            router.push('/')
         }
     }, [session, status, router])
 

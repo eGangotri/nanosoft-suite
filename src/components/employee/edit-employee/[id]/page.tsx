@@ -3,12 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import EmployeeForm, { EmployeeFormData } from '../../employee-form'
 
-interface EditEmployeePageProps {
-  params: { id: string }
-}
+  const EditEmployeePage: React.FC<{id:string}> = ({ id }) => {
 
-export default function EditEmployeePage({ params }: EditEmployeePageProps) {
-  const { id } = params;
   const [employeeData, setEmployeeData] = useState<EmployeeFormData | null>(null)
 
   useEffect(() => {
@@ -49,3 +45,5 @@ export default function EditEmployeePage({ params }: EditEmployeePageProps) {
     </div>
   )
 }
+
+export default EditEmployeePage
