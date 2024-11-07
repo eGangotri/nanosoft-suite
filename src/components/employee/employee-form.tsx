@@ -161,24 +161,23 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Controller
-              name="dateOfBirth"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <DatePicker
-                  {...field}
-                  label="Date of Birth"
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      error={!!error}
-                      helperText={error?.message}
-                    />
-                  )}
-                />
-              )}
+          <Controller
+          name="dateOfBirth"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <DatePicker
+              {...field}
+              label="Date of Birth"
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  error: !!error,
+                  helperText: error?.message,
+                },
+              }}
             />
+          )}
+        />
             <Controller
               name="nationality"
               control={control}
@@ -257,26 +256,24 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 />
               )}
             />
-            <Controller
-              name="expiryDate"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <DatePicker
-                  {...field}
-                  label="Expiry Date"
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      error={!!error}
-                      helperText={error?.message}
-                    />
-                  )}
-                />
-              )}
+        <Controller
+          name="expiryDate"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <DatePicker
+              {...field}
+              label="Expiry Date"
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  error: !!error,
+                  helperText: error?.message,
+                },
+              }}
             />
+          )}
+        />
           </div>
-
           <Controller
             name="maritalStatus"
             control={control}
