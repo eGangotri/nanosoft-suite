@@ -1,14 +1,12 @@
 'use client'
-import React from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
 import EditEmployeePage from '@/components/employee/edit-employee/[id]/page';
 
-const EditEmployee: React.FC = () => {
+export default function EditEmployee({ params }: { params: { id: string } }) {
+
     return (
         <DashboardLayout>
-            <EditEmployeePage id="100" />
+            <EditEmployeePage id={params.id} />
         </DashboardLayout>
     );
 };
-
-export default EditEmployee;

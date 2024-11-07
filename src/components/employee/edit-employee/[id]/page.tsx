@@ -11,19 +11,20 @@ import EmployeeForm, { EmployeeFormData } from '../../employee-form'
     // Fetch employee data here
     // This is just a placeholder, replace with your actual API call
     const fetchData = async () => {
-      // const response = await fetch(`/api/employee/${employeeId}`)
-      // const data: EmployeeFormData = await response.json()
-      // setEmployeeData(data)
+      const response = await fetch(`/api/employee/${id}`)
+      const data: EmployeeFormData = await response.json()
+      setEmployeeData(data)
       console.log('Fetching employee data for ID:', id)
-      // Simulated data
-      setEmployeeData({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        dateOfBirth: new Date('1990-01-01'),
-        department: 'IT',
-        isActive: true,
-      })
+      console.log('Fetching employee data for ID:', JSON.stringify(data))
+      // // Simulated data
+      // setEmployeeData({
+      //   firstName: 'John',
+      //   lastName: 'Doe',
+      //   email: 'john.doe@example.com',
+      //   dateOfBirth: new Date('1990-01-01'),
+      //   department: 'IT',
+      //   isActive: true,
+      // })
     }
     fetchData()
   }, [id])
