@@ -203,7 +203,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             onClick={toggleSidebar}
             className="mr-2"
           >
-            {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
+            <MenuIcon />
           </IconButton>
           <div className="p-4 flex justify-center">
             <Image src="/logo.png" alt="Company Logo" width={sidebarOpen ? 150 : 40} height={50} />
