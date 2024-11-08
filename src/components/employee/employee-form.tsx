@@ -46,6 +46,8 @@ const employeeSchema = z.object({
   city: z.string().min(1, 'City is required'),
   country: z.string().min(1, 'Country is required'),
   postalCode: z.string().regex(/^\d{5,9}$/, 'Invalid postal code'),
+  deleted: z.boolean().default(false).optional(),
+  active: z.boolean().default(true).optional(),
 })
 
 export type EmployeeFormData = z.infer<typeof employeeSchema>

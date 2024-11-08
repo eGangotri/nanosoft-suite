@@ -25,17 +25,21 @@ async function fetchEmployeeById(id: number) {
 async function fetchEmployees(searchTerm: string, offset: number, limit: number) {
   const employees = await prisma.employee.findMany({
     where: {
-      OR: [
-        { firstName: { contains: searchTerm, mode: 'insensitive' } },
-        { lastName: { contains: searchTerm, mode: 'insensitive' } },
-        { email: { contains: searchTerm, mode: 'insensitive' } },
+      AND: [
+        {
+          OR: [
+            { firstName: { contains: searchTerm, mode: 'insensitive' } },
+            { lastName: { contains: searchTerm, mode: 'insensitive' } },
+            { email: { contains: searchTerm, mode: 'insensitive' } },
+          ],
+        },
+        { deleted: false },
       ],
     },
     skip: offset,
     take: limit,
     orderBy: { id: 'asc' },
   });
-
   const totalCount = await prisma.employee.count({
     where: {
       OR: [

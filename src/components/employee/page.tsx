@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, act } from 'react'
 import { 
   Table, 
   TableBody, 
@@ -16,43 +16,41 @@ import {
 } from '@mui/material'
 import { Edit as EditIcon, Delete as DeleteIcon, Block as DeactivateIcon } from '@mui/icons-material'
 import Link from 'next/link'
+import { Employee } from './types'
 
-interface Employee {
-  id: number
-  firstName: string
-  lastName: string
-  designation: string
-  email: string
-  mobile: string
-  citizenship_status: string
-}
 
 export default function EmployeeListPage() {
   const [employees, setEmployees] = useState<Employee[]>([])
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch('/api/employee/list')
+      if (!response.ok) {
+        throw new Error('Failed to fetch employees')
+      }
+      const data = await response.json()
+      setEmployees(data.employees)
+      console.log('Employees:', JSON.stringify(data))
+      console.log('employees:', JSON.stringify(employees))
+    } catch (error) {
+      console.error('Error fetching employees:', error)
+    }
+  }
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const response = await fetch('/api/employee/list')
-        if (!response.ok) {
-          throw new Error('Failed to fetch employees')
-        }
-        const data = await response.json()
-        setEmployees(data.employees)
-        console.log('Employees:', JSON.stringify(data))
-        console.log('employees:', JSON.stringify(employees))
-      } catch (error) {
-        console.error('Error fetching employees:', error)
-      }
-    }
-
     fetchEmployees()
   }, [])
 
   const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
       try {
-        const response = await fetch(`/api/employee/list?id=${id}`, { method: 'DELETE' })
+        const response = await fetch(`/api/employee/edit-employee?id=${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({deleted: true}),
+        })
+  
         if (!response.ok) {
           throw new Error('Failed to delete employee')
         }
@@ -66,13 +64,15 @@ export default function EmployeeListPage() {
   const handleDeactivate = async (id: number) => {
     if (window.confirm('Are you sure you want to deactivate this employee?')) {
       try {
-        const response = await fetch(`/api/employee/deactivate?id=${id}`, { method: 'POST' })
-        if (!response.ok) {
-          throw new Error('Failed to deactivate employee')
-        }
-        // Refresh the employee list after deactivation
-        const updatedEmployees = await fetch('/api/employee/list').then(res => res.json())
-        setEmployees(updatedEmployees)
+        const response = await fetch(`/api/employee/edit-employee?id=${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({active: false}),
+        })
+        const updatedEmployees = 
+        fetchEmployees()
       } catch (error) {
         console.error('Error deactivating employee:', error)
       }
@@ -101,12 +101,12 @@ export default function EmployeeListPage() {
           </TableHead>
           <TableBody>
             {employees.map((employee) => (
-              <TableRow key={employee.id}>
+              <TableRow key={employee.id} className={!employee.active?"bg-red-100":"bg-green-100"}>
                 <TableCell>{`${employee.firstName} ${employee.lastName}`}</TableCell>
                 <TableCell>{employee.designation}</TableCell>
                 <TableCell>{employee.email}</TableCell>
                 <TableCell>{employee.mobile}</TableCell>
-                <TableCell>{employee.citizenship_status}</TableCell>
+                <TableCell>{employee.citizenshipStatus}</TableCell>
                 <TableCell>
                   <Link href={`/employee/edit-employee?id=${employee.id}`} passHref>
                     <IconButton aria-label="edit" color="primary">

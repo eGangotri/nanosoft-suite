@@ -26,7 +26,8 @@ model Employee {
   city               String
   country            String
   postalCode         String   @map("postal_code")
-
+  deleted             Boolean  @default(false)
+  active             Boolean  @default(true)
   @@map("employee")
 }
 
