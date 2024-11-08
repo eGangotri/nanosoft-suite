@@ -221,7 +221,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Box>
         </Toolbar>
       </AppBar>
-      <Box className="flex flex-grow overflow-hidden">
+      <Box className="flex-grow overflow-hidden">
         <Drawer
           variant="permanent"
           open={sidebarOpen}
@@ -262,7 +262,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
           <Toolbar />
           <Box className="flex-grow">
-            <span>{children}</span>
+            <span className="abc">{children}</span>
           </Box>
         </Box>
       </Box>
