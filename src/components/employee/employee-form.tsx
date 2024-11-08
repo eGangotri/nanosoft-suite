@@ -4,15 +4,15 @@ import React, { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { 
-  TextField, 
-  Button, 
-  Box, 
-  Typography, 
-  Radio, 
-  RadioGroup, 
-  FormControlLabel, 
-  FormControl, 
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
   FormLabel,
   FormHelperText,
   Snackbar,
@@ -29,6 +29,7 @@ type MaritalStatus = 'Single' | 'Married' | 'Divorced' | 'Defacto' | 'Separated'
 
 const employeeSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  middleName: z.string().default("").optional(),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   designation: z.string().min(2, 'Designation must be at least 2 characters'),
   dateOfBirth: z.date().refine((date) => {
@@ -74,6 +75,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
     resolver: zodResolver(employeeSchema),
     defaultValues: initialData || {
       firstName: '',
+      middleName: '',
       lastName: '',
       designation: '',
       dateOfBirth: new Date(),
@@ -146,40 +148,54 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               )}
             />
           </div>
-
-          <Controller
-            name="designation"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                label="Designation"
-                variant="outlined"
-                fullWidth
-                error={!!error}
-                helperText={error?.message}
-              />
-            )}
-          />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Controller
-          name="dateOfBirth"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <DatePicker
-              {...field}
-              label="Date of Birth"
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  error: !!error,
-                  helperText: error?.message,
-                },
-              }}
+            <Controller
+              name="middleName"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  label="Middle Name"
+                  variant="outlined"
+                  fullWidth
+                  error={!!error}
+                  helperText={error?.message}
+                />
+              )}
             />
-          )}
-        />
+            <Controller
+              name="designation"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  label="Designation"
+                  variant="outlined"
+                  fullWidth
+                  error={!!error}
+                  helperText={error?.message}
+                />
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Controller
+              name="dateOfBirth"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <DatePicker
+                  {...field}
+                  label="Date of Birth"
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      error: !!error,
+                      helperText: error?.message,
+                    },
+                  }}
+                />
+              )}
+            />
             <Controller
               name="nationality"
               control={control}
@@ -258,23 +274,23 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 />
               )}
             />
-        <Controller
-          name="expiryDate"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <DatePicker
-              {...field}
-              label="Expiry Date"
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  error: !!error,
-                  helperText: error?.message,
-                },
-              }}
+            <Controller
+              name="expiryDate"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <DatePicker
+                  {...field}
+                  label="Expiry Date"
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      error: !!error,
+                      helperText: error?.message,
+                    },
+                  }}
+                />
+              )}
             />
-          )}
-        />
           </div>
           <Controller
             name="maritalStatus"
@@ -369,10 +385,10 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
             />
           </div>
 
-          <Button 
-            type="submit" 
-            variant="contained" 
-            color="primary" 
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
             fullWidth
             className="mt-6"
           >

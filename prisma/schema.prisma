@@ -11,6 +11,7 @@ datasource db {
 model Employee {
   id                 Int      @id @default(autoincrement())
   firstName          String      @map("first_name")
+  middleName         String?      @map("middle_name")
   lastName           String   @map("last_name")
   designation        String
   dateOfBirth        DateTime @map("date_of_birth") @db.Date

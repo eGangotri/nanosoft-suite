@@ -10,6 +10,7 @@ export async function POST(request: Request) {
     const employee = await prisma.employee.create({
       data: {
         firstName: body.firstName,
+        middleName: body.middleName || "",
         lastName: body.lastName,
         designation: body.designation,
         dateOfBirth: new Date(body.dateOfBirth),
