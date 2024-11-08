@@ -11,7 +11,6 @@ export default function EditEmployee() {
 
     return (
         <DashboardLayout>
-            <Typography>{JSON.stringify(id)}</Typography>
             <EditEmployeePage id={id as string} />
         </DashboardLayout>
     );
