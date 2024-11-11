@@ -13,16 +13,67 @@ import {
   IconButton,
   Typography,
   Box,
-  CircularProgress
+  CircularProgress,
+  MenuItem,
+  Menu,
+  TextField
 } from '@mui/material'
-import { Edit as EditIcon, Delete as DeleteIcon, Block as DeactivateIcon } from '@mui/icons-material'
 import Link from 'next/link'
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon, Block as DeactivateIcon,
+  MoreVert as MoreVertIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  AccountBalance as BankIcon,
+  ContactMail as ContactIcon,
+  Person as PersonIcon,
+  Work as WorkIcon
+}
+  from '@mui/icons-material';
 import { Employee } from './types'
 
+import { Link as MuiLink } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 export default function EmployeeListPage() {
+  const router = useRouter();
   const [loadingStates, setLoadingStates] = useState<{ [key: number | string]: boolean }>({})
   const [employees, setEmployees] = useState<Employee[]>([])
+  const [tabValue, setTabValue] = useState(0);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>, employee: Employee) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedEmployee(employee);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedEmployee(null);
+  };
+
+  const handleNavigation = (path: string) => {
+    handleMenuClose();
+    router.push(path);
+  };
+
+  let filteredEmployees = employees.filter(employee =>
+    employee?.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    employee?.middleName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    employee?.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    employee?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    employee?.mobile?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const fetchEmployees = async () => {
     try {
       const response = await fetch('/api/employee/list')
@@ -63,6 +114,7 @@ export default function EmployeeListPage() {
           throw new Error('Failed to delete employee')
         }
         setEmployees(employees.filter(emp => emp.id !== id))
+        filteredEmployees = filteredEmployees.filter(emp => emp.id !== id)
         window.alert(`Deletion Successful`)
       } catch (error) {
         setLoading(`del-${id}`, false)
@@ -102,9 +154,20 @@ export default function EmployeeListPage() {
     <Box className="container mx-auto px-4 py-8">
       <Box className="flex justify-between items-center mb-6">
         <Typography variant="h4" component="h1">Employee List</Typography>
-        <Link href="/employee/add-employee" passHref>
-          <Button variant="contained" color="primary">Add New Employee</Button>
-        </Link>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+        <TextField
+          label="Search employees"
+          variant="outlined"
+          size="small"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <Button variant="contained" startIcon={<AddIcon />}>
+          <Link href="/employee/add-employee" passHref>
+            Add New Employee
+          </Link>
+        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="employee table">
@@ -115,17 +178,23 @@ export default function EmployeeListPage() {
               <TableCell>Email</TableCell>
               <TableCell>Mobile</TableCell>
               <TableCell>Citizenship Status</TableCell>
+              <TableCell>Details</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {employees.map((employee) => (
+            {filteredEmployees.map((employee) => (
               <TableRow key={employee.id} className={!employee.active ? "bg-red-100" : "bg-green-100"}>
                 <TableCell>{`${employee.firstName} ${employee.lastName}`}</TableCell>
                 <TableCell>{employee.designation}</TableCell>
                 <TableCell>{employee.email}</TableCell>
                 <TableCell>{employee.mobile}</TableCell>
                 <TableCell>{employee.citizenshipStatus}</TableCell>
+                <TableCell>
+                  <IconButton size="small" onClick={(e) => handleMenuOpen(e, employee)}>
+                    <MoreVertIcon />
+                  </IconButton>
+                </TableCell>
                 <TableCell>
                   <Link href={`/employee/edit-employee?id=${employee.id}`} passHref>
                     <IconButton aria-label="edit" color="primary">
@@ -153,6 +222,24 @@ export default function EmployeeListPage() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={() => handleNavigation(`/employee/details/hr-details/${selectedEmployee?.id}/`)}>
+          <PersonIcon fontSize="small" sx={{ marginRight: 1 }} />HR Details
+        </MenuItem>
+        <MenuItem onClick={() => handleNavigation(`/employee/details/bank-details/${selectedEmployee?.id}/`)}>
+          <BankIcon fontSize="small" sx={{ marginRight: 1 }} /> Bank Details
+        </MenuItem>
+        <MenuItem onClick={() => handleNavigation(`/employee/details/contact-info/${selectedEmployee?.id}/`)}>
+          <ContactIcon fontSize="small" sx={{ marginRight: 1 }} /> Emergency Contact Info
+        </MenuItem>
+        <MenuItem onClick={() => handleNavigation(`/employee/details/work-history/${selectedEmployee?.id}/`)}>
+          <WorkIcon fontSize="small" sx={{ marginRight: 1 }} /> Work History
+        </MenuItem>
+      </Menu>
     </Box>
   )
 }
