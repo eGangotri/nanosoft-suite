@@ -1,5 +1,6 @@
 'use client'
 
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
 import React, { useState, useEffect, act } from 'react'
 import {
   Table,
@@ -38,6 +39,24 @@ import { Link as MuiLink } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 export default function EmployeeListPage() {
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'firstName', headerName: 'First Name', width: 130 },
+    { field: 'lastName', headerName: 'Last Name', width: 130 },
+    { field: 'designation', headerName: 'Designation', width: 200 },
+    { field: 'email', headerName: 'Email', width: 200 },
+    { field: 'mobile', headerName: 'Mobile', width: 150 },
+    { field: 'citizenshipStatus', headerName: 'Citizenship Status', width: 180 },
+    {
+      field: 'fullName',
+      headerName: 'Full Name',
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+      width: 160,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params?.row?.firstName || ''} ${params?.row?.lastName || ''}`,
+    },
+  ]
   const router = useRouter();
   const [loadingStates, setLoadingStates] = useState<{ [key: number | string]: boolean }>({})
   const [employees, setEmployees] = useState<Employee[]>([])
@@ -240,6 +259,19 @@ export default function EmployeeListPage() {
           <WorkIcon fontSize="small" sx={{ marginRight: 1 }} /> Work History
         </MenuItem>
       </Menu>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={employees}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+        />
+      </div>
     </Box>
   )
 }
