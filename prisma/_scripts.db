@@ -1,0 +1,38 @@
+CREATE TABLE Employee_HR_DETAILS (
+  id SERIAL PRIMARY KEY,
+  employee_id INT NOT NULL REFERENCES Employee(id) ON DELETE CASCADE,
+  date_of_joining DATE NOT NULL,
+  bonus NUMERIC(10, 2) NOT NULL CHECK (bonus >= 0),
+  passport_number VARCHAR(20) NOT NULL,
+  passport_issue_date DATE NOT NULL,
+  passport_expiry_date DATE NOT NULL,
+  
+  pass_type VARCHAR(5) NOT NULL CHECK (pass_type IN ('EP', 'PEP', 'WP', 'SPass')),
+  
+  pass_expiry_date DATE,
+  renewal_apply_date DATE,
+  new_apply_date DATE,
+  pass_cancelled_date DATE
+);
+
+CREATE TABLE Employee_Emergency_Contact (
+
+  id SERIAL PRIMARY KEY,
+  employee_id INT NOT NULL REFERENCES Employee(id) ON DELETE CASCADE,
+  person_name VARCHAR(255) NOT NULL,
+  relationship VARCHAR(10) NOT NULL CHECK (relationship IN ('spouse', 'friend', 'parent', 'sibling', 'landlord', 'other')),
+  mobile VARCHAR(15) NOT NULL CHECK (mobile ~* '^\+?[1-9]\d{1,14}$'),
+  address TEXT NOT NULL
+);
+
+CREATE TABLE Employee_Bank_Details (
+  id SERIAL PRIMARY KEY,
+  employee_id INT NOT NULL REFERENCES Employee(id) ON DELETE CASCADE,
+  bank_name VARCHAR(255) NOT NULL,
+  employee_banking_name VARCHAR(255) NOT NULL,
+  account_number VARCHAR(50) NOT NULL,
+  account_type VARCHAR(10) NOT NULL CHECK (account_type IN ('Current', 'Savings'))
+);
+
+	
+	
