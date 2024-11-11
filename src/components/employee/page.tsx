@@ -54,7 +54,7 @@ export default function EmployeeListPage() {
       sortable: false,
       width: 160,
       valueGetter: (params: GridValueGetterParams) =>
-        `${params?.row?.firstName || ''} ${params?.row?.lastName || ''}`,
+        `${params?.row?.firstName || ''} ${params?.row?.middleName.length > 0 ? params?.row?.middleName.charAt(0) + " " : ""}${params?.row?.lastName || ''}`,
     },
   ]
   const router = useRouter();
@@ -95,6 +95,7 @@ export default function EmployeeListPage() {
 
   const fetchEmployees = async () => {
     try {
+      setLoading(`list`, true);
       const response = await fetch('/api/employee/list')
       if (!response.ok) {
         throw new Error('Failed to fetch employees')
@@ -103,8 +104,10 @@ export default function EmployeeListPage() {
       setEmployees(data.employees)
       console.log('Employees:', JSON.stringify(data))
       console.log('employees:', JSON.stringify(employees))
+      setLoading(`list`, false);
     } catch (error) {
       console.error('Error fetching employees:', error)
+      setLoading(`list`, false);
     }
   }
 
@@ -261,7 +264,7 @@ export default function EmployeeListPage() {
       </Menu>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={employees}
+          rows={filteredEmployees}
           columns={columns}
           initialState={{
             pagination: {
