@@ -263,17 +263,20 @@ export default function EmployeeListPage() {
         </MenuItem>
       </Menu>
       <div style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={filteredEmployees}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          checkboxSelection
-        />
+        {loadingStates[`list`] ? <CircularProgress size={24} /> :
+          <DataGrid
+            rows={filteredEmployees}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 },
+              },
+            }}
+            pageSizeOptions={[5, 10]}
+            checkboxSelection
+          />
+        }
+
       </div>
     </Box>
   )
