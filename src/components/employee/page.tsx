@@ -46,14 +46,20 @@ export default function EmployeeListPage() {
     { field: 'designation', headerName: 'Designation', width: 200 },
     { field: 'email', headerName: 'Email', width: 200 },
     { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'citizenshipStatus', headerName: 'Citizenship Status', width: 180 },
+    {
+      field: 'citizenshipStatus',
+      headerName: 'Citizenship Status',
+      width: 180,
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+    },
     {
       field: 'fullName',
       headerName: 'Full Name',
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
       width: 160,
-      valueGetter: (params: GridValueGetterParams) =>
+      valueGetter: (params: any) =>
         `${params?.row?.firstName || ''} ${params?.row?.middleName.length > 0 ? params?.row?.middleName.charAt(0) + " " : ""}${params?.row?.lastName || ''}`,
     },
   ]
@@ -263,7 +269,10 @@ export default function EmployeeListPage() {
         </MenuItem>
       </Menu>
       <div style={{ height: 400, width: '100%' }}>
-        {loadingStates[`list`] ? <CircularProgress size={24} /> :
+        {loadingStates[`list`] ?
+          <div className="flex justify-center items-center h-80vh">
+            <CircularProgress size={24} />
+          </div> :
           <DataGrid
             rows={filteredEmployees}
             columns={columns}
@@ -273,7 +282,21 @@ export default function EmployeeListPage() {
               },
             }}
             pageSizeOptions={[5, 10]}
-            checkboxSelection
+            checkboxSelection = {false}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
+            }
+            sx={{
+              '& .even-row': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              },
+              '& .odd-row': {
+                backgroundColor: 'rgba(255, 255, 255, 1)',
+              },
+              '& .MuiDataGrid-cell:focus': {
+                outline: 'none',
+              },
+            }}
           />
         }
 
