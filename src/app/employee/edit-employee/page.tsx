@@ -10,8 +10,6 @@ export default function EditEmployee() {
     const id = searchParams.get('id')
 
     return (
-        <DashboardLayout>
             <EditEmployeePage id={id as string} />
-        </DashboardLayout>
     );
 };

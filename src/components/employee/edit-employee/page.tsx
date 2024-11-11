@@ -30,7 +30,7 @@ const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
     setError(null)
     console.log('Submitting employee data:', JSON.stringify(data));
     try {
-      const response = await fetch(`/api/employee/edit-employee?id=${id}`, {
+      const response = await fetch(`/api/employee/edit-employee/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
       setEmployeeData(updatedEmployee)
 
       // Optionally, redirect to a different page or show a success message
-      router.push('/employees') // Redirect to employee list page
+      router.push('/employee/list') // Redirect to employee list page
     } catch (err) {
       console.error('Error updating employee:', err)
       setError(err instanceof Error ? err.message : 'An unknown error occurred')

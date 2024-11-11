@@ -118,7 +118,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
           {isEditMode ? 'Edit Employee' : 'Add New Employee'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
             <Controller
               name="firstName"
               control={control}
@@ -147,8 +148,6 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 />
               )}
             />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="middleName"
               control={control}
@@ -163,21 +162,21 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 />
               )}
             />
-            <Controller
-              name="designation"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Designation"
-                  variant="outlined"
-                  fullWidth
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
           </div>
+          <Controller
+            name="designation"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                label="Designation"
+                variant="outlined"
+                fullWidth
+                error={!!error}
+                helperText={error?.message}
+              />
+            )}
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="dateOfBirth"
