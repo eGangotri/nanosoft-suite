@@ -1,6 +1,6 @@
 'use client'
 
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import React, { useState, useEffect, act } from 'react'
 import {
   Table,
@@ -40,16 +40,12 @@ import { useRouter } from 'next/navigation';
 
 export default function EmployeeListPage() {
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    // { field: 'id', headerName: 'ID', width: 70 },
     { field: 'firstName', headerName: 'First Name', width: 130 },
     { field: 'lastName', headerName: 'Last Name', width: 130 },
     { field: 'designation', headerName: 'Designation', width: 200 },
     { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    {
-      field: 'citizenshipStatus',
-      headerName: 'Citizenship Status',
-      width: 180,
+    { field: 'mobile', headerName: 'Mobile', width: 150 ,
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
     },
@@ -59,8 +55,14 @@ export default function EmployeeListPage() {
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
       width: 160,
-      valueGetter: (params: any) =>
-        `${params?.row?.firstName || ''} ${params?.row?.middleName.length > 0 ? params?.row?.middleName.charAt(0) + " " : ""}${params?.row?.lastName || ''}`,
+        valueGetter: (value, row) => {
+        const firstName = row.firstName || '';
+        const middleName = row.middleName || '';
+        const lastName = row.lastName || '';
+        const middleInitial = middleName.length > 0 ? middleName.charAt(0) + ". " : "";
+        return `${firstName} ${middleInitial}${lastName}`.trim();
+      },
+
     },
   ]
   const router = useRouter();
@@ -282,7 +284,7 @@ export default function EmployeeListPage() {
               },
             }}
             pageSizeOptions={[5, 10]}
-            checkboxSelection = {false}
+            checkboxSelection={false}
             getRowClassName={(params) =>
               params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
             }
