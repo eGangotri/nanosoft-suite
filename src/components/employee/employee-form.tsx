@@ -135,12 +135,12 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               )}
             />
             <Controller
-              name="lastName"
+              name="middleName"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField
                   {...field}
-                  label="Last Name"
+                  label="Middle Name"
                   variant="outlined"
                   fullWidth
                   error={!!error}
@@ -149,12 +149,12 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               )}
             />
             <Controller
-              name="middleName"
+              name="lastName"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField
                   {...field}
-                  label="Middle Name"
+                  label="Last Name"
                   variant="outlined"
                   fullWidth
                   error={!!error}

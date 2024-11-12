@@ -25,8 +25,6 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon, Block as DeactivateIcon,
   MoreVert as MoreVertIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
   AccountBalance as BankIcon,
   ContactMail as ContactIcon,
   Person as PersonIcon,
@@ -38,6 +36,9 @@ import { Employee } from './types'
 import { Link as MuiLink } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
+const initCaps = (str: string) => {
+  return str ? str?.charAt(0)?.toUpperCase() + str?.slice(1) : "";
+}
 export default function EmployeeListPage() {
   const columns: GridColDef[] = [
     // { field: 'id', headerName: 'ID', width: 70 },
@@ -45,7 +46,8 @@ export default function EmployeeListPage() {
     { field: 'lastName', headerName: 'Last Name', width: 130 },
     { field: 'designation', headerName: 'Designation', width: 200 },
     { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 ,
+    {
+      field: 'mobile', headerName: 'Mobile', width: 150,
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
     },
@@ -55,28 +57,61 @@ export default function EmployeeListPage() {
       description: 'This column has a value getter and is not sortable.',
       sortable: false,
       width: 160,
-        valueGetter: (value, row) => {
-        const firstName = row.firstName || '';
-        const middleName = row.middleName || '';
-        const lastName = row.lastName || '';
+      valueGetter: (value, row) => {
+        const firstName = initCaps(row.firstName);
+        const middleName = initCaps(row.middleName);
+        const lastName = initCaps(row.lastName);
         const middleInitial = middleName.length > 0 ? middleName.charAt(0) + ". " : "";
         return `${firstName} ${middleInitial}${lastName}`.trim();
-      },
-
+      }
     },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 150,
+      renderCell: (params: any) => {
+        return (<>
+          <Link href={`/employee/edit-employee?id=${params?.row?.id}`} passHref>
+            <IconButton aria-label="edit" color="primary">
+              <EditIcon />
+            </IconButton>
+          </Link>
+          <IconButton
+            aria-label="delete"
+            color="error"
+            onClick={() => handleDelete(params?.row?.id)}
+            disabled={loadingStates[`del-${params?.row?.id}`]}
+          >
+            {loadingStates[`del-${params?.row?.id}`] ? <CircularProgress size={24} /> : <DeleteIcon />}
+
+          </IconButton>
+          <IconButton aria-label="deactivate" color="warning"
+            onClick={() => handleDeactivate(params?.row?.id)}
+            disabled={loadingStates[`deact-${params?.row?.id}`]}
+          >
+            {loadingStates[`deact-${params?.row?.id}`] ? <CircularProgress size={24} /> : <DeactivateIcon />}
+          </IconButton>
+        </>)
+      }
+    },
+    {
+      field: 'details',
+      headerName: 'Details',
+      width: 80,
+      renderCell: (params: any) => (
+        <IconButton size="small" onClick={(e) => handleMenuOpen(e, params.row)}>
+          <MoreVertIcon />
+        </IconButton>
+      ),
+    }
+
   ]
   const router = useRouter();
   const [loadingStates, setLoadingStates] = useState<{ [key: number | string]: boolean }>({})
   const [employees, setEmployees] = useState<Employee[]>([])
-  const [tabValue, setTabValue] = useState(0);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>, employee: Employee) => {
     setAnchorEl(event.currentTarget);
@@ -199,59 +234,6 @@ export default function EmployeeListPage() {
           </Link>
         </Button>
       </Box>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="employee table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Designation</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Mobile</TableCell>
-              <TableCell>Citizenship Status</TableCell>
-              <TableCell>Details</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredEmployees.map((employee) => (
-              <TableRow key={employee.id} className={!employee.active ? "bg-red-100" : "bg-green-100"}>
-                <TableCell>{`${employee.firstName} ${employee.lastName}`}</TableCell>
-                <TableCell>{employee.designation}</TableCell>
-                <TableCell>{employee.email}</TableCell>
-                <TableCell>{employee.mobile}</TableCell>
-                <TableCell>{employee.citizenshipStatus}</TableCell>
-                <TableCell>
-                  <IconButton size="small" onClick={(e) => handleMenuOpen(e, employee)}>
-                    <MoreVertIcon />
-                  </IconButton>
-                </TableCell>
-                <TableCell>
-                  <Link href={`/employee/edit-employee?id=${employee.id}`} passHref>
-                    <IconButton aria-label="edit" color="primary">
-                      <EditIcon />
-                    </IconButton>
-                  </Link>
-                  <IconButton
-                    aria-label="delete"
-                    color="error"
-                    onClick={() => handleDelete(employee.id)}
-                    disabled={loadingStates[`del-${employee.id}`]}
-                  >
-                    {loadingStates[`del-${employee.id}`] ? <CircularProgress size={24} /> : <DeleteIcon />}
-
-                  </IconButton>
-                  <IconButton aria-label="deactivate" color="warning"
-                    onClick={() => handleDeactivate(employee.id)}
-                    disabled={loadingStates[`deact-${employee.id}`]}
-                  >
-                    {loadingStates[`deact-${employee.id}`] ? <CircularProgress size={24} /> : <DeactivateIcon />}
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

@@ -5,9 +5,9 @@ import DashboardLayout from '@/components/_layout/dashboard-layout';
 
 const AddEmployee: React.FC = () => {
   return (
-    <DashboardLayout>
+    // <DashboardLayout>
         <AddEmployeePage />
-    </DashboardLayout>
+    // </DashboardLayout>
   );
 };
 
