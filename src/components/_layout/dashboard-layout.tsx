@@ -18,7 +18,8 @@ import {
   useMediaQuery,
   Button,
   Collapse,
-  CircularProgress
+  CircularProgress,
+  ListItemButton
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Image from 'next/image'
@@ -133,8 +134,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <List>
         {menuItems.map((item) => (
           <React.Fragment key={item.text}>
-            <ListItem
-              button
+            <ListItemButton
               component={item.route ? Link : 'div'}
               href={item.route || '#'}
               onClick={item.subItems ? handleProductsClick : () => handleMenuClick(item.text)}
@@ -145,13 +145,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </ListItemIcon>
               {sidebarOpen && <ListItemText primary={item.text} />}
               {item.subItems && sidebarOpen && (productsOpen ? <ExpandLess /> : <ExpandMore />)}
-            </ListItem>
+            </ListItemButton>
             {item.subItems && sidebarOpen && (
               <Collapse in={productsOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {item.subItems.map((subItem) => (
-                    <ListItem
-                      button
+                    <ListItemButton
                       key={subItem.text}
                       component={Link}
                       href={subItem.route || '#'}
@@ -162,7 +161,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         {subItem.icon}
                       </ListItemIcon>
                       <ListItemText primary={subItem.text} />
-                    </ListItem>
+                    </ListItemButton>
                   ))}
                 </List>
               </Collapse>
