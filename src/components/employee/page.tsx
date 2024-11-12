@@ -41,7 +41,7 @@ const initCaps = (str: string) => {
 }
 export default function EmployeeListPage() {
   const columns: GridColDef[] = [
-    // { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'id', headerName: 'ID', width: 70 },
     { field: 'firstName', headerName: 'First Name', width: 130 },
     { field: 'lastName', headerName: 'Last Name', width: 130 },
     { field: 'designation', headerName: 'Designation', width: 200 },

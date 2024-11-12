@@ -206,7 +206,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <MenuIcon />
           </IconButton>
           <div className="p-4 flex justify-center">
-            <Image src="/logo.png" alt="Company Logo" width={sidebarOpen ? 150 : 40} height={50} />
+            <Image src="/images/logo.png" alt="Company Logo" width={sidebarOpen ? 150 : 40} height={50} />
           </div>
           <Typography variant="h6" noWrap component="div" className="flex-grow">
             Dashboard
