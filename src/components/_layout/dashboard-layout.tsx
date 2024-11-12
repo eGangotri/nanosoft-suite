@@ -45,6 +45,7 @@ import {
   BarChart as ReportsIcon,
   People as PeopleIcon
 } from '@mui/icons-material'
+import Footer from './footer'
 
 interface MenuItem {
   text: string
@@ -275,15 +276,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Box>
         </Box>
       )}
-      <Box
-        component="footer"
-        className={`bg-gray-200 p-4 text-center bottom-0 right-0 transition-all duration-300 ease-in-out ${sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
-          }`}
-      >
-        <Typography variant="body2">
-          © 2024 Nanosoft. All rights reserved.
-        </Typography>
-      </Box>
+      <Footer sidebarOpen={sidebarOpen}/>
     </Box>
   )
 }

@@ -30,13 +30,13 @@
       "./node_modules/@types",
       "./types"
     ],
-    "types": ["@mui/x-date-pickers"]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "@mui/x-date-pickers"
   ],
   "exclude": [
     "node_modules"
