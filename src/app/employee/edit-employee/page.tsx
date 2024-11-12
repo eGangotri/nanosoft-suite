@@ -15,9 +15,9 @@ export default function EditEmployee() {
             return <Typography variant="h2">Employee Not Found</Typography>
         }
         return (
-            // <DashboardLayout>
+             <DashboardLayout>
             <EditEmployeePage id={id} />
-            // </DashboardLayout
+             </DashboardLayout>
         )
     }
 
