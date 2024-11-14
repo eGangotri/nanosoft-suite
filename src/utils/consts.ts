@@ -1,3 +1,5 @@
+const DEFAULT_ROLE = "EMPLOYEE"
+
 // Approximate coordinates for Singapore's CBD
 export const CBD_BOUNDS = {
     name: "Central Business District-SG",

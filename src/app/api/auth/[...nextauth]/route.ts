@@ -39,7 +39,14 @@ const authOptions: AuthOptions = {
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email
-          }
+          },
+          include: {
+            User_Role: {
+              include: {
+                Role: true,
+              },
+            },
+          },
         })
 
         if (!user || !user.password) {
@@ -59,12 +66,14 @@ const authOptions: AuthOptions = {
         const latitude = parseFloat(req?.headers?.['x-vercel-ip-latitude'] as string || '0')
         const longitude = parseFloat(req?.headers?.['x-vercel-ip-longitude'] as string || '0')
 
+        const userRole = user.User_Role[0]?.Role?.name || "Employee"; // Default to 'Employee' if no role is found
+
         return {
           id: user.id,
           email: user.email,
           name: user.name,
           isWithinGeoFence: isWithinGeoFence(latitude, longitude),
-          role: "Admin"
+          role: userRole
         }
       }
     })

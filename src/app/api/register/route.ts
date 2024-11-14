@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       },
     })
 
-    return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } })
+    return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email } })
   } catch (error) {
     console.error('Registration error:', error)
     return NextResponse.json({ error: 'An error occurred during registration' }, { status: 500 })

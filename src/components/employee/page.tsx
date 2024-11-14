@@ -31,7 +31,8 @@ import {
   AccountBalance as BankIcon,
   ContactMail as ContactIcon,
   Person as PersonIcon,
-  Work as WorkIcon
+  Work as WorkIcon,
+  EventNote as EventNoteIcon
 }
   from '@mui/icons-material';
 import { Employee } from './types'
@@ -262,6 +263,9 @@ export default function EmployeeListPage() {
         </MenuItem>
         <MenuItem onClick={() => handleNavigation(`/employee/details/work-history/${selectedEmployee?.id}/`)}>
           <WorkIcon fontSize="small" sx={{ marginRight: 1 }} /> Work History
+        </MenuItem>
+        <MenuItem onClick={() => handleNavigation(`/employee/details/leaves/${selectedEmployee?.id}/`)}>
+          <EventNoteIcon fontSize="small" sx={{ marginRight: 1 }} /> Leaves
         </MenuItem>
       </Menu>
       <div style={{ height: 400, width: '100%' }}>
