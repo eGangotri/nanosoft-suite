@@ -1,6 +1,6 @@
 'use client'
 
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { GridColDef, GridRenderCellParams, GridRowParams } from '@mui/x-data-grid'
 import React, { useState, useEffect, act } from 'react'
 import {
   Table,
@@ -20,6 +20,9 @@ import {
   TextField
 } from '@mui/material'
 import Link from 'next/link'
+import Tooltip from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
+
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -35,16 +38,34 @@ import { Employee } from './types'
 
 import { Link as MuiLink } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { initCaps, StyledDataGrid } from './constants'
 
-const initCaps = (str: string) => {
-  return str ? str?.charAt(0)?.toUpperCase() + str?.slice(1) : "";
-}
+
 export default function EmployeeListPage() {
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'firstName', headerName: 'First Name', width: 130 },
     { field: 'lastName', headerName: 'Last Name', width: 130 },
-    { field: 'designation', headerName: 'Designation', width: 200 },
+    {
+      field: 'fullName',
+      headerName: 'Full Name',
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+      width: 160,
+      renderCell: (params: GridRenderCellParams) => {
+        const { row } = params;
+        const firstName = initCaps(row.firstName);
+        const middleName = initCaps(row.middleName);
+        const lastName = initCaps(row.lastName);
+        const fullName = `${firstName} ${middleName} ${lastName}`.trim();
+        const midInitial = middleName.length > 0 ? middleName.charAt(0) + ". " : "";
+        const withMidInitial = `${firstName} ${midInitial}${lastName}`.trim();
+        return (<Tooltip title={`${fullName}`}>
+          <span>{withMidInitial}</span>
+        </Tooltip>)
+      }
+    },
+    { field: 'designation', headerName: 'Designation', width: 100 },
     { field: 'email', headerName: 'Email', width: 200 },
     {
       field: 'mobile', headerName: 'Mobile', width: 150,
@@ -52,25 +73,16 @@ export default function EmployeeListPage() {
       sortable: false,
     },
     {
-      field: 'fullName',
-      headerName: 'Full Name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      valueGetter: (value, row) => {
-        const firstName = initCaps(row.firstName);
-        const middleName = initCaps(row.middleName);
-        const lastName = initCaps(row.lastName);
-        const middleInitial = middleName.length > 0 ? middleName.charAt(0) + ". " : "";
-        return `${firstName} ${middleInitial}${lastName}`.trim();
-      }
-    },
-    {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 200,
       renderCell: (params: any) => {
         return (<>
+          <Link href={`/employee/view-employee?id=${params?.row?.id}`} passHref>
+            <IconButton aria-label="edit" color="primary">
+              <PersonIcon />
+            </IconButton>
+          </Link>
           <Link href={`/employee/edit-employee?id=${params?.row?.id}`} passHref>
             <IconButton aria-label="edit" color="primary">
               <EditIcon />
@@ -257,7 +269,7 @@ export default function EmployeeListPage() {
           <div className="flex justify-center items-center h-80vh">
             <CircularProgress size={24} />
           </div> :
-          <DataGrid
+          <StyledDataGrid
             rows={filteredEmployees}
             columns={columns}
             initialState={{
@@ -267,20 +279,13 @@ export default function EmployeeListPage() {
             }}
             pageSizeOptions={[5, 10]}
             checkboxSelection={false}
-            getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
+            getRowClassName={(params: GridRowParams) =>
+              !params.row.active
+                ? 'inactive-row'
+                : params.indexRelativeToCurrentPage % 2 === 0
+                ? 'even-row'
+                : 'odd-row'
             }
-            sx={{
-              '& .even-row': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
-              },
-              '& .odd-row': {
-                backgroundColor: 'rgba(255, 255, 255, 1)',
-              },
-              '& .MuiDataGrid-cell:focus': {
-                outline: 'none',
-              },
-            }}
           />
         }
 

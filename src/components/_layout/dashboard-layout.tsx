@@ -108,7 +108,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const menuItems: MenuItem[] = [
     { text: 'Dashboard', icon: <DashboardIcon />, route: '/' },
-    { text: 'HR Mgmt', icon: <PeopleIcon />, route: '/employee/list' },
+    { text: 'HR Mgmt', icon: <PeopleIcon />, route: '/employee/' },
     {
       text: 'Products',
       icon: <ProductsIcon />,

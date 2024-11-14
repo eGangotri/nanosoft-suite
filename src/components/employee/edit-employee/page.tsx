@@ -49,7 +49,7 @@ const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
       setEmployeeData(updatedEmployee)
 
       // Optionally, redirect to a different page or show a success message
-      router.push('/employee/list') // Redirect to employee list page
+      router.push('/employee/') // Redirect to employee list page
     } catch (err) {
       console.error('Error updating employee:', err)
       setError(err instanceof Error ? err.message : 'An unknown error occurred')
