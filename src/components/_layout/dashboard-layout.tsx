@@ -186,7 +186,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <Box className="flex flex-col h-screen">
+    <Box className="flex flex-col h-screen" role="banner">
       <AppBar
         position="fixed"
         className="z-[1201] transition-all duration-300 ease-in-out"
@@ -257,6 +257,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </Drawer>
         <Box
           component="main"
+          role="main"
           className={`flex-grow p-3 flex flex-col transition-all duration-300 ease-in-out ${sidebarOpen ? 'sm:ml-60' : 'sm:ml-16'
             } overflow-auto`}
         >

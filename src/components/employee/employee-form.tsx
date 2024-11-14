@@ -24,6 +24,10 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+
+const today = dayjs();
 
 type CitizenshipStatus = 'citizen' | 'pr' | 'foreigner'
 type MaritalStatus = 'Single' | 'Married' | 'Divorced' | 'Defacto' | 'Separated'
@@ -33,15 +37,31 @@ const employeeSchema = z.object({
   middleName: z.string().default("").optional(),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   designation: z.string().min(2, 'Designation must be at least 2 characters'),
-  dateOfBirth: z.date().refine((date) => {
-    return date <= new Date() && date >= new Date(1900, 0, 1)
-  }, 'Invalid date of birth'),
+  dateOfBirth: z.preprocess((arg) => {
+    if (typeof arg === "string" || arg instanceof Date) {
+      return new Date(arg); // Convert string or Date to Date object
+    }
+    if (dayjs.isDayjs(arg)) {
+      return arg.toDate(); // Convert dayjs object to Date
+    }
+    return null; // Fallback for invalid types
+  }, z.date().refine((date) => date <= new Date() && date >= new Date(1900, 0, 1), 'Invalid date of birth')),
+
+
   nationality: z.string().min(2, 'Nationality must be at least 2 characters'),
   email: z.string().email('Invalid email address').regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, 'Invalid email format'),
   mobile: z.string().regex(/^\+?[1-9]\d{1,14}$/, 'Invalid mobile number'),
   citizenshipStatus: z.enum(['citizen', 'pr', 'foreigner']),
   nricOrFinNo: z.string().regex(/^[STFGM]\d{7}[A-Za-z]$/, 'Invalid NRIC/FIN format'),
-  expiryDate: z.date().optional(),
+  expiryDate: z.preprocess((arg) => {
+    if (typeof arg === "string" || arg instanceof Date) {
+      return new Date(arg); // Convert string or Date to Date object
+    }
+    if (dayjs.isDayjs(arg)) {
+      return arg.toDate(); // Convert dayjs object to Date
+    }
+    return null; // Fallback for invalid types
+  }, z.date().optional()),
   maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Defacto', 'Separated']),
   addressLine1: z.string().min(1, 'Address Line 1 is required'),
   addressLine2: z.string().optional(),
@@ -98,9 +118,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
       postalCode: '',
     },
   })
-  const _dateOfBirth = `${watch('dateOfBirth')}`
-  const _expiryDate = `${watch('expiryDate')}`;
-
+  
   const onSubmitForm = async (data: EmployeeFormData): Promise<void> => {
     try {
       setIsLoading(true);
@@ -123,7 +141,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
         <Typography variant="h5" className="mb-6 text-center">
           {isEditMode ? 'Edit Employee' : 'Add New Employee'}
@@ -194,10 +212,10 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <DatePicker
-                  {...field}
+                  value={field.value ? dayjs(field.value) : null} // Convert value to dayjs object
+                  onChange={(newValue) => field.onChange(newValue?.toISOString() || null)} // Convert dayjs back to ISO string
+                  maxDate={today} // Use dayjs for the maxDate
                   label="Date of Birth"
-                 // value={new Date(field?.value)}
-                 // onChange={(newValue) => setValue('dateOfBirth', newValue || undefined)}
                   slotProps={{
                     textField: {
                       fullWidth: true,
@@ -291,10 +309,10 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <DatePicker
-                  {...field}
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(newValue) => field.onChange(newValue?.toISOString() || null)}
+                  minDate={today}
                   label="Expiry Date"
-                //  value={new Date(field?.value)}
-                  //onChange={(newValue) => setValue('expiryDate', newValue || undefined)}
                   slotProps={{
                     textField: {
                       fullWidth: true,
