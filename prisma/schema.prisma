@@ -122,7 +122,12 @@ model employee_hr_details {
   renewal_apply_date   DateTime? @db.Date
   new_apply_date       DateTime? @db.Date
   pass_cancelled_date  DateTime? @db.Date
+  client_id            Int?
+  remarks              String?
   employee             Employee  @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  client               client?   @relation(fields: [client_id], references: [id], onUpdate: NoAction, map: "fk_employee_hr_details_client")
+
+  @@index([client_id], map: "idx_employee_hr_details_client_id")
 }
 
 model employee_work_history {
@@ -135,6 +140,21 @@ model employee_work_history {
   responsibilities  String?
   technologies_used String?
   employee          Employee  @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model client {
+  id                  Int                   @id @default(autoincrement())
+  company_name        String                @db.VarChar(100)
+  industry            String?               @db.VarChar(50)
+  primary_contact     String?               @db.VarChar(100)
+  contact_email       String?               @db.VarChar(100)
+  contact_phone       String?               @db.VarChar(20)
+  current_openings    Int?                  @default(0)
+  last_contact_date   DateTime?             @db.Date
+  next_follow_up      DateTime?             @db.Date
+  status              String?               @db.VarChar(20)
+  notes               String?
+  employee_hr_details employee_hr_details[]
 }
 
 enum UserRole {
