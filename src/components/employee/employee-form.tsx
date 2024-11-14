@@ -18,7 +18,8 @@ import {
   Snackbar,
   Alert,
   MenuItem,
-  Select
+  Select,
+  CircularProgress
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -59,6 +60,7 @@ interface EmployeeFormProps {
 }
 
 export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProps): React.ReactElement {
+  const [isLoading, setIsLoading] = useState(false)
   const [isEditMode] = useState<boolean>(!!initialData)
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
@@ -69,6 +71,9 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
   const {
     control,
     handleSubmit,
+    getValues,
+    setValue,
+    watch,
     formState: { errors },
     reset,
   } = useForm<EmployeeFormData>({
@@ -93,15 +98,21 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
       postalCode: '',
     },
   })
+  const _dateOfBirth = `${watch('dateOfBirth')}`
+  const _expiryDate = `${watch('expiryDate')}`;
 
   const onSubmitForm = async (data: EmployeeFormData): Promise<void> => {
     try {
+      setIsLoading(true);
+      console.log(`Submitting employee data: ${JSON.stringify(data.expiryDate)}`)
       await onSubmit(data)
+      setIsLoading(false);
       setSnackbar({ open: true, message: 'Employee data submitted successfully!', severity: 'success' })
       if (!isEditMode) {
         reset()
       }
     } catch (error) {
+      setIsLoading(false);
       setSnackbar({ open: true, message: 'Error submitting employee data. Please try again.', severity: 'error' })
       console.error('onSubmitForm:Error submitting form:', error)
     }
@@ -144,7 +155,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                   variant="outlined"
                   fullWidth
                   error={!!error}
-                  helperText={error?.message}
+                  helperText={error ? error.message : null}
                 />
               )}
             />
@@ -185,6 +196,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 <DatePicker
                   {...field}
                   label="Date of Birth"
+                 // value={new Date(field?.value)}
+                 // onChange={(newValue) => setValue('dateOfBirth', newValue || undefined)}
                   slotProps={{
                     textField: {
                       fullWidth: true,
@@ -280,6 +293,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 <DatePicker
                   {...field}
                   label="Expiry Date"
+                //  value={new Date(field?.value)}
+                  //onChange={(newValue) => setValue('expiryDate', newValue || undefined)}
                   slotProps={{
                     textField: {
                       fullWidth: true,
@@ -391,7 +406,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
             fullWidth
             className="mt-6"
           >
-            {isEditMode ? 'Update Employee' : 'Add Employee'}
+            {isLoading ? <CircularProgress size={24} /> : isEditMode ?
+              'Update Employee' : 'Add Employee'}
           </Button>
         </form>
       </Box>
