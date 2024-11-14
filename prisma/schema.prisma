@@ -37,19 +37,22 @@ model Employee {
 }
 
 model User {
-  id               String    @id @default(cuid())
+  id               String           @id @default(cuid())
   name             String?
-  email            String?   @unique
+  email            String?          @unique
   emailVerified    DateTime?
   image            String?
   password         String?
   resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  role             UserRole  @default(EMPLOYEE)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
   Account          Account[]
+  Leave_Approval   Leave_Approval[]
+  Leave_Balance    Leave_Balance[]
+  Leave_Request    Leave_Request[]
   Session          Session[]
+  User_Role        User_Role[]
 }
 
 model Account {
@@ -157,10 +160,64 @@ model client {
   employee_hr_details employee_hr_details[]
 }
 
-enum UserRole {
-  EMPLOYEE
-  MANAGER
-  SUPERVISOR
-  ADMIN
-  SUPERADMIN
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model Leave_Approval {
+  id               Int            @id @default(autoincrement())
+  leave_request_id Int?
+  approved_by      String?
+  status           String?
+  action_date      DateTime?      @default(now()) @db.Timestamp(6)
+  User             User?          @relation(fields: [approved_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Leave_Request    Leave_Request? @relation(fields: [leave_request_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
+
+model Leave_Balance {
+  id            Int         @id @default(autoincrement())
+  user_id       String?
+  leave_type_id Int?
+  balance       Int
+  Leave_Type    Leave_Type? @relation(fields: [leave_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User          User?       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model Leave_Request {
+  id             Int              @id @default(autoincrement())
+  user_id        String?
+  leave_type_id  Int?
+  start_date     DateTime         @db.Date
+  end_date       DateTime         @db.Date
+  reason         String?
+  status         String?          @default("Pending")
+  created_at     DateTime?        @default(now()) @db.Timestamp(6)
+  Leave_Approval Leave_Approval[]
+  Leave_Type     Leave_Type?      @relation(fields: [leave_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User           User?            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Leave_Type {
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String?
+  default_days  Int
+  Leave_Balance Leave_Balance[]
+  Leave_Request Leave_Request[]
+}
+
+model Role {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  level     Int
+  User_Role User_Role[]
+}
+
+model User_Role {
+  user_id String
+  role_id Int
+  Role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  User    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, role_id])
+}
+
+

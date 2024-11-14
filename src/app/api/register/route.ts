@@ -27,8 +27,7 @@ export async function POST(req: Request) {
       data: {
         name,
         email,
-        password: hashedPassword,
-        role: role as 'EMPLOYEE' | 'MANAGER' | 'SUPERVISOR' | 'ADMIN' | 'SUPERADMIN',
+        password: hashedPassword
       },
     })
 
