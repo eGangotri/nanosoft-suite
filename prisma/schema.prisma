@@ -31,6 +31,7 @@ model Employee {
   employee_bank_details      employee_bank_details[]
   employee_emergency_contact employee_emergency_contact[]
   employee_hr_details        employee_hr_details[]
+  employee_leave_balances    employee_leave_balances[]
   employee_work_history      employee_work_history[]
 
   @@map("employee")
@@ -196,12 +197,13 @@ model Leave_Request {
 }
 
 model Leave_Type {
-  id            Int             @id @default(autoincrement())
-  name          String
-  description   String?
-  default_days  Int
-  Leave_Balance Leave_Balance[]
-  Leave_Request Leave_Request[]
+  id                      Int                       @id @default(autoincrement())
+  name                    String
+  description             String?
+  default_days            Int
+  Leave_Balance           Leave_Balance[]
+  Leave_Request           Leave_Request[]
+  employee_leave_balances employee_leave_balances[]
 }
 
 model Role {
@@ -220,4 +222,22 @@ model User_Role {
   @@id([user_id, role_id])
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_leave_balances {
+  id            Int        @id @default(autoincrement())
+  employee_id   Int
+  leave_type_id Int
+  balance       Int
+  employee      Employee   @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  Leave_Type    Leave_Type @relation(fields: [leave_type_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@unique([employee_id, leave_type_id])
+}
+
+enum UserRole {
+  EMPLOYEE
+  MANAGER
+  SUPERVISOR
+  ADMIN
+  SUPERADMIN
+}

@@ -273,9 +273,6 @@ export default function EmployeeListPage() {
         <MenuItem onClick={() => handleNavigation(`/employee/details/docs/${selectedEmployee?.id}/`)}>
           <FolderOpen fontSize="small" sx={{ marginRight: 1 }} /> Docs
         </MenuItem>
-        <MenuItem onClick={() => handleNavigation(`/employee/details/folders/${selectedEmployee?.id}/`)}>
-          <Folder fontSize="small" sx={{ marginRight: 1 }} /> Folders
-        </MenuItem>
       </Menu>
       <div style={{ height: 400, width: '100%' }}>
         {loadingStates[`list`] ?

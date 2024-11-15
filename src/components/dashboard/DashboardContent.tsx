@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import EmployeeOverview from './EmployeeOverview';
 import TaskSummary from './TaskSummary';
 import Announcements from './Announcements';
