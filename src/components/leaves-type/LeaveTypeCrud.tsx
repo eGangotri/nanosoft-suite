@@ -14,7 +14,9 @@ import {
   CardHeader,
   Typography,
   Box,
-  IconButton
+  IconButton,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon, Save as SaveIcon } from '@mui/icons-material';
 
@@ -23,13 +25,14 @@ type LeaveType = {
   name: string;
   description: string | null;
   default_days: number;
-  leave_code: string | null;
+  leave_code: string;
 };
 
 export default function LeaveTypeCRUD() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [newLeaveType, setNewLeaveType] = useState<Omit<LeaveType, 'id'>>({ name: '', description: '', default_days: 0, leave_code: '' });
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLeaveTypes();
@@ -43,6 +46,7 @@ export default function LeaveTypeCRUD() {
       setLeaveTypes(data);
     } catch (error) {
       console.error('Error fetching leave types:', error);
+      setError('Failed to fetch leave types');
     }
   };
 
@@ -61,6 +65,7 @@ export default function LeaveTypeCRUD() {
       setNewLeaveType({ name: '', description: '', default_days: 0, leave_code: '' });
     } catch (error) {
       console.error('Error creating leave type:', error);
+      setError(error instanceof Error ? error.message : 'Failed to create leave type');
     }
   };
 
@@ -82,6 +87,7 @@ export default function LeaveTypeCRUD() {
       await fetchLeaveTypes();
     } catch (error) {
       console.error('Error updating leave type:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update leave type');
     }
   };
 
@@ -92,6 +98,7 @@ export default function LeaveTypeCRUD() {
       await fetchLeaveTypes();
     } catch (error) {
       console.error('Error deleting leave type:', error);
+      setError('Failed to delete leave type');
     }
   };
 
@@ -104,6 +111,7 @@ export default function LeaveTypeCRUD() {
             label="Name"
             value={newLeaveType.name}
             onChange={(e) => setNewLeaveType({ ...newLeaveType, name: e.target.value })}
+            required
           />
           <TextField
             label="Description"
@@ -115,11 +123,13 @@ export default function LeaveTypeCRUD() {
             type="number"
             value={newLeaveType.default_days}
             onChange={(e) => setNewLeaveType({ ...newLeaveType, default_days: parseInt(e.target.value) })}
+            required
           />
           <TextField
             label="Leave Code"
-            value={newLeaveType.leave_code || ''}
+            value={newLeaveType.leave_code}
             onChange={(e) => setNewLeaveType({ ...newLeaveType, leave_code: e.target.value })}
+            required
           />
           <Button variant="contained" onClick={handleCreate}>Add Leave Type</Button>
         </Box>
@@ -143,6 +153,7 @@ export default function LeaveTypeCRUD() {
                       <TextField
                         value={leaveType.name}
                         onChange={(e) => setLeaveTypes(leaveTypes.map(lt => lt.id === leaveType.id ? { ...lt, name: e.target.value } : lt))}
+                        required
                       />
                     ) : (
                       leaveType.name
@@ -164,6 +175,7 @@ export default function LeaveTypeCRUD() {
                         type="number"
                         value={leaveType.default_days}
                         onChange={(e) => setLeaveTypes(leaveTypes.map(lt => lt.id === leaveType.id ? { ...lt, default_days: parseInt(e.target.value) } : lt))}
+                        required
                       />
                     ) : (
                       leaveType.default_days
@@ -172,8 +184,9 @@ export default function LeaveTypeCRUD() {
                   <TableCell>
                     {editingId === leaveType.id ? (
                       <TextField
-                        value={leaveType.leave_code || ''}
+                        value={leaveType.leave_code}
                         onChange={(e) => setLeaveTypes(leaveTypes.map(lt => lt.id === leaveType.id ? { ...lt, leave_code: e.target.value } : lt))}
+                        required
                       />
                     ) : (
                       leaveType.leave_code
@@ -198,6 +211,12 @@ export default function LeaveTypeCRUD() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(null)}>
+          <Alert onClose={() => setError(null)} severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
       </CardContent>
     </Card>
   );
