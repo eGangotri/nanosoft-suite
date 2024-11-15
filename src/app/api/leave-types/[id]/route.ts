@@ -1,37 +1,35 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
+import { NextRequest, NextResponse } from 'next/server'
+import { ZodError } from 'zod'
+import prisma from '@/lib/prisma'
+import { LeaveTypeSchema } from '@/lib/schemas'
 
-const prisma = new PrismaClient()
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query
-
-  if (req.method === 'PUT') {
-    try {
-      const { name, description, default_days } = req.body
-      const updatedLeaveType = await prisma.leave_Type.update({
-        where: { id: Number(id) },
-        data: {
-          name,
-          description,
-          default_days: parseInt(default_days)
-        }
-      })
-      res.status(200).json(updatedLeaveType)
-    } catch (error) {
-      res.status(500).json({ message: 'Error updating leave type', error })
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const body = await request.json()
+    const validatedData = LeaveTypeSchema.parse(body)
+    
+    const updatedLeaveType = await prisma.leave_Type.update({
+      where: { id: Number(params.id) },
+      data: validatedData
+    })
+    return NextResponse.json(updatedLeaveType)
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json({ message: 'Validation error', errors: error.errors }, { status: 400 })
     }
-  } else if (req.method === 'DELETE') {
-    try {
-      await prisma.leave_Type.delete({
-        where: { id: Number(id) }
-      })
-      res.status(204).end()
-    } catch (error) {
-      res.status(500).json({ message: 'Error deleting leave type', error })
-    }
-  } else {
-    res.setHeader('Allow', ['PUT', 'DELETE'])
-    res.status(405).end(`Method ${req.method} Not Allowed`)
+    console.error('Error updating leave type:', error)
+    return NextResponse.json({ message: 'Error updating leave type' }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    await prisma.leave_Type.delete({
+      where: { id: Number(params.id) }
+    })
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error('Error deleting leave type:', error)
+    return NextResponse.json({ message: 'Error deleting leave type' }, { status: 500 })
   }
 }

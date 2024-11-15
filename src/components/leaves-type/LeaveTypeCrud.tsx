@@ -23,11 +23,12 @@ type LeaveType = {
   name: string;
   description: string | null;
   default_days: number;
+  leave_code: string | null;
 };
 
 export default function LeaveTypeCRUD() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
-  const [newLeaveType, setNewLeaveType] = useState<Omit<LeaveType, 'id'>>({ name: '', description: '', default_days: 0 });
+  const [newLeaveType, setNewLeaveType] = useState<Omit<LeaveType, 'id'>>({ name: '', description: '', default_days: 0, leave_code: '' });
   const [editingId, setEditingId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -52,9 +53,12 @@ export default function LeaveTypeCRUD() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLeaveType),
       });
-      if (!response.ok) throw new Error('Failed to create leave type');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create leave type');
+      }
       await fetchLeaveTypes();
-      setNewLeaveType({ name: '', description: '', default_days: 0 });
+      setNewLeaveType({ name: '', description: '', default_days: 0, leave_code: '' });
     } catch (error) {
       console.error('Error creating leave type:', error);
     }
@@ -70,7 +74,10 @@ export default function LeaveTypeCRUD() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(leaveTypeToUpdate),
       });
-      if (!response.ok) throw new Error('Failed to update leave type');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update leave type');
+      }
       setEditingId(null);
       await fetchLeaveTypes();
     } catch (error) {
@@ -109,6 +116,11 @@ export default function LeaveTypeCRUD() {
             value={newLeaveType.default_days}
             onChange={(e) => setNewLeaveType({ ...newLeaveType, default_days: parseInt(e.target.value) })}
           />
+          <TextField
+            label="Leave Code"
+            value={newLeaveType.leave_code || ''}
+            onChange={(e) => setNewLeaveType({ ...newLeaveType, leave_code: e.target.value })}
+          />
           <Button variant="contained" onClick={handleCreate}>Add Leave Type</Button>
         </Box>
 
@@ -119,6 +131,7 @@ export default function LeaveTypeCRUD() {
                 <TableCell>Name</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Default Days</TableCell>
+                <TableCell>Leave Code</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -154,6 +167,16 @@ export default function LeaveTypeCRUD() {
                       />
                     ) : (
                       leaveType.default_days
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editingId === leaveType.id ? (
+                      <TextField
+                        value={leaveType.leave_code || ''}
+                        onChange={(e) => setLeaveTypes(leaveTypes.map(lt => lt.id === leaveType.id ? { ...lt, leave_code: e.target.value } : lt))}
+                      />
+                    ) : (
+                      leaveType.leave_code
                     )}
                   </TableCell>
                   <TableCell>

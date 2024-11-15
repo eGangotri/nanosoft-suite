@@ -1,32 +1,32 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
+import { NextRequest, NextResponse } from 'next/server'
+import { ZodError } from 'zod'
+import prisma from '@/lib/prisma'
+import { LeaveTypeSchema } from '@/lib/schemas';
 
-const prisma = new PrismaClient()
+export async function GET() {
+  try {
+    const leaveTypes = await prisma.leave_Type.findMany()
+    return NextResponse.json(leaveTypes)
+  } catch (error) {
+    console.error('Error fetching leave types:', error)
+    return NextResponse.json({ message: 'Error fetching leave types' }, { status: 500 })
+  }
+}
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
-    try {
-      const leaveTypes = await prisma.leave_Type.findMany()
-      res.status(200).json(leaveTypes)
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching leave types', error })
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const validatedData = LeaveTypeSchema.parse(body)
+    
+    const newLeaveType = await prisma.leave_Type.create({
+      data: validatedData
+    })
+    return NextResponse.json(newLeaveType, { status: 201 })
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json({ message: 'Validation error', errors: error.errors }, { status: 400 })
     }
-  } else if (req.method === 'POST') {
-    try {
-      const { name, description, default_days } = req.body
-      const newLeaveType = await prisma.leave_Type.create({
-        data: {
-          name,
-          description,
-          default_days: parseInt(default_days)
-        }
-      })
-      res.status(201).json(newLeaveType)
-    } catch (error) {
-      res.status(500).json({ message: 'Error creating leave type', error })
-    }
-  } else {
-    res.setHeader('Allow', ['GET', 'POST'])
-    res.status(405).end(`Method ${req.method} Not Allowed`)
+    console.error('Error creating leave type:', error)
+    return NextResponse.json({ message: 'Error creating leave type' }, { status: 500 })
   }
 }

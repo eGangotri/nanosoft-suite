@@ -198,9 +198,10 @@ model Leave_Request {
 
 model Leave_Type {
   id                      Int                       @id @default(autoincrement())
-  name                    String
+  name                    String                    @unique(map: "name_unique")
   description             String?
   default_days            Int
+  leave_code              String?                   @unique(map: "leave_code_unique") @db.VarChar(5)
   Leave_Balance           Leave_Balance[]
   Leave_Request           Leave_Request[]
   employee_leave_balances employee_leave_balances[]
