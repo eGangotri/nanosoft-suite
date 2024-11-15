@@ -6,7 +6,7 @@ import Announcements from './Announcements';
 
 const DashboardContent: React.FC = () => {
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} className="mt-2">
       <Grid item xs={12} md={4}>
         <EmployeeOverview />
       </Grid>

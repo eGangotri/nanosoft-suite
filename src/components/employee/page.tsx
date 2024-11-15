@@ -1,6 +1,6 @@
 'use client'
 
-import { GridColDef, GridRenderCellParams, GridRowParams } from '@mui/x-data-grid'
+import { GridColDef, GridRenderCellParams, GridRowClassNameParams, GridRowParams, GridValidRowModel } from '@mui/x-data-grid'
 import React, { useState, useEffect, act } from 'react'
 import {
   Table,
@@ -21,7 +21,6 @@ import {
 } from '@mui/material'
 import Link from 'next/link'
 import Tooltip from '@mui/material/Tooltip';
-import { styled } from '@mui/material/styles';
 
 import {
   Add as AddIcon,
@@ -32,9 +31,13 @@ import {
   ContactMail as ContactIcon,
   Person as PersonIcon,
   Work as WorkIcon,
-  EventNote as EventNoteIcon
+  EventNote as EventNoteIcon,
+  Folder,
+  Description as DescriptionIcon,
+  FolderOpen,
 }
   from '@mui/icons-material';
+
 import { Employee } from './types'
 
 import { Link as MuiLink } from '@mui/material';
@@ -267,6 +270,12 @@ export default function EmployeeListPage() {
         <MenuItem onClick={() => handleNavigation(`/employee/details/leaves/${selectedEmployee?.id}/`)}>
           <EventNoteIcon fontSize="small" sx={{ marginRight: 1 }} /> Leaves
         </MenuItem>
+        <MenuItem onClick={() => handleNavigation(`/employee/details/docs/${selectedEmployee?.id}/`)}>
+          <FolderOpen fontSize="small" sx={{ marginRight: 1 }} /> Docs
+        </MenuItem>
+        <MenuItem onClick={() => handleNavigation(`/employee/details/folders/${selectedEmployee?.id}/`)}>
+          <Folder fontSize="small" sx={{ marginRight: 1 }} /> Folders
+        </MenuItem>
       </Menu>
       <div style={{ height: 400, width: '100%' }}>
         {loadingStates[`list`] ?
@@ -283,12 +292,12 @@ export default function EmployeeListPage() {
             }}
             pageSizeOptions={[5, 10]}
             checkboxSelection={false}
-            getRowClassName={(params: GridRowParams) =>
+            getRowClassName={(params: GridRowClassNameParams<GridValidRowModel>) =>
               !params.row.active
                 ? 'inactive-row'
                 : params.indexRelativeToCurrentPage % 2 === 0
-                ? 'even-row'
-                : 'odd-row'
+                  ? 'even-row'
+                  : 'odd-row'
             }
           />
         }
