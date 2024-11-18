@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import prisma from '@/lib/prisma'
-import { leaveTypeSchema } from '@/lib/schemas'
+import { leaveTypeSchema } from '@/components/leaves-type/constants'
 import { z } from 'zod'
 
 export async function GET() {
