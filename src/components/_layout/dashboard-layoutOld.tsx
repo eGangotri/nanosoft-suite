@@ -210,7 +210,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Image src="/images/logo.png" alt="Company Logo" width={sidebarOpen ? 150 : 40} height={50} />
           </div>
           <Typography variant="h6" noWrap component="div" className="flex-grow">
-            Dashboard
+            Nanosoft-Suite Dashboard
           </Typography>
           <Box className="flex items-center ml-auto">
             <Typography variant="body1" className="mr-2">

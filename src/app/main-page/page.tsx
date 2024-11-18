@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import DashboardLayout from '../../components/_layout/dashboard-layout';
+import DashboardLayout from '../../components/_layout/dashboard-layoutX';
 
 const SomePage: React.FC = () => {
   return (

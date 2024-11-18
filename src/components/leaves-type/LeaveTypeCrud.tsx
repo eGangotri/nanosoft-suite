@@ -39,7 +39,6 @@ type LeaveType = {
   leave_code: string;
 };
 
-
 export default function LeaveTypeCRUD() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
