@@ -64,7 +64,7 @@ const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Edit Employee</h1>
+      <h1 className="text-xl font-bold mb-4">Edit Employee</h1>
       <EmployeeForm initialData={employeeData} onSubmit={handleSubmit} />
     </div>
   )

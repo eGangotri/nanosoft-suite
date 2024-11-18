@@ -144,7 +144,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box className="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
         <Typography variant="h5" className="mb-6 text-center">
-          {isEditMode ? 'Edit Employee' : 'Add New Employee'}
+          {/* {isEditMode ? 'Edit Employee' : 'Add New Employee'} */}
         </Typography>
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

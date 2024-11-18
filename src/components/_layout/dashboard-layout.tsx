@@ -51,7 +51,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         session={session} 
         onSignOut={handleSignOut}
       />
-      <Box className="flex-grow overflow-hidden">
+      <Box className="flex-grow overflow-scroll">
         <Sidebar 
           sidebarOpen={sidebarOpen} 
           isMobile={isMobile}
