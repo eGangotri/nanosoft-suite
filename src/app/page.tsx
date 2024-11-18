@@ -1,4 +1,4 @@
-import DashboardLayout from '@/components/_layout/dashboard-layoutX'
+import DashboardLayout from '@/components/_layout/dashboard-layout'
 import DashboardContent from '@/components/dashboard/DashboardContent'
 import '../styles/globals.css'
 

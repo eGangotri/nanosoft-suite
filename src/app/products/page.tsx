@@ -1,4 +1,4 @@
-import DashboardLayout from '@/components/_layout/dashboard-layoutX'
+import DashboardLayout from '@/components/_layout/dashboard-layout'
 import ProductList from '@/components/products/ProductList'
 
 export default function ProductsPage() {

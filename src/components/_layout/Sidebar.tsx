@@ -1,45 +1,98 @@
-import React from 'react';
-import { Drawer, List, ListItem, ListItemText, IconButton } from '@mui/material';
-import { ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon } from '@mui/icons-material';
+'use client'
+
+import React, { useState } from 'react'
+import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material'
+import { ExpandLess, ExpandMore } from '@mui/icons-material'
+import Link from 'next/link'
+import { menuItems } from './menu-items' // You'll need to create this file with the menu structure
 
 interface SidebarProps {
-  open: boolean;
-  onToggle: () => void;
-  selectedMenu: string;
-  onSelectMenu: (menu: string) => void;
+  sidebarOpen: boolean
+  isMobile: boolean
+  session: any
+  pathname: string
 }
 
-const DRAWER_OPEN_WIDTH = '240px'
-const DRAWER_CLOSED_WIDTH = '64px'
-const SIDEBAR_WIDTH_OPEN = 'w-60'
-const SIDEBAR_WIDTH_CLOSED = 'w-16'
-// : 
-const Sidebar: React.FC<SidebarProps> = ({ open, onToggle, selectedMenu, onSelectMenu }) => {
-  return (
-    <Drawer
-      variant="permanent"
-      open={open}
-      sx={{
-        width: open ? DRAWER_OPEN_WIDTH : DRAWER_CLOSED_WIDTH,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: open ? DRAWER_OPEN_WIDTH : DRAWER_CLOSED_WIDTH,
-          boxSizing: 'border-box',
-        },
-      }}
-    >
-      <IconButton onClick={onToggle}>
-        {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-      </IconButton>
+export default function Sidebar({ sidebarOpen, isMobile, session, pathname }: SidebarProps) {
+  const [productsOpen, setProductsOpen] = useState(false)
+
+  const handleProductsClick = () => {
+    setProductsOpen(!productsOpen)
+  }
+
+  const isAdminOrSuperAdmin = session?.user?.role === 'ADMIN' || session?.user?.role === 'SUPERADMIN'
+
+  const drawer = (
+    <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'} overflow-hidden`}>
       <List>
-        {['Dashboard', 'Products', 'Settings'].map((text) => (
-          <ListItem button key={text} selected={selectedMenu === text} onClick={() => onSelectMenu(text)}>
-            <ListItemText primary={text} />
-          </ListItem>
+        {menuItems.map((item) => (
+          <React.Fragment key={item.text}>
+            <ListItemButton
+              component={item.route ? Link : 'div'}
+              href={item.route || '#'}
+              onClick={item.subItems ? handleProductsClick : undefined}
+              className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'px-4' : 'px-2 justify-center'}`}
+            >
+              <ListItemIcon className={sidebarOpen ? '' : 'min-w-0 mr-0'}>
+                {item.icon}
+              </ListItemIcon>
+              {sidebarOpen && <ListItemText primary={item.text} />}
+              {item.subItems && sidebarOpen && (productsOpen ? <ExpandLess /> : <ExpandMore />)}
+            </ListItemButton>
+            {item.subItems && sidebarOpen && (
+              <Collapse in={productsOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {item.subItems.map((subItem) => (
+                    <ListItemButton
+                      key={subItem.text}
+                      component={Link}
+                      href={subItem.route || '#'}
+                      className="pl-8"
+                    >
+                      <ListItemIcon>
+                        {subItem.icon}
+                      </ListItemIcon>
+                      <ListItemText primary={subItem.text} />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            )}
+          </React.Fragment>
         ))}
       </List>
-    </Drawer>
-  );
-};
+    </div>
+  )
 
-export default Sidebar;
+  return (
+    <>
+      <Drawer
+        variant="permanent"
+        open={sidebarOpen}
+        className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'} hidden sm:block`}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: sidebarOpen ? '240px' : '64px',
+            overflowX: 'hidden',
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
+      <Drawer
+        variant="temporary"
+        open={sidebarOpen}
+        onClose={() => {}} // You'll need to pass a function to close the sidebar on mobile
+        ModalProps={{
+          keepMounted: true,
+        }}
+        className="block sm:hidden"
+        sx={{
+          '& .MuiDrawer-paper': { width: '240px' },
+        }}
+      >
+        {drawer}
+      </Drawer>
+    </>
+  )
+}

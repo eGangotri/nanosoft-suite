@@ -1,11 +1,10 @@
 'use client'
-import DashboardLayout from '@/components/_layout/dashboard-layoutX';
 import EditEmployeePage from '@/components/employee/edit-employee/page';
 import { Typography } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
 import { Suspense } from 'react';
 import { Skeleton } from '@mui/material';
+import DashboardLayout from '@/components/_layout/dashboard-layout';
 
 export default function EditEmployee() {
     function Edit() {
@@ -15,7 +14,9 @@ export default function EditEmployee() {
             return <Typography variant="h2">Employee Not Found</Typography>
         }
         return (
-            <EditEmployeePage id={id} />
+            <DashboardLayout>
+                <EditEmployeePage id={id} />
+            </DashboardLayout>
         )
     }
 
