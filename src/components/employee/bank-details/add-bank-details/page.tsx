@@ -1,9 +1,10 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Container, Paper } from '@mui/material'
 import { z } from 'zod'
 import BankDetailsForm from '../BankDetailsForm'
+import { useRouter } from 'next/navigation'
 
 const bankDetailsSchema = z.object({
   employee_id: z.number().int().positive(),
@@ -16,12 +17,40 @@ const bankDetailsSchema = z.object({
 type BankDetailsFormData = z.infer<typeof bankDetailsSchema>
 
 export default function AddBankDetails() {
-  const handleSubmit = async (data: BankDetailsFormData) => {
-    // Here you would typically send a POST request to your API
-    console.log('Submitting new bank details:', data)
-    // Implement your API call here
-  }
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
+  const router = useRouter()
 
+  const handleSubmit = async (data: BankDetailsFormData) => {
+    try {
+      const response = await fetch('/api/bank-details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to add bank details')
+      }
+
+      setSnackbarMessage('Bank details added successfully')
+      setSnackbarSeverity('success')
+      setOpenSnackbar(true)
+
+      // Redirect to the bank details list page after a short delay
+      setTimeout(() => {
+        router.push('/bank-details')
+      }, 2000)
+    } catch (error) {
+      console.error('Error adding bank details:', error)
+      setSnackbarMessage('Failed to add bank details. Please try again.')
+      setSnackbarSeverity('error')
+      setOpenSnackbar(true)
+    }
+  }
   return (
     <Container component="main" maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>

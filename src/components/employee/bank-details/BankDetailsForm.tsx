@@ -4,7 +4,7 @@ import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography } from '@mui/material'
-import { BankDetailsFormData } from './constants'
+import { BankDetailsFormData, bankDetailsSchema } from './constants'
 
 
 interface BankDetailsFormProps {
