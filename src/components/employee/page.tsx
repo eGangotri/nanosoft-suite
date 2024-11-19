@@ -1,15 +1,8 @@
 'use client'
 
-import { GridColDef, GridRenderCellParams, GridRowClassNameParams, GridRowParams, GridValidRowModel } from '@mui/x-data-grid'
-import React, { useState, useEffect, act } from 'react'
+import { GridColDef, GridRenderCellParams, GridRowClassNameParams, GridValidRowModel } from '@mui/x-data-grid'
+import React, { useState, useEffect } from 'react'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Button,
   IconButton,
   Typography,
@@ -32,15 +25,11 @@ import {
   Person as PersonIcon,
   Work as WorkIcon,
   EventNote as EventNoteIcon,
-  Folder,
-  Description as DescriptionIcon,
   FolderOpen,
 }
   from '@mui/icons-material';
 
 import { Employee } from './types'
-
-import { Link as MuiLink } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { initCaps, StyledDataGrid } from './constants'
 

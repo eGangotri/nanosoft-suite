@@ -2,13 +2,14 @@
 import React from 'react';
 import EmployeeListPage from '@/components/employee/page';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
+import AddBankDetails from '@/components/employee/bank-details/add-bank-details/page';
 
-const ListEmployee: React.FC = () => {
+const AddBankDetailsPage: React.FC = () => {
   return (
     <DashboardLayout>
-        <EmployeeListPage />
+        <AddBankDetails />
     </DashboardLayout>
   );
 };
 
-export default ListEmployee;
+export default AddBankDetailsPage;

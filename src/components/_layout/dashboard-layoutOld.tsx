@@ -59,7 +59,7 @@ const DRAWER_CLOSED_WIDTH = '64px'
 const SIDEBAR_WIDTH_OPEN = 'w-60'
 const SIDEBAR_WIDTH_CLOSED = 'w-16'
 // : 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayoutOld({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [productsOpen, setProductsOpen] = useState(false)
   const [selectedMenu, setSelectedMenu] = useState('Dashboard')

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import prisma from '@/lib/prisma'
-import { leaveTypeSchema } from '@/lib/schemas'
 import { z } from 'zod'
+import { leaveTypeSchema } from '@/components/leaves-type/constants'
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
