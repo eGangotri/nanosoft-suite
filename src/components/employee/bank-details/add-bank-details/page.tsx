@@ -24,7 +24,7 @@ export default function AddBankDetails() {
 
   const handleSubmit = async (data: BankDetailsFormData) => {
     try {
-      const response = await fetch('/api/bank-details', {
+      const response = await fetch('/api/employee/details/bank-details', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
