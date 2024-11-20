@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react'
 import { Container, Paper, CircularProgress } from '@mui/material'
-import BankDetailsForm from '../../../components/BankDetailsForm'
 import { z } from 'zod'
 import { useParams } from 'next/navigation'
+import BankDetailsForm from '../../BankDetailsForm'
 
 const bankDetailsSchema = z.object({
   employee_id: z.number().int().positive(),
@@ -20,21 +20,15 @@ export default function EditBankDetails() {
   const [bankDetails, setBankDetails] = useState<BankDetailsFormData | null>(null)
   const params = useParams()
   const id = params.id as string
-
   useEffect(() => {
     const fetchBankDetails = async () => {
-      // Here you would typically fetch the bank details from your API
-      // For demonstration, we're using mock data
-      const mockData: BankDetailsFormData = {
-        employee_id: 1,
-        bank_name: 'Mock Bank',
-        employee_banking_name: 'John Doe',
-        account_number: '1234567890',
-        account_type: 'Savings',
-      }
-      setBankDetails(mockData)
+      console.log('Fetching data for ID:', id)
+      const response = await fetch(`/api/employee/details/bank-details/${id}/?id=${id}`)
+      const data = await response.json()
+      console.log('fetchBankDetails:Employee det: data:', JSON.stringify(data))
+      setBankDetails(data)
+      console.log('Fetching data for ID:', JSON.stringify(data))
     }
-
     fetchBankDetails()
   }, [id])
 

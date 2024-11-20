@@ -1,26 +1,32 @@
-import { bankDetailsSchema } from '@/components/employee/bank-details/constants'
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
+import { PrismaClient } from '@prisma/client'
+import { bankDetailsSchema } from '@/components/employee/bank-details/constants'
 
-// Mock database (same as in the previous file)
-let bankDetails = [
-  { id: 1, employee_id: 1, bank_name: 'Bank A', employee_banking_name: 'John Doe', account_number: '1234567890', account_type: 'Savings' },
-  { id: 2, employee_id: 2, bank_name: 'Bank B', employee_banking_name: 'Jane Smith', account_number: '0987654321', account_type: 'Current' },
-]
+const prisma = new PrismaClient()
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
-  const bankDetail = bankDetails.find(detail => detail.id === id)
+  const employeeId = parseInt(params.id)
 
-  if (!bankDetail) {
-    return NextResponse.json({ error: 'Bank detail not found' }, { status: 404 })
+  try {
+    console.log(`Bank detail:(${employeeId}) ${params.id}`, employeeId);
+
+    const bankDetail = await prisma.employee_bank_details.findFirst({
+      where: { employee_id: employeeId }
+    })
+
+    if (!bankDetail) {
+      return NextResponse.json({ error: 'Bank detail not found for this employee' }, { status: 404 })
+    }
+    console.log(`Bank detail:(${employeeId})`, JSON.stringify(bankDetail));
+    return NextResponse.json(bankDetail)
+  } catch (error) {
+    console.error('Error fetching bank detail:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-
-  return NextResponse.json(bankDetail)
 }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+  const employeeId = parseInt(params.id)
   const body = await request.json()
   const result = bankDetailsSchema.safeParse(body)
 
@@ -28,26 +34,43 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: result.error.issues }, { status: 400 })
   }
 
-  const index = bankDetails.findIndex(detail => detail.id === id)
+  try {
+    const updatedBankDetail = await prisma.employee_bank_details.updateMany({
+      where: { employee_id: employeeId },
+      data: result.data,
+    })
 
-  if (index === -1) {
-    return NextResponse.json({ error: 'Bank detail not found' }, { status: 404 })
+    if (updatedBankDetail.count === 0) {
+      return NextResponse.json({ error: 'Bank detail not found for this employee' }, { status: 404 })
+    }
+
+    // Fetch the updated record to return
+    const fetchedBankDetail = await prisma.employee_bank_details.findFirst({
+      where: { employee_id: employeeId }
+    })
+
+    return NextResponse.json(fetchedBankDetail)
+  } catch (error) {
+    console.error('Error updating bank detail:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-
-  bankDetails[index] = { ...bankDetails[index], ...result.data }
-
-  return NextResponse.json(bankDetails[index])
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
-  const index = bankDetails.findIndex(detail => detail.id === id)
+  const employeeId = parseInt(params.id)
 
-  if (index === -1) {
-    return NextResponse.json({ error: 'Bank detail not found' }, { status: 404 })
+  try {
+    const deletedBankDetail = await prisma.employee_bank_details.deleteMany({
+      where: { employee_id: employeeId },
+    })
+
+    if (deletedBankDetail.count === 0) {
+      return NextResponse.json({ error: 'Bank detail not found for this employee' }, { status: 404 })
+    }
+
+    return NextResponse.json({ message: 'Bank detail deleted successfully' })
+  } catch (error) {
+    console.error('Error deleting bank detail:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-
-  bankDetails.splice(index, 1)
-
-  return NextResponse.json({ message: 'Bank detail deleted successfully' })
 }

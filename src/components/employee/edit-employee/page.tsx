@@ -15,7 +15,7 @@ const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
     // Fetch employee data here
     // This is just a placeholder, replace with your actual API call
     const fetchData = async () => {
-      const response = await fetch(`/api/employee/list?id=${id}`)
+      const response = await fetch(`/api/employee/list?id=${id}`);
       const data: EmployeeFormData = await response.json()
       console.log('Employee data:', JSON.stringify(data))
       setEmployeeData(data)
