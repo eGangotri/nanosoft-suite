@@ -71,7 +71,7 @@ export default function EmployeeListPage() {
       width: 200,
       renderCell: (params: any) => {
         return (<>
-          <Link href={`/employee/view-employee?id=${params?.row?.id}`} passHref>
+          <Link href={`/employee/view-employee/${params?.row?.id}`} passHref>
             <IconButton aria-label="edit" color="primary">
               <PersonIcon />
             </IconButton>
