@@ -1,6 +1,6 @@
 'use client'
 
-import { Typography } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 import { useParams, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { Skeleton } from '@mui/material';
@@ -22,7 +22,7 @@ export default function EditBankDetailsPage() {
     }
 
     return (
-        <Suspense fallback={<Skeleton variant="rectangular" width={210} height={118} />}>
+        <Suspense fallback={<CircularProgress />}>
             <Edit />
         </Suspense>
     )

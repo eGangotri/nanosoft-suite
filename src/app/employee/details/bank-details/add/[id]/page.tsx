@@ -2,7 +2,7 @@
 import React, { Suspense } from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
 import AddBankDetails from '@/components/employee/bank-details/add-bank-details/page';
-import { Skeleton, Typography } from '@mui/material';
+import { CircularProgress, Skeleton, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 
 const AddBankDetailsPage: React.FC = () => {
@@ -20,7 +20,7 @@ const AddBankDetailsPage: React.FC = () => {
   }
 
   return (
-    <Suspense fallback={<Skeleton variant="rectangular" width={210} height={118} />}>
+    <Suspense fallback={<CircularProgress />}>
       <Add />
     </Suspense>
   )

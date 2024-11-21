@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Container, Paper } from '@mui/material'
+import { Container, LinearProgress, Paper } from '@mui/material'
 import { z } from 'zod'
 import BankDetailsForm from '../BankDetailsForm'
 import { useParams, useRouter } from 'next/navigation'
@@ -23,8 +23,10 @@ export default function AddBankDetails() {
   const router = useRouter()
   const params = useParams()
   const employeeId = parseInt(params.id as string);
+  const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = async (data: BankDetailsFormData) => {
     try {
+      setIsLoading(true);
       const response = await fetch('/api/employee/details/bank-details', {
         method: 'POST',
         headers: {
@@ -51,12 +53,16 @@ export default function AddBankDetails() {
       setSnackbarSeverity('error')
       setOpenSnackbar(true)
     }
+    finally {
+      setIsLoading(false);
+    }
   }
 
  
   return (
     <Container component="main" maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+        {isLoading && <LinearProgress />}
         <BankDetailsForm onSubmit={handleSubmit} 
         isEditing={false} 
         employeeId={employeeId} />

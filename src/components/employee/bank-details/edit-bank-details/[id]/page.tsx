@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Container, Paper, CircularProgress } from '@mui/material'
+import { Container, Paper, CircularProgress, LinearProgress } from '@mui/material'
 import { z } from 'zod'
 import { useParams } from 'next/navigation'
 import BankDetailsForm from '../../BankDetailsForm'
@@ -16,42 +16,57 @@ const bankDetailsSchema = z.object({
 
 type BankDetailsFormData = z.infer<typeof bankDetailsSchema>
 
-export default function EditBankDetails() {
-  const [bankDetails, setBankDetails] = useState<BankDetailsFormData | null>(null)
-  const params = useParams()
-  const employeeId = parseInt(params.id as string);
-  
-  useEffect(() => {
-    const fetchBankDetails = async () => {
-      console.log('Fetching data for ID:', employeeId)
-      const response = await fetch(`/api/employee/details/bank-details/${employeeId}/?id=${employeeId}`)
-      const data = await response.json()
-      console.log('fetchBankDetails:Employee det: data:', JSON.stringify(data))
-      setBankDetails(data)
-      console.log('Fetching data for ID:', JSON.stringify(data))
-    }
-    fetchBankDetails()
-  }, [employeeId])
+interface EditBankDetailsFormProps {
+  employeeId: number
+  initialData: BankDetailsFormData
+}
+
+export default function EditBankDetails({ employeeId, initialData }: EditBankDetailsFormProps) {
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (data: BankDetailsFormData) => {
-    // Here you would typically send a PUT request to your API
-    console.log('Updating bank details:', data)
-    // Implement your API call here
-  }
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/employee/details/bank-details', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      setIsLoading(false);
 
-  if (!bankDetails) {
-    return (
-      <Container component="main" maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Container>
-    )
+      if (!response.ok) {
+        throw new Error('Failed to add bank details')
+      }
+
+      setSnackbarMessage('Bank details added successfully')
+      setSnackbarSeverity('success')
+      setOpenSnackbar(true)
+
+      // Redirect to the bank details list page after a short delay
+      setTimeout(() => {
+        // router.push(`/employee/view-employee/${employeeId}`)
+      }, 2000)
+    } catch (error) {
+      console.error('Error adding bank details:', error)
+      setSnackbarMessage('Failed to add bank details. Please try again.')
+      setSnackbarSeverity('error')
+      setOpenSnackbar(true)
+    }
+    finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <Container component="main" maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <BankDetailsForm initialData={bankDetails}
-          onSubmit={handleSubmit} 
+        <BankDetailsForm initialData={initialData}
+          onSubmit={handleSubmit}
           isEditing={true}
           employeeId={employeeId} />
       </Paper>
