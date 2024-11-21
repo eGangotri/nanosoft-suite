@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Container, LinearProgress, Paper } from '@mui/material'
+import { Alert, Container, LinearProgress, Paper, Snackbar } from '@mui/material'
 import { z } from 'zod'
 import BankDetailsForm from '../BankDetailsForm'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 const bankDetailsSchema = z.object({
   employee_id: z.number().int().positive(),
@@ -16,13 +16,16 @@ const bankDetailsSchema = z.object({
 
 type BankDetailsFormData = z.infer<typeof bankDetailsSchema>;
 
-export default function AddBankDetails() {
+interface AddBankDetailsFormProps {
+  employeeId: number
+  initialData: BankDetailsFormData
+}
+
+export default function AddBankDetails({ employeeId, initialData }: AddBankDetailsFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
   const router = useRouter()
-  const params = useParams()
-  const employeeId = parseInt(params.id as string);
   const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = async (data: BankDetailsFormData) => {
     try {
@@ -45,7 +48,7 @@ export default function AddBankDetails() {
 
       // Redirect to the bank details list page after a short delay
       setTimeout(() => {
-       // router.push(`/employee/view-employee/${employeeId}`)
+        // router.push(`/employee/view-employee/${employeeId}`)
       }, 2000)
     } catch (error) {
       console.error('Error adding bank details:', error)
@@ -57,16 +60,30 @@ export default function AddBankDetails() {
       setIsLoading(false);
     }
   }
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
 
- 
+
   return (
     <Container component="main" maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
         {isLoading && <LinearProgress />}
-        <BankDetailsForm onSubmit={handleSubmit} 
-        isEditing={false} 
-        employeeId={employeeId} />
+        <BankDetailsForm onSubmit={handleSubmit}
+          isEditing={false}
+          employeeId={employeeId}
+          initialData={initialData} />
       </Paper>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} 
+        severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }
