@@ -62,11 +62,9 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const searchTerm = searchParams.get('searchTerm') || '';
     const id = searchParams.get('id') || '0';
-    console.log('Fetching employee with ID:', id);
-
     const offset = (page - 1) * limit;
-
     if (parseInt(id) > 0) {
+      console.log('Fetching employee with ID:', id);
       const employeeId = parseInt(id);
       const employee = await fetchEmployeeById(employeeId);
 
