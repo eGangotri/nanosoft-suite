@@ -1,15 +1,17 @@
 import { bankDetailsSchema } from '@/components/employee/bank-details/constants'
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
+import { PrismaClient } from '@prisma/client'
 
-// Mock database
-let bankDetails = [
-  { id: 1, employee_id: 1, bank_name: 'Bank A', employee_banking_name: 'John Doe', account_number: '1234567890', account_type: 'Savings' },
-  { id: 2, employee_id: 2, bank_name: 'Bank B', employee_banking_name: 'Jane Smith', account_number: '0987654321', account_type: 'Current' },
-]
+const prisma = new PrismaClient()
 
 export async function GET() {
-  return NextResponse.json(bankDetails)
+  try {
+    const bankDetails = await prisma.employee_bank_details.findMany()
+    return NextResponse.json(bankDetails)
+  } catch (error) {
+    console.error('Error fetching bank details:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
 
 export async function POST(request: Request) {
@@ -20,8 +22,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: result.error.issues }, { status: 400 })
   }
 
-  const newBankDetail = { id: bankDetails.length + 1, ...result.data }
-  bankDetails.push(newBankDetail)
+  try {
+    const newBankDetail = await prisma.employee_bank_details.create({
+      data: result.data,
+    })
 
-  return NextResponse.json(newBankDetail, { status: 201 })
+    return NextResponse.json(newBankDetail, { status: 201 })
+  } catch (error) {
+    console.error('Error creating bank detail:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

@@ -8,6 +8,7 @@ async function fetchEmployeeById(id: number) {
     throw new Error('Invalid employee ID');
   }
 
+  console.log('fetchEmployeeById:', id);
   const employee = await prisma.employee.findUnique({
     where: {
       id: id,

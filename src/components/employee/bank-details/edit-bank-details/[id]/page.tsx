@@ -19,18 +19,19 @@ type BankDetailsFormData = z.infer<typeof bankDetailsSchema>
 export default function EditBankDetails() {
   const [bankDetails, setBankDetails] = useState<BankDetailsFormData | null>(null)
   const params = useParams()
-  const id = params.id as string
+  const employeeId = parseInt(params.id as string);
+  
   useEffect(() => {
     const fetchBankDetails = async () => {
-      console.log('Fetching data for ID:', id)
-      const response = await fetch(`/api/employee/details/bank-details/${id}/?id=${id}`)
+      console.log('Fetching data for ID:', employeeId)
+      const response = await fetch(`/api/employee/details/bank-details/${employeeId}/?id=${employeeId}`)
       const data = await response.json()
       console.log('fetchBankDetails:Employee det: data:', JSON.stringify(data))
       setBankDetails(data)
       console.log('Fetching data for ID:', JSON.stringify(data))
     }
     fetchBankDetails()
-  }, [id])
+  }, [employeeId])
 
   const handleSubmit = async (data: BankDetailsFormData) => {
     // Here you would typically send a PUT request to your API
@@ -49,7 +50,10 @@ export default function EditBankDetails() {
   return (
     <Container component="main" maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <BankDetailsForm initialData={bankDetails} onSubmit={handleSubmit} isEditing={true} />
+        <BankDetailsForm initialData={bankDetails}
+          onSubmit={handleSubmit} 
+          isEditing={true}
+          employeeId={employeeId} />
       </Paper>
     </Container>
   )
