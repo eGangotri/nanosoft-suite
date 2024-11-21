@@ -26,7 +26,7 @@ export default function EmployeePage({ params }: { params: { id: string } }) {
 
     return (
         <DashboardLayout>
-            <EmployeeView employeeData={employeeData} />;
+            <EmployeeView employeeData={employeeData} />
         </DashboardLayout>
     )
 

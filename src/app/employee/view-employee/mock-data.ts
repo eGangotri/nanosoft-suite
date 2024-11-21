@@ -1,28 +1,29 @@
-import { EmployeeData } from '@/types';
+import { EmployeeData } from "@/components/employee/types";
 
 export const mockEmployeeData: EmployeeData = {
   employee: {
     id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    middle_name: "Michael",
+    firstName: "John",
+    lastName: "Doe",
+    middleName: "Michael",
     designation: "Senior Software Engineer",
-    date_of_birth: "1985-05-15",
+    dateOfBirth: new Date("1985-05-15"),
     nationality: "Singaporean",
     email: "john.doe@example.com",
     mobile: "+6591234567",
-    citizenship_status: "Citizen",
-    nric_or_fin_no: "S1234567A",
-    expiry_date: null,
-    marital_status: "Married",
-    address_line1: "123 Main Street",
-    address_line2: "#04-05",
+    citizenshipStatus: "Citizen",
+    nricOrFinNo: "S1234567A",
+    expiryDate: null,
+    maritalStatus: "Married",
+    addressLine1: "123 Main Street",
+    addressLine2: "#04-05",
     city: "Singapore",
     country: "Singapore",
-    postal_code: "123456",
+    postalCode: "123456",
     active: true,
     deleted: false
   },
+  
   hrDetails: {
     id: 1,
     employee_id: 1,

@@ -8,31 +8,31 @@ datasource db {
 }
 
 model Employee {
-  id                         Int                          @id @default(autoincrement())
-  firstName                  String                       @map("first_name")
-  lastName                   String                       @map("last_name")
-  designation                String
-  dateOfBirth                DateTime                     @map("date_of_birth") @db.Date
-  nationality                String
-  email                      String                       @unique
-  mobile                     String
-  citizenshipStatus          String                       @map("citizenship_status")
-  nricOrFinNo                String                       @unique @map("nric_or_fin_no")
-  expiryDate                 DateTime?                    @map("expiry_date") @db.Date
-  maritalStatus              String                       @map("marital_status")
-  addressLine1               String                       @map("address_line1")
-  addressLine2               String?                      @map("address_line2")
-  city                       String
-  country                    String
-  postalCode                 String                       @map("postal_code")
-  active                     Boolean                      @default(true)
-  deleted                    Boolean                      @default(false)
-  middleName                 String?                      @map("middle_name")
-  employee_bank_details      employee_bank_details?
-  employee_emergency_contact employee_emergency_contact[]
-  employee_hr_details        employee_hr_details[]
-  employee_leave_balances    employee_leave_balances[]
-  employee_work_history      employee_work_history[]
+  id                    Int                     @id @default(autoincrement())
+  firstName             String                  @map("first_name")
+  lastName              String                  @map("last_name")
+  designation           String
+  dateOfBirth           DateTime                @map("date_of_birth") @db.Date
+  nationality           String
+  email                 String                  @unique
+  mobile                String
+  citizenshipStatus     String                  @map("citizenship_status")
+  nricOrFinNo           String                  @unique @map("nric_or_fin_no")
+  expiryDate            DateTime?               @map("expiry_date") @db.Date
+  maritalStatus         String                  @map("marital_status")
+  addressLine1          String                  @map("address_line1")
+  addressLine2          String?                 @map("address_line2")
+  city                  String
+  country               String
+  postalCode            String                  @map("postal_code")
+  active                Boolean                 @default(true)
+  deleted               Boolean                 @default(false)
+  middleName            String?                 @map("middle_name")
+  bankDetails           EmployeeBankDetails?
+  emergencyContacts     EmployeeEmergencyContact[]
+  hrDetails             EmployeeHrDetails[]
+  leaveBalances         EmployeeLeaveBalance[]
+  workHistory           EmployeeWorkHistory[]
 
   @@map("employee")
 }
@@ -48,12 +48,14 @@ model User {
   resetTokenExpiry DateTime?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-  Account          Account[]
-  Leave_Approval   Leave_Approval[]
-  Leave_Balance    Leave_Balance[]
-  Leave_Request    Leave_Request[]
-  Session          Session[]
-  User_Role        User_Role[]
+  accounts         Account[]
+  leaveApprovals   LeaveApproval[]
+  leaveBalances    LeaveBalance[]
+  leaveRequests    LeaveRequest[]
+  sessions         Session[]
+  userRoles        UserRole[]
+
+  @@map("user")
 }
 
 model Account {
@@ -62,16 +64,17 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
+  refreshToken      String? @map("refresh_token")
+  accessToken       String? @map("access_token")
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type")
   scope             String?
-  id_token          String?
-  session_state     String?
+  idToken           String? @map("id_token")
+  sessionState      String? @map("session_state")
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("account")
 }
 
 model Session {
@@ -80,6 +83,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
 }
 
 model VerificationToken {
@@ -88,154 +93,170 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@map("verification_token")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model employee_bank_details {
-  id                    Int      @id @default(autoincrement())
-  employee_id           Int      @unique
-  bank_name             String   @db.VarChar(255)
-  employee_banking_name String   @db.VarChar(255)
-  account_number        String   @db.VarChar(50)
-  account_type          String   @db.VarChar(10)
-  employee              Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model EmployeeBankDetails {
+  id                  Int      @id @default(autoincrement())
+  employeeId          Int      @unique @map("employee_id")
+  bankName            String   @map("bank_name") @db.VarChar(255)
+  employeeBankingName String   @map("employee_banking_name") @db.VarChar(255)
+  accountNumber       String   @map("account_number") @db.VarChar(50)
+  accountType         String   @map("account_type") @db.VarChar(10)
+  employee            Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("employee_bank_details")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model employee_emergency_contact {
+model EmployeeEmergencyContact {
   id           Int      @id @default(autoincrement())
-  employee_id  Int
-  person_name  String   @db.VarChar(255)
+  employeeId   Int      @map("employee_id")
+  personName   String   @map("person_name") @db.VarChar(255)
   relationship String   @db.VarChar(10)
   mobile       String   @db.VarChar(15)
   address      String
-  employee     Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("employee_emergency_contact")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model employee_hr_details {
-  id                   Int       @id @default(autoincrement())
-  employee_id          Int
-  date_of_joining      DateTime  @db.Date
-  bonus                Decimal   @db.Decimal(10, 2)
-  passport_number      String    @db.VarChar(20)
-  passport_issue_date  DateTime  @db.Date
-  passport_expiry_date DateTime  @db.Date
-  pass_type            String    @db.VarChar(5)
-  pass_expiry_date     DateTime? @db.Date
-  renewal_apply_date   DateTime? @db.Date
-  new_apply_date       DateTime? @db.Date
-  pass_cancelled_date  DateTime? @db.Date
-  client_id            Int?
-  remarks              String?
-  employee             Employee  @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  client               client?   @relation(fields: [client_id], references: [id], onUpdate: NoAction, map: "fk_employee_hr_details_client")
+model EmployeeHrDetails {
+  id                  Int       @id @default(autoincrement())
+  employeeId          Int       @unique @map("employee_id")
+  dateOfJoining       DateTime  @map("date_of_joining") @db.Date
+  bonus               Decimal   @db.Decimal(10, 2)
+  passportNumber      String    @map("passport_number") @db.VarChar(20)
+  passportIssueDate   DateTime  @map("passport_issue_date") @db.Date
+  passportExpiryDate  DateTime  @map("passport_expiry_date") @db.Date
+  passType            String    @map("pass_type") @db.VarChar(5)
+  passExpiryDate      DateTime? @map("pass_expiry_date") @db.Date
+  renewalApplyDate    DateTime? @map("renewal_apply_date") @db.Date
+  newApplyDate        DateTime? @map("new_apply_date") @db.Date
+  passCancelledDate   DateTime? @map("pass_cancelled_date") @db.Date
+  clientId            Int?      @map("client_id")
+  remarks             String?
+  employee            Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  client              Client?   @relation(fields: [clientId], references: [id], onUpdate: NoAction, map: "fk_employee_hr_details_client")
 
-  @@index([client_id], map: "idx_employee_hr_details_client_id")
+  @@index([clientId], map: "idx_employee_hr_details_client_id")
+  @@map("employee_hr_details")
 }
 
-model employee_work_history {
+model EmployeeWorkHistory {
   id                Int       @id @default(autoincrement())
-  employee_id       Int
-  job_title         String    @db.VarChar(255)
-  start_date        DateTime  @db.Date
-  end_date          DateTime? @db.Date
+  employeeId        Int       @map("employee_id")
+  jobTitle          String    @map("job_title") @db.VarChar(255)
+  startDate         DateTime  @map("start_date") @db.Date
+  endDate           DateTime? @map("end_date") @db.Date
   department        String?   @db.VarChar(255)
   responsibilities  String?
-  technologies_used String?
-  employee          Employee  @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  technologiesUsed  String?   @map("technologies_used")
+  employee          Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("employee_work_history")
 }
 
-model client {
-  id                  Int                   @id @default(autoincrement())
-  company_name        String                @db.VarChar(100)
-  industry            String?               @db.VarChar(50)
-  primary_contact     String?               @db.VarChar(100)
-  contact_email       String?               @db.VarChar(100)
-  contact_phone       String?               @db.VarChar(20)
-  current_openings    Int?                  @default(0)
-  last_contact_date   DateTime?             @db.Date
-  next_follow_up      DateTime?             @db.Date
-  status              String?               @db.VarChar(20)
-  notes               String?
-  employee_hr_details employee_hr_details[]
+model Client {
+  id                Int                 @id @default(autoincrement())
+  companyName       String              @map("company_name") @db.VarChar(100)
+  industry          String?             @db.VarChar(50)
+  primaryContact    String?             @map("primary_contact") @db.VarChar(100)
+  contactEmail      String?             @map("contact_email") @db.VarChar(100)
+  contactPhone      String?             @map("contact_phone") @db.VarChar(20)
+  currentOpenings   Int?                @default(0) @map("current_openings")
+  lastContactDate   DateTime?           @map("last_contact_date") @db.Date
+  nextFollowUp      DateTime?           @map("next_follow_up") @db.Date
+  status            String?             @db.VarChar(20)
+  notes             String?
+  employeeHrDetails EmployeeHrDetails[]
+
+  @@map("client")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model Leave_Approval {
-  id               Int            @id @default(autoincrement())
-  leave_request_id Int?
-  approved_by      String?
-  status           String?
-  action_date      DateTime?      @default(now()) @db.Timestamp(6)
-  User             User?          @relation(fields: [approved_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Leave_Request    Leave_Request? @relation(fields: [leave_request_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model LeaveApproval {
+  id             Int           @id @default(autoincrement())
+  leaveRequestId Int?          @map("leave_request_id")
+  approvedBy     String?       @map("approved_by")
+  status         String?
+  actionDate     DateTime?     @default(now()) @map("action_date") @db.Timestamp(6)
+  user           User?         @relation(fields: [approvedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  leaveRequest   LeaveRequest? @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("leave_approval")
 }
 
-model Leave_Balance {
-  id            Int         @id @default(autoincrement())
-  user_id       String?
-  leave_type_id Int?
-  balance       Int
-  Leave_Type    Leave_Type? @relation(fields: [leave_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  User          User?       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model LeaveBalance {
+  id           Int        @id @default(autoincrement())
+  userId       String?    @map("user_id")
+  leaveTypeId  Int?       @map("leave_type_id")
+  balance      Int
+  leaveType    LeaveType? @relation(fields: [leaveTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user         User?      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("leave_balance")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model Leave_Request {
-  id             Int              @id @default(autoincrement())
-  user_id        String?
-  leave_type_id  Int?
-  start_date     DateTime         @db.Date
-  end_date       DateTime         @db.Date
-  reason         String?
-  status         String?          @default("Pending")
-  created_at     DateTime?        @default(now()) @db.Timestamp(6)
-  Leave_Approval Leave_Approval[]
-  Leave_Type     Leave_Type?      @relation(fields: [leave_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  User           User?            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model LeaveRequest {
+  id            Int             @id @default(autoincrement())
+  userId        String?         @map("user_id")
+  leaveTypeId   Int?            @map("leave_type_id")
+  startDate     DateTime        @map("start_date") @db.Date
+  endDate       DateTime        @map("end_date") @db.Date
+  reason        String?
+  status        String?         @default("Pending")
+  createdAt     DateTime?       @default(now()) @map("created_at") @db.Timestamp(6)
+  leaveApproval LeaveApproval[]
+  leaveType     LeaveType?      @relation(fields: [leaveTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user          User?           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("leave_request")
 }
 
-model Leave_Type {
-  id                      Int                       @id @default(autoincrement())
-  name                    String                    @unique(map: "name_unique")
-  description             String?
-  default_days            Int
-  leave_code              String?                   @db.VarChar(5)
-  Leave_Balance           Leave_Balance[]
-  Leave_Request           Leave_Request[]
-  employee_leave_balances employee_leave_balances[]
+model LeaveType {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @unique(map: "name_unique")
+  description          String?
+  defaultDays          Int                    @map("default_days")
+  leaveCode            String?                @map("leave_code") @db.VarChar(5)
+  leaveBalances        LeaveBalance[]
+  leaveRequests        LeaveRequest[]
+  employeeLeaveBalance EmployeeLeaveBalance[]
+
+  @@map("leave_type")
 }
 
 model Role {
-  id        Int         @id @default(autoincrement())
-  name      String      @unique
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
   level     Int
-  User_Role User_Role[]
+  userRoles UserRole[]
+
+  @@map("role")
 }
 
-model User_Role {
-  user_id String
-  role_id Int
-  Role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  User    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model UserRole {
+  userId String @map("user_id")
+  roleId Int    @map("role_id")
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([user_id, role_id])
+  @@id([userId, roleId])
+  @@map("user_role")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model employee_leave_balances {
-  id            Int        @id @default(autoincrement())
-  employee_id   Int
-  leave_type_id Int
-  balance       Int
-  employee      Employee   @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  Leave_Type    Leave_Type @relation(fields: [leave_type_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model EmployeeLeaveBalance {
+  id           Int       @id @default(autoincrement())
+  employeeId   Int       @map("employee_id")
+  leaveTypeId  Int       @map("leave_type_id")
+  balance      Int
+  employee     Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  leaveType    LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@unique([employee_id, leave_type_id])
+  @@unique([employeeId, leaveTypeId])
+  @@map("employee_leave_balances")
 }
 
-enum UserRole {
+enum UserRoleEnum {
   EMPLOYEE
   MANAGER
   SUPERVISOR
