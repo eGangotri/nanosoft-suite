@@ -6,7 +6,7 @@ import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import EditBankDetails from '@/components/employee/bank-details/edit-bank-details/[id]/page';
 import { fetchBankDetails } from '@/services/employeeService';
-import { BankDetailsFormData } from '@/components/employee/bank-details/constants';
+import { BankDetailsFormData } from '@/components/employee/bank-details/schema';
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
@@ -14,11 +14,11 @@ const AddBankDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employeeId, setEmployeeId] = useState(0);
     const [initialData, setInitialData] = useState<BankDetailsFormData>({
-        employee_id: employeeId,
-        bank_name: '',
-        employee_banking_name: '',
-        account_number: '',
-        account_type: 'Savings',
+        employeeId: employeeId,
+        bankName: '',
+        employeeBankingName: '',
+        accountNumber: '',
+        accountType: 'Savings',
     });
     const [loading, setLoading] = useState(true);
     const params = useParams();
@@ -29,15 +29,15 @@ const AddBankDetailsPage: React.FC = () => {
             try {
                 setEmployeeId(employeeId);
                 const data = await fetchBankDetails(employeeId);
-                console.log(`data: ${JSON.stringify(data)} ${data?.employee_id === employeeId}`);
-                if (data && data.employee_id === employeeId) {
+                console.log(`data: ${JSON.stringify(data)} ${data?.employeeId === employeeId}`);
+                if (data && data.employeeId === employeeId) {
                     setInitialData(data);
                     setAddEdit(ADD_EDIT_ENUM.EDIT);
                 } else {
                     setAddEdit(ADD_EDIT_ENUM.ADD);
                     setInitialData({
                         ...initialData,
-                        employee_id: employeeId
+                        employeeId: employeeId
                     });
                 }
             } catch (error) {

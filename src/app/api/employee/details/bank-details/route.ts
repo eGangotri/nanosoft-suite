@@ -1,4 +1,4 @@
-import { bankDetailsSchema } from '@/components/employee/bank-details/constants'
+import { bankDetailsSchema } from '@/components/employee/bank-details/schema'
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 export async function GET() {
   try {
-    const bankDetails = await prisma.employee_bank_details.findMany()
+    const bankDetails = await prisma.employeeBankDetails.findMany()
     return NextResponse.json(bankDetails)
   } catch (error) {
     console.error('Error fetching bank details:', error)

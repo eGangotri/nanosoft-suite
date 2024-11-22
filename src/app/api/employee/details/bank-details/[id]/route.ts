@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { bankDetailsSchema } from '@/components/employee/bank-details/constants'
+import { bankDetailsSchema } from '@/components/employee/bank-details/schema'
 
 const prisma = new PrismaClient()
 
@@ -10,8 +10,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
   try {
     console.log(`Bank detail:(${employeeId}) ${params.id}`, employeeId);
 
-    const bankDetail = await prisma.employee_bank_details.findFirst({
-      where: { employee_id: employeeId }
+    const bankDetail = await prisma.employeeBankDetails.findFirst({
+      where: { employeeId: employeeId }
     })
 
     if (!bankDetail) {
@@ -35,8 +35,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    const updatedBankDetail = await prisma.employee_bank_details.updateMany({
-      where: { employee_id: employeeId },
+    const updatedBankDetail = await prisma.employeeBankDetails.updateMany({
+      where: { employeeId: employeeId },
       data: result.data,
     })
 
@@ -45,8 +45,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 
     // Fetch the updated record to return
-    const fetchedBankDetail = await prisma.employee_bank_details.findFirst({
-      where: { employee_id: employeeId }
+    const fetchedBankDetail = await prisma.employeeBankDetails.findFirst({
+      where: { employeeId: employeeId }
     })
 
     return NextResponse.json(fetchedBankDetail)
@@ -60,8 +60,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   const employeeId = parseInt(params.id)
 
   try {
-    const deletedBankDetail = await prisma.employee_bank_details.deleteMany({
-      where: { employee_id: employeeId },
+    const deletedBankDetail = await prisma.employeeBankDetails.deleteMany({
+      where: { employeeId: employeeId },
     })
 
     if (deletedBankDetail.count === 0) {
