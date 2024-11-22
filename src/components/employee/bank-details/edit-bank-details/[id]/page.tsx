@@ -5,16 +5,8 @@ import { Container, Paper, CircularProgress, LinearProgress, Snackbar, Alert } f
 import { z } from 'zod'
 import BankDetailsForm from '../../BankDetailsForm'
 import { useRouter } from 'next/navigation'
+import { BankDetailsFormData } from '../../schema'
 
-const bankDetailsSchema = z.object({
-  employee_id: z.number().int().positive(),
-  bank_name: z.string().min(1, 'Bank name is required'),
-  employee_banking_name: z.string().min(1, 'Employee banking name is required'),
-  account_number: z.string().min(1, 'Account number is required'),
-  account_type: z.enum(['Current', 'Savings']),
-})
-
-type BankDetailsFormData = z.infer<typeof bankDetailsSchema>
 
 interface EditBankDetailsFormProps {
   employeeId: number
@@ -30,7 +22,7 @@ export default function EditBankDetails({ employeeId, initialData }: EditBankDet
   const handleSubmit = async (data: BankDetailsFormData) => {
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/employee/details/bank-details/${data.employee_id}`, {
+      const response = await fetch(`/api/employee/details/bank-details/${data.employeeId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

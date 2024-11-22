@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography } from '@mui/material'
-import { BankDetailsFormData, bankDetailsSchema } from './constants'
 import { EmployeeFormData } from '../employee-form'
+import { BankDetailsFormData, bankDetailsSchema } from './schema'
 
 
 interface BankDetailsFormProps {
@@ -26,11 +26,11 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
   } = useForm<BankDetailsFormData>({
     resolver: zodResolver(bankDetailsSchema),
     defaultValues: initialData || {
-      employee_id: employeeId,
-      bank_name: '',
-      employee_banking_name: '',
-      account_number: '',
-      account_type: 'Savings',
+      employeeId: employeeId,
+      bankName: '',
+      employeeBankingName: '',
+      accountNumber: '',
+      accountType: 'Savings',
     },
   })
 
@@ -40,7 +40,7 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
       const data:EmployeeFormData = await response.json()
       console.log('Employee data:', JSON.stringify(data))
       setEmployeeName(`${data.firstName} ${data.middleName} ${data.lastName}`)
-      setValue('employee_id', employeeId);
+      setValue('employeeId', employeeId);
       console.log('Fetching employee data for ID:', employeeId)
       console.log('Fetching employee data for ID:', JSON.stringify(data))
     }
@@ -53,7 +53,7 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
         {isEditing ? 'Edit Bank Details' : 'Add Bank Details'} for {employeeName}
       </Typography>
       <Controller
-        name="bank_name"
+        name="bankName"
         control={control}
         render={({ field }) => (
           <TextField
@@ -61,15 +61,15 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
             margin="normal"
             required
             fullWidth
-            id="bank_name"
+            id="bankName"
             label="Bank Name"
-            error={!!errors.bank_name}
-            helperText={errors.bank_name?.message}
+            error={!!errors.bankName}
+            helperText={errors.bankName?.message}
           />
         )}
       />
       <Controller
-        name="employee_banking_name"
+        name="employeeBankingName"
         control={control}
         render={({ field }) => (
           <TextField
@@ -77,15 +77,15 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
             margin="normal"
             required
             fullWidth
-            id="employee_banking_name"
+            id="employeeBankingName"
             label="Employee Banking Name"
-            error={!!errors.employee_banking_name}
-            helperText={errors.employee_banking_name?.message}
+            error={!!errors.employeeBankingName}
+            helperText={errors.employeeBankingName?.message}
           />
         )}
       />
       <Controller
-        name="account_number"
+        name="accountNumber"
         control={control}
         render={({ field }) => (
           <TextField
@@ -93,15 +93,15 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
             margin="normal"
             required
             fullWidth
-            id="account_number"
+            id="accountNumber"
             label="Account Number"
-            error={!!errors.account_number}
-            helperText={errors.account_number?.message}
+            error={!!errors.accountNumber}
+            helperText={errors.accountNumber?.message}
           />
         )}
       />
       <Controller
-        name="account_type"
+        name="accountType"
         control={control}
         render={({ field }) => (
           <FormControl fullWidth margin="normal">
@@ -109,9 +109,9 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
             <Select
               {...field}
               labelId="account-type-label"
-              id="account_type"
+              id="accountType"
               label="Account Type"
-              error={!!errors.account_type}
+              error={!!errors.accountType}
             >
               <MenuItem value="Current">Current</MenuItem>
               <MenuItem value="Savings">Savings</MenuItem>

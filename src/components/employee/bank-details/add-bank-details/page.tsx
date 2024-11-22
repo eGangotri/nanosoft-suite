@@ -2,19 +2,10 @@
 
 import React, { useEffect, useState } from 'react'
 import { Alert, Container, LinearProgress, Paper, Snackbar } from '@mui/material'
-import { z } from 'zod'
 import BankDetailsForm from '../BankDetailsForm'
 import { useRouter } from 'next/navigation'
+import { BankDetailsFormData } from '../schema'
 
-const bankDetailsSchema = z.object({
-  employee_id: z.number().int().positive(),
-  bank_name: z.string().min(1, 'Bank name is required'),
-  employee_banking_name: z.string().min(1, 'Employee banking name is required'),
-  account_number: z.string().min(1, 'Account number is required'),
-  account_type: z.enum(['Current', 'Savings']),
-})
-
-type BankDetailsFormData = z.infer<typeof bankDetailsSchema>;
 
 interface AddBankDetailsFormProps {
   employeeId: number
