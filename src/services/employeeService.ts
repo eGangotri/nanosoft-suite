@@ -1,11 +1,14 @@
-import { mockEmployeeData } from "@/app/employee/view-employee/mock-data";
 import { BankDetailsFormData } from "@/components/employee/bank-details/constants"
-import { EmployeeData } from "@/components/employee/types";
 
-export const getEmployeeData = async (employeeId: string): Promise<EmployeeData> => {
+
+export const getEmployeeData = async (employeeId: string): Promise<EmployeeData|EmployeeError> => {
     const response = await fetch(`/api/employee/${employeeId}/?id=${employeeId}`)
     if (!response.ok) {
-        return mockEmployeeData;
+        return {
+            employeeId: employeeId,
+            error: `Employee with ID ${employeeId} not found`,
+            status: response.status
+        };
     } else {
         const data: EmployeeData = await response.json()
         return data

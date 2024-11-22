@@ -9,19 +9,19 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const employee = await prisma.employee.findUnique({
       where: { id: employeeId },
       include: {
-        employee_bank_details: true,
-        employee_emergency_contact: true,
-        employee_hr_details: {
+        bankDetails: true,
+        emergencyContacts: true,
+        hrDetails: {
           include: {
             client: true,
           },
         },
-        employee_leave_balances: {
+        leaveBalances: {
           include: {
-            Leave_Type: true,
+            leaveType: true,
           },
         },
-        employee_work_history: true,
+        workHistory: true,
       },
     })
 
