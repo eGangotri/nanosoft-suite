@@ -37,7 +37,7 @@ const EmployeeOverview: React.FC = () => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push('/employee');
+    router.push('/employee/employee');
   };
   return (
     <Paper className="p-4 rounded-lg shadow"

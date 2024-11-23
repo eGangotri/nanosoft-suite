@@ -188,7 +188,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   const handleAddEdit = (detailType: string, employeeId: number) => {
     switch (detailType) {
       case DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS:
-        router.push(`/employee/employee/edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/employee/edit-employee?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
         router.push(`/employee/details/bank-details/add-edit/${employeeId}?id=${employeeId}`)
@@ -214,7 +214,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
     switch (detailType) {
       case DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS:
         executeDeletion(employeeId, `/api/employee/${employeeId}`, true)
-        router.push(`/employee`)
+        router.push(`/employee/employee`)
         break;
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
         executeDeletion(employeeId, `/api/employee/details/bank-details/${employeeId}`)
