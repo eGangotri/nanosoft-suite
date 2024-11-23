@@ -83,7 +83,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           router.push(`/employee`)
         }
         else {
-          router.replace(`/employee/view-employee/${employeeId}`);
+          router.replace(`/employee/employee/view-employee/${employeeId}`);
           window.location.reload();
         }
       } catch (error) {
@@ -188,7 +188,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   const handleAddEdit = (detailType: string, employeeId: number) => {
     switch (detailType) {
       case DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS:
-        router.push(`/employee//add-edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/employee/add-edit/${employeeId}?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
         router.push(`/employee/details/bank-details/add-edit/${employeeId}?id=${employeeId}`)

@@ -73,12 +73,12 @@ export default function EmployeeListPage() {
       width: 200,
       renderCell: (params: any) => {
         return (<>
-          <Link href={`/employee/view-employee/${params?.row?.id}`} passHref>
-            <IconButton aria-label="edit" color="primary">
+          <Link href={`/employee/employee/view-employee/${params?.row?.id}`} passHref>
+            <IconButton aria-label="view" color="primary">
               <PersonIcon />
             </IconButton>
           </Link>
-          <Link href={`/employee/edit-employee?id=${params?.row?.id}`} passHref>
+          <Link href={`/employee/employee/edit-employee?id=${params?.row?.id}`} passHref>
             <IconButton aria-label="edit" color="primary">
               <EditIcon />
             </IconButton>
@@ -279,7 +279,7 @@ export default function EmployeeListPage() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <Button variant="contained" startIcon={<AddIcon />}>
-          <Link href="/employee/add-employee" passHref>
+          <Link href="/employee/employee/add-employee" passHref>
             Add New Employee
           </Link>
         </Button>

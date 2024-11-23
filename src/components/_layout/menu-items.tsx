@@ -30,7 +30,7 @@ export const menuItems: MenuItem[] = [
     icon: <DashboardIcon />, 
     route: '/' 
 },
-  { text: 'Employee-Data', icon: <PeopleIcon />, route: '/employee/' },
+  { text: 'Employee-Data', icon: <PeopleIcon />, route: '/employee/employee' },
   { text: 'Leave-Mgmt', icon: <PeopleIcon />, route: '/leaves-type/' },
   {
     text: 'Products',
