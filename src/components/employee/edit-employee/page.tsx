@@ -30,7 +30,7 @@ const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
     setError(null)
     console.log('Submitting employee data:', JSON.stringify(data));
     try {
-      const response = await fetch(`/api/employee/edit-employee/${id}`, {
+      const response = await fetch(`/api/employee/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

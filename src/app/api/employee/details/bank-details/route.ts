@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const newBankDetail = await prisma.employee_bank_details.create({
+    const newBankDetail = await prisma.employeeBankDetails.create({
       data: result.data,
     })
 

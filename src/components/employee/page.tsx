@@ -18,7 +18,9 @@ import Tooltip from '@mui/material/Tooltip';
 import {
   Add as AddIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon, Block as DeactivateIcon,
+  Delete as DeleteIcon,
+  Block as DeactivateIcon,
+  Restore as ActivateIcon,
   MoreVert as MoreVertIcon,
   AccountBalance as BankIcon,
   ContactMail as ContactIcon,
@@ -29,9 +31,9 @@ import {
 }
   from '@mui/icons-material';
 
-import { Employee } from './types'
 import { useRouter } from 'next/navigation';
 import { initCaps, StyledDataGrid } from './constants'
+import { capitalizeFirstLetter } from '@/utils/StringUtils'
 
 
 export default function EmployeeListPage() {
@@ -90,12 +92,27 @@ export default function EmployeeListPage() {
             {loadingStates[`del-${params?.row?.id}`] ? <CircularProgress size={24} /> : <DeleteIcon />}
 
           </IconButton>
-          <IconButton aria-label="deactivate" color="warning"
-            onClick={() => handleDeactivate(params?.row?.id)}
-            disabled={loadingStates[`deact-${params?.row?.id}`]}
-          >
-            {loadingStates[`deact-${params?.row?.id}`] ? <CircularProgress size={24} /> : <DeactivateIcon />}
-          </IconButton>
+
+          {params?.row?.active ?
+            <IconButton aria-label="deactivate" color="warning"
+              onClick={() => handleActivation(params?.row?.id, false)}
+              disabled={loadingStates[`deactivate-${params?.row?.id}`]}
+            >
+              {loadingStates[`deactivate-${params?.row?.id}`] ? <CircularProgress size={24} /> :
+                <DeactivateIcon className="h-4 w-4" />
+              }
+            </IconButton>
+            :
+            <IconButton aria-label="reactivate" color="success"
+              disabled={loadingStates[`reactivate-${params?.row?.id}`]}
+              onClick={() => handleActivation(params?.row?.id, true)}
+            >
+              {loadingStates[`reactivate-${params?.row?.id}`] ? <CircularProgress size={24} /> :
+                <ActivateIcon className="h-4 w-4" />
+              }
+            </IconButton>
+          }
+
         </>)
       }
     },
@@ -171,7 +188,7 @@ export default function EmployeeListPage() {
     if (window.confirm('Are you sure you want to delete this employee?')) {
       setLoading(`del-${id}`, true)
       try {
-        const response = await fetch(`/api/employee/edit-employee/${id}`, {
+        const response = await fetch(`/api/employee/${id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -194,11 +211,39 @@ export default function EmployeeListPage() {
     }
   }
 
+  const handleActivation = async (employeeId: number, activate = false) => {
+    const action = activate ? 'reactivate' : 'deactivate'
+    if (window.confirm(`Are you sure you want to ${action} this employee?`)) {
+      setLoading(`${action}-${employeeId}`, true)
+      try {
+        const response = await fetch(`/api/employee/${employeeId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ active: activate }),
+        })
+        setLoading(`${action}-${employeeId}`, false)
+        if (!response.ok) {
+          console.error('Error changing active status:', response.statusText)
+          throw new Error('Failed changing active status')
+        }
+        window.alert(`${capitalizeFirstLetter(action)} Successful`);
+        fetchEmployees()
+
+      } catch (error) {
+        setLoading(`${action}-${employeeId}`, false)
+        window.alert(`Error changing active status for employee:${error}`)
+        console.error('Error changing active status for employee:', error)
+      }
+    }
+  }
+
   const handleDeactivate = async (id: number) => {
     if (window.confirm('Are you sure you want to deactivate this employee?')) {
       setLoading(`deact-${id}`, true)
       try {
-        const response = await fetch(`/api/employee/edit-employee/${id}`, {
+        const response = await fetch(`/api/employee/${id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
