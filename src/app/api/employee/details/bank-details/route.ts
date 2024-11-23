@@ -1,12 +1,10 @@
 import { bankDetailsSchema } from '@/components/employee/bank-details/schema'
+import nanosoftPrisma from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
 
 export async function GET() {
   try {
-    const bankDetails = await prisma.employeeBankDetails.findMany()
+    const bankDetails = await nanosoftPrisma.employeeBankDetails.findMany()
     return NextResponse.json(bankDetails)
   } catch (error) {
     console.error('Error fetching bank details:', error)
@@ -23,7 +21,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const newBankDetail = await prisma.employeeBankDetails.create({
+    const newBankDetail = await nanosoftPrisma.employeeBankDetails.create({
       data: result.data,
     })
 

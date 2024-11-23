@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient, Prisma } from '@prisma/client'
+import nanosoftPrisma from '@/lib/prisma'
+import { Prisma } from '@prisma/client'
 
-const prisma = new PrismaClient()
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const employeeId = parseInt(params.id)
   try {
-    const employee = await prisma.employee.findUnique({
+    const employee = await nanosoftPrisma.employee.findUnique({
       where: { id: employeeId },
       include: {
         bankDetails: true,
@@ -67,7 +67,7 @@ export async function PATCH(
       return acc;
     }, {} as Prisma.EmployeeUpdateInput)
 
-    const updatedEmployee = await prisma.employee.update({
+    const updatedEmployee = await nanosoftPrisma.employee.update({
       where: { id: employeeId },
       data: updateData,
     })
@@ -80,7 +80,5 @@ export async function PATCH(
       { error: 'Failed to update employee' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }

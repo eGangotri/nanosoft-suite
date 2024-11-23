@@ -2,12 +2,11 @@ import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
-import { PrismaClient, User_Role } from "@prisma/client"
+import { User_Role } from "@prisma/client"
 import { Adapter } from "next-auth/adapters"
 import { JWT } from "next-auth/jwt"
 import { isWithinGeoFence } from "@/utils/geofence"
 
-const prisma = new PrismaClient()
 
 interface ExtendedSession extends DefaultSession {
   user: {

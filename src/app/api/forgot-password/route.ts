@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import crypto from 'crypto'
 import { sendPasswordResetEmail } from '@/utils/email'
-
-const prisma = new PrismaClient()
+import nanosoftPrisma from '@/lib/prisma'
 
 export async function POST(req: Request) {
   const body = await req.json()
@@ -13,7 +11,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Email is required' }, { status: 400 })
   }
 
-  const user = await prisma.user.findUnique({
+  const user = await nanosoftPrisma.user.findUnique({
     where: { email },
   })
 
@@ -26,7 +24,7 @@ export async function POST(req: Request) {
   const resetToken = crypto.randomBytes(32).toString('hex')
   const resetTokenExpiry = new Date(Date.now() + 3600000) // 1 hour from now
 
-  await prisma.user.update({
+  await nanosoftPrisma.user.update({
     where: { id: user.id },
     data: {
       resetToken,

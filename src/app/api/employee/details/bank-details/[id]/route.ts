@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import { bankDetailsSchema } from '@/components/employee/bank-details/schema'
-
-const prisma = new PrismaClient()
+import nanosoftPrisma from '@/lib/prisma';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const employeeId = parseInt(params.id)
@@ -10,7 +8,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   try {
     console.log(`Bank detail:(${employeeId}) ${params.id}`, employeeId);
 
-    const bankDetail = await prisma.employeeBankDetails.findFirst({
+    const bankDetail = await nanosoftPrisma.employeeBankDetails.findFirst({
       where: { employeeId: employeeId }
     })
 
@@ -35,7 +33,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    const updatedBankDetail = await prisma.employeeBankDetails.updateMany({
+    const updatedBankDetail = await nanosoftPrisma.employeeBankDetails.updateMany({
       where: { employeeId: employeeId },
       data: result.data,
     })
@@ -45,7 +43,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 
     // Fetch the updated record to return
-    const fetchedBankDetail = await prisma.employeeBankDetails.findFirst({
+    const fetchedBankDetail = await nanosoftPrisma.employeeBankDetails.findFirst({
       where: { employeeId: employeeId }
     })
 
@@ -60,7 +58,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   const employeeId = parseInt(params.id)
 
   try {
-    const deletedBankDetail = await prisma.employeeBankDetails.deleteMany({
+    const deletedBankDetail = await nanosoftPrisma.employeeBankDetails.deleteMany({
       where: { employeeId: employeeId },
     })
 

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
-import prisma from '@/lib/prisma'
+import nanosoftPrisma from '@/lib/prisma'
 import { leaveTypeSchema } from '@/components/leaves-type/constants'
 import { z } from 'zod'
 
 export async function GET() {
   try {
-    const leaveTypes = await prisma.leave_Type.findMany()
+    const leaveTypes = await nanosoftPrisma.leave_Type.findMany()
     return NextResponse.json(leaveTypes)
   } catch (error) {
     console.error('Error fetching leave types:', error)
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = leaveTypeSchema.parse(body)
     
-    const newLeaveType = await prisma.leave_Type.create({
+    const newLeaveType = await nanosoftPrisma.leave_Type.create({
       data: validatedData
     })
     return NextResponse.json(newLeaveType, { status: 201 })

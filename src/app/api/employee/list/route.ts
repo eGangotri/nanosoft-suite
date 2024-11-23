@@ -1,7 +1,5 @@
+import nanosoftPrisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
 
 async function fetchEmployeeById(id: number) {
   if (isNaN(id)) {
@@ -9,7 +7,7 @@ async function fetchEmployeeById(id: number) {
   }
 
   console.log('fetchEmployeeById:', id);
-  const employee = await prisma.employee.findUnique({
+  const employee = await nanosoftPrisma.employee.findUnique({
     where: {
       id: id,
     },
@@ -24,7 +22,7 @@ async function fetchEmployeeById(id: number) {
 }
 
 async function fetchEmployees(searchTerm: string, offset: number, limit: number) {
-  const employees = await prisma.employee.findMany({
+  const employees = await nanosoftPrisma.employee.findMany({
     where: {
       AND: [
         {
@@ -41,7 +39,7 @@ async function fetchEmployees(searchTerm: string, offset: number, limit: number)
     take: limit,
     orderBy: { id: 'asc' },
   });
-  const totalCount = await prisma.employee.count({
+  const totalCount = await nanosoftPrisma.employee.count({
     where: {
       OR: [
         { firstName: { contains: searchTerm, mode: 'insensitive' } },

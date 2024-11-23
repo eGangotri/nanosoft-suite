@@ -1,13 +1,11 @@
+import nanosoftPrisma from '@/lib/prisma';
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
 
 export async function POST(request: Request) {
   console.log('Request body:', JSON.stringify(request.body));
   try {
     const body = await request.json()
-    const employee = await prisma.employee.create({
+    const employee = await nanosoftPrisma.employee.create({
       data: {
         firstName: body.firstName,
         middleName: body.middleName || "",
