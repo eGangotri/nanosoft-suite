@@ -6,6 +6,7 @@ import { User_Role } from "@prisma/client"
 import { Adapter } from "next-auth/adapters"
 import { JWT } from "next-auth/jwt"
 import { isWithinGeoFence } from "@/utils/geofence"
+import nanosoftPrisma from "@/lib/prisma"
 
 
 interface ExtendedSession extends DefaultSession {
@@ -22,7 +23,7 @@ interface ExtendedToken extends JWT {
 }
 
 const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma) as Adapter,
+  adapter: PrismaAdapter(nanosoftPrisma) as Adapter,
   providers: [
     CredentialsProvider({
       name: "Credentials",
