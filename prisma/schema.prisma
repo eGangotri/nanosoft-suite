@@ -107,7 +107,7 @@ model Employee {
   middleName        String?                    @map("middle_name")
   bankDetails       EmployeeBankDetails?
   emergencyContacts EmployeeEmergencyContact[]
-  hrDetails         EmployeeHrDetails[]
+  hrDetails         EmployeeHrDetails?
   leaveBalances     EmployeeLeaveBalance[]
   workHistory       EmployeeWorkHistory[]
 
