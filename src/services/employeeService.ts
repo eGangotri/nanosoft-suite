@@ -1,5 +1,5 @@
 import { BankDetailsFormData } from "@/components/employee/bank-details/schema";
-import { EmployeeHrDetailsFormData, HrDetailsFormData } from "@/components/employee/details/hr/constants";
+import { EmployeeHrDetailsFormData } from "@/components/employee/details/hr/constants";
 
 export const getEmployeeData = async (employeeId: string): Promise<EmployeeData | EmployeeError> => {
     const response = await fetch(`/api/employee/${employeeId}/?id=${employeeId}`)
@@ -12,25 +12,6 @@ export const getEmployeeData = async (employeeId: string): Promise<EmployeeData 
     } else {
         const data: EmployeeData = await response.json()
         return data
-    }
-}
-
-export const fetchHrDetails = async (employeeId: number) => {
-    console.log('getEmployeeHrDetails:', employeeId)
-    try {
-        const response = await fetch(`/api/employee/details/hr-details/${employeeId}/?id=${employeeId}`)
-        const data: EmployeeHrDetails = await response.json()
-
-        console.log('fetchHrDetails:data:', JSON.stringify(data), data.employeeId === employeeId)
-        if (data && data.employeeId === employeeId) {
-            console.log(`data found for ID: ${employeeId}`);
-            return data
-        }
-        return null
-    }
-    catch (error) {
-        console.error('Error fetching hr details:', error)
-        throw new Error('Failed to fetch hr details')
     }
 }
 
@@ -54,9 +35,28 @@ export const fetchBankDetails = async (employeeId: number) => {
 }
 
 
+export const fetchHrDetails = async (employeeId: number) => {
+    console.log('getEmployeeHrDetails:', employeeId)
+    try {
+        const response = await fetch(`/api/employee/details/hr-details/${employeeId}/?id=${employeeId}`)
+        const data = await response.json()
+
+        console.log('fetchHrDetails:data:', JSON.stringify(data), data.employeeId === employeeId)
+        if (data && data.employeeId === employeeId) {
+            console.log(`data found for ID: ${employeeId}`);
+            return data
+        }
+        return null
+    }
+    catch (error) {
+        console.error('Error fetching hr details:', error)
+        throw new Error('Failed to fetch hr details')
+    }
+}
+
 export const addHrDetails = async (employeeId: number, data: EmployeeHrDetails) => {
     console.log('addHrDetails:', employeeId, JSON.stringify(data));
-    const response = await fetch(`/api/employee/details/hr-details/${employeeId}`, {
+    const response = await fetch(`/api/employee/details/hr-details`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

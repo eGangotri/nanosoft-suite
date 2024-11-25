@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
 import {
   TextField,
   Button,
@@ -23,61 +22,11 @@ import {
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
 
 const today = dayjs();
-
-type CitizenshipStatus = 'citizen' | 'pr' | 'foreigner'
-type MaritalStatus = 'Single' | 'Married' | 'Divorced' | 'Defacto' | 'Separated'
-
-const employeeSchema = z.object({
-  firstName: z.string().min(2, 'First name must be at least 2 characters'),
-  middleName: z.string().default("").optional(),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-  designation: z.string().min(2, 'Designation must be at least 2 characters'),
-  dateOfBirth: z.preprocess((arg) => {
-    if (typeof arg === "string" || arg instanceof Date) {
-      return new Date(arg); // Convert string or Date to Date object
-    }
-    if (dayjs.isDayjs(arg)) {
-      return arg.toDate(); // Convert dayjs object to Date
-    }
-    return null; // Fallback for invalid types
-  }, z.date().refine((date) => date <= new Date() && date >= new Date(1900, 0, 1), 'Invalid date of birth')),
-
-
-  nationality: z.string().min(2, 'Nationality must be at least 2 characters'),
-  email: z.string().email('Invalid email address').regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, 'Invalid email format'),
-  mobile: z.string().regex(/^\+?[1-9]\d{1,14}$/, 'Invalid mobile number'),
-  citizenshipStatus: z.enum(['citizen', 'pr', 'foreigner']),
-  nricOrFinNo: z.string().regex(/^[STFGM]\d{7}[A-Za-z]$/, 'Invalid NRIC/FIN format'),
-  expiryDate: z.preprocess((arg) => {
-    if (typeof arg === "string" || arg instanceof Date) {
-      return new Date(arg); // Convert string or Date to Date object
-    }
-    if (dayjs.isDayjs(arg)) {
-      return arg.toDate(); // Convert dayjs object to Date
-    }
-    return null; // Fallback for invalid types
-  }, z.date().optional()),
-  maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Defacto', 'Separated']),
-  addressLine1: z.string().min(1, 'Address Line 1 is required'),
-  addressLine2: z.string().optional(),
-  city: z.string().min(1, 'City is required'),
-  country: z.string().min(1, 'Country is required'),
-  postalCode: z.string().regex(/^\d{5,9}$/, 'Invalid postal code'),
-  deleted: z.boolean().default(false).optional(),
-  active: z.boolean().default(true).optional(),
-})
-
-export type EmployeeFormData = z.infer<typeof employeeSchema>
-
-interface EmployeeFormProps {
-  initialData?: EmployeeFormData
-  onSubmit: (data: EmployeeFormData) => Promise<void>
-}
 
 export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProps): React.ReactElement {
   const [isLoading, setIsLoading] = useState(false)
