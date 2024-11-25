@@ -55,6 +55,7 @@ export const fetchBankDetails = async (employeeId: number) => {
 
 
 export const addHrDetails = async (employeeId: number, data: EmployeeHrDetails) => {
+    console.log('addHrDetails:', employeeId, JSON.stringify(data));
     const response = await fetch(`/api/employee/details/hr-details/${employeeId}`, {
         method: 'POST',
         headers: {

@@ -2,32 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import nanosoftPrisma from '@/lib/prisma';
 import { employeeHrDetailsSchema } from '@/components/employee/details/hr/constants';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const employeeId = parseInt(params.id);
-
-  try {
-    if (employeeId === 0) {
-      // For new entry, return empty data
-      return NextResponse.json({});
-    }
-
-    const employeeHrDetails = await nanosoftPrisma.employeeHrDetails.findUnique({
-      where: { id: employeeId },
-    });
-
-    if (!employeeHrDetails) {
-      return NextResponse.json({ error: 'Employee HR Details not found' }, { status: 404 });
-    }
-
-    return NextResponse.json(employeeHrDetails);
-  } catch (error) {
-    console.error('Error fetching employee HR details:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
-}
 
 export async function POST(
   request: NextRequest,
@@ -53,7 +27,7 @@ export async function POST(
       });
       return NextResponse.json(updatedEmployeeHrDetails);
     }
-  } catch (error:any) {
+  } catch (error: any) {
     if (error.name === 'ZodError') {
       return NextResponse.json({ error: 'Validation Error', details: error.errors }, { status: 400 });
     }

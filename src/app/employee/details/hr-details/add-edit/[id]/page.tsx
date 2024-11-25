@@ -3,16 +3,17 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { fetchBankDetails, fetchHrDetails } from '@/services/employeeService';
+import { fetchHrDetails } from '@/services/employeeService';
 import AddHrDetails from '@/components/employee/details/hr/add-hr-details/page';
 import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]/page';
+import { EmployeeHrDetailsFormData } from '@/components/employee/details/hr/constants';
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
 const AddHRDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employeeId, setEmployeeId] = useState(0);
-    const [initialData, setInitialData] = useState<EmployeeHrDetails>({
+    const [initialData, setInitialData] = useState<EmployeeHrDetailsFormData>({
         id: 0,
         employeeId: 0,
         dateOfJoining: new Date(),

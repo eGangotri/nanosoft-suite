@@ -5,11 +5,12 @@ import { Alert, Container, LinearProgress, Paper, Snackbar } from '@mui/material
 import { useRouter } from 'next/navigation'
 import HrDetailsForm from '../hrDetailsForm'
 import { addHrDetails } from '@/services/employeeService'
+import { EmployeeHrDetailsFormData } from '../constants'
 
 
 interface AddEditHrDetailFormProps {
   employeeId: number
-  initialData: EmployeeHrDetails
+  initialData: EmployeeHrDetailsFormData
 }
 
 export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetailFormProps) {
@@ -20,6 +21,7 @@ export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetai
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (data: EmployeeHrDetails) => {
+    console.log('Submitting Hr details:', data)
     try {
       setIsLoading(true);
       await addHrDetails(employeeId, data);
@@ -27,13 +29,13 @@ export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetai
       setSnackbarSeverity('success')
       setOpenSnackbar(true)
 
-      // Redirect to the bank details list page after a short delay
+      // Redirect to the Hr details list page after a short delay
       setTimeout(() => {
         router.push(`/employee/employee/view-employee/${employeeId}`)
       }, 2000)
     } catch (error) {
-      console.error('Error adding bank details:', error)
-      setSnackbarMessage('Failed to add bank details. Please try again.')
+      console.error('Error adding Hr details:', error)
+      setSnackbarMessage('Failed to add Hr details. Please try again.')
       setSnackbarSeverity('error')
       setOpenSnackbar(true)
     }

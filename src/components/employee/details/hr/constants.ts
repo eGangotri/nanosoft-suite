@@ -9,7 +9,7 @@ export interface AddEditHrDetailFormProps {
 export const employeeHrDetailsSchema = z.object({
   employeeId: z.number().int().positive(),
   dateOfJoining: z.date(),
-  bonus: z.number().nonnegative(),
+  bonus: z.coerce.number().nonnegative(),
   passportNumber: z.string().min(1).max(20),
   passportIssueDate: z.date(),
   passportExpiryDate: z.date(),
@@ -22,5 +22,5 @@ export const employeeHrDetailsSchema = z.object({
   remarks: z.string().nullable(),
 });
 
-export type EmployeeHrDetailsFormData = Omit<EmployeeHrDetails, 'id' | 'employee' | 'client'>;
-//export type EmployeeHrDetailsFormData = z.infer<typeof employeeHrDetailsSchema>;
+//export type EmployeeHrDetailsFormData = Omit<EmployeeHrDetails, 'id' | 'employee' | 'client'>;
+export type EmployeeHrDetailsFormData = z.infer<typeof employeeHrDetailsSchema>;

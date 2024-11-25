@@ -7,11 +7,11 @@ import { TextField, Button, Box, Typography, MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { HrDetailsFormData, employeeHrDetailsSchema } from './constants';
+import { EmployeeHrDetailsFormData, employeeHrDetailsSchema } from './constants';
 
 interface HrDetailsFormProps {
-  initialData: EmployeeHrDetails;
-  onSubmit: (data: EmployeeHrDetails) => void;
+  initialData: EmployeeHrDetailsFormData;
+  onSubmit: (data: EmployeeHrDetailsFormData) => void;
   employees?: { id: number; name: string }[];
   clients?: { id: number; companyName: string }[];
   isEditing: boolean,
@@ -30,7 +30,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<HrDetailsFormData>({
+  } = useForm<EmployeeHrDetailsFormData>({
     resolver: zodResolver(employeeHrDetailsSchema),
     defaultValues: initialData
   });
@@ -260,7 +260,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           )}
         />
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-          {initialData ? 'Update' : 'Add'} Employee HR Details
+          {initialData.id > 0 ? 'Update' : 'Add'} Employee HR Details
         </Button>
       </Box>
     </LocalizationProvider>
