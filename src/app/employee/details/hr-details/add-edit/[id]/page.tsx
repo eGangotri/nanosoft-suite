@@ -9,7 +9,7 @@ import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
-const AddBankDetailsPage: React.FC = () => {
+const AddHRDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employeeId, setEmployeeId] = useState(0);
     const [initialData, setInitialData] = useState<EmployeeHrDetails>({
@@ -52,8 +52,8 @@ const AddBankDetailsPage: React.FC = () => {
                     });
                 }
             } catch (error) {
-                console.error('Error fetching bank details:', error);
-                throw new Error('Failed to fetch bank details');
+                console.error('Error fetching Hr details:', error);
+                throw new Error('Failed to fetch Hr details');
             } finally {
                 setLoading(false);
             }
@@ -85,4 +85,4 @@ const AddBankDetailsPage: React.FC = () => {
     );
 };
 
-export default AddBankDetailsPage;
+export default AddHRDetailsPage;

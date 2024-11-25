@@ -4,7 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { Container, Paper, CircularProgress, LinearProgress, Snackbar, Alert } from '@mui/material'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
-import { HrDetailsFormData } from '../../constants'
+import { AddEditHrDetailFormProps, EmployeeHrDetailsFormData } from '../../constants'
+import HrDetailsForm from '../../hrDetailsForm'
+import { editHrDetails } from '@/services/employeeService'
 
 export default function EditHrDetails({ employeeId, initialData }: AddEditHrDetailFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
@@ -12,22 +14,10 @@ export default function EditHrDetails({ employeeId, initialData }: AddEditHrDeta
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const handleSubmit = async (data: HrDetailsFormData) => {
+  const handleSubmit = async (data: EmployeeHrDetailsFormData) => {
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/employee/details/bank-details/${data.employeeId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      setIsLoading(false);
-
-      if (!response.ok) {
-        throw new Error('Failed to add bank details')
-      }
-
+      await editHrDetails(employeeId, data);
       setSnackbarMessage('Bank details added successfully')
       setSnackbarSeverity('success')
       setOpenSnackbar(true)
@@ -54,18 +44,19 @@ export default function EditHrDetails({ employeeId, initialData }: AddEditHrDeta
     <Container component="main" maxWidth="sm">
       {isLoading && <CircularProgress />}
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <BankDetailsForm initialData={initialData}
+        <HrDetailsForm initialData={initialData}
           onSubmit={handleSubmit}
           isEditing={true}
-          employeeId={employeeId} />
+          employeeId={employeeId}
+          />
       </Paper>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
       >
-        <Alert onClose={handleSnackbarClose} 
-        severity={snackbarSeverity}>
+        <Alert onClose={handleSnackbarClose}
+          severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

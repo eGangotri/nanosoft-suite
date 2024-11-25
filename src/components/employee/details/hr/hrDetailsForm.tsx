@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextField, Button, Box, Typography, MenuItem } from '@mui/material';
@@ -10,10 +10,12 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { HrDetailsFormData, employeeHrDetailsSchema } from './constants';
 
 interface HrDetailsFormProps {
-  initialData?: HrDetailsFormData;
-  onSubmit: (data: HrDetailsFormData) => void;
-  employees: { id: number; name: string }[];
-  clients: { id: number; companyName: string }[];
+  initialData: EmployeeHrDetails;
+  onSubmit: (data: EmployeeHrDetails) => void;
+  employees?: { id: number; name: string }[];
+  clients?: { id: number; companyName: string }[];
+  isEditing: boolean,
+  employeeId: number,
 }
 
 const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
@@ -21,6 +23,8 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   onSubmit,
   employees,
   clients,
+  isEditing,
+  employeeId,
 }) => {
   const {
     control,
@@ -28,69 +32,25 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
     formState: { errors },
   } = useForm<HrDetailsFormData>({
     resolver: zodResolver(employeeHrDetailsSchema),
-    defaultValues: initialData || {
-      employeeId: 0,
-      dateOfJoining: '',
-      bonus: 0,
-      passportNumber: '',
-      passportIssueDate: '',
-      passportExpiryDate: '',
-      passType: '',
-      passExpiryDate: null,
-      renewalApplyDate: null,
-      newApplyDate: null,
-      passCancelledDate: null,
-      clientId: null,
-      remarks: null,
-    },
+    defaultValues: initialData
   });
+  const [employeeName, setEmployeeName] = useState('')
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
         <Typography variant="h6" gutterBottom>
-          Employee HR Details
+          {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {employeeName}
         </Typography>
-        <Controller
-          name="employeeId"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              select
-              margin="normal"
-              required
-              fullWidth
-              id="employeeId"
-              label="Employee"
-              error={!!errors.employeeId}
-              helperText={errors.employeeId?.message}
-            >
-              {employees.map((employee) => (
-                <MenuItem key={employee.id} value={employee.id}>
-                  {employee.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-        />
         <Controller
           name="dateOfJoining"
           control={control}
           render={({ field }) => (
             <DatePicker
-              {...field}
               label="Date of Joining"
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  margin="normal"
-                  required
-                  fullWidth
-                  error={!!errors.dateOfJoining}
-                  helperText={errors.dateOfJoining?.message}
-                />
-              )}
+              value={field.value}
+              onChange={(date) => field.onChange(date)}
+              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
             />
           )}
         />
@@ -273,12 +233,12 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               error={!!errors.clientId}
               helperText={errors.clientId?.message}
             >
-              <MenuItem value={null}>None</MenuItem>
+              {/* <MenuItem value={null}>None</MenuItem>
               {clients.map((client) => (
                 <MenuItem key={client.id} value={client.id}>
                   {client.companyName}
                 </MenuItem>
-              ))}
+              ))} */}
             </TextField>
           )}
         />

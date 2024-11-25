@@ -3,8 +3,8 @@
 import React, { useState } from 'react'
 import { Alert, Container, LinearProgress, Paper, Snackbar } from '@mui/material'
 import { useRouter } from 'next/navigation'
-import { HrDetailsFormData } from '../constants'
 import HrDetailsForm from '../hrDetailsForm'
+import { addHrDetails } from '@/services/employeeService'
 
 
 interface AddEditHrDetailFormProps {
@@ -18,12 +18,11 @@ export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetai
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false);
-  
-  const handleSubmit = async (data: HrDetailsFormData) => {
+
+  const handleSubmit = async (data: EmployeeHrDetails) => {
     try {
       setIsLoading(true);
-
-
+      await addHrDetails(employeeId, data);
       setSnackbarMessage('Hr details added successfully')
       setSnackbarSeverity('success')
       setOpenSnackbar(true)

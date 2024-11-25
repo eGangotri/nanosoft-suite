@@ -1,5 +1,5 @@
 import { BankDetailsFormData } from "@/components/employee/bank-details/schema";
-import { HrDetailsFormData } from "@/components/employee/details/hr/constants";
+import { EmployeeHrDetailsFormData, HrDetailsFormData } from "@/components/employee/details/hr/constants";
 
 export const getEmployeeData = async (employeeId: string): Promise<EmployeeData | EmployeeError> => {
     const response = await fetch(`/api/employee/${employeeId}/?id=${employeeId}`)
@@ -54,7 +54,7 @@ export const fetchBankDetails = async (employeeId: number) => {
 }
 
 
-export const addHrDetails = async (employeeId: number, data: HrDetailsFormData) => {
+export const addHrDetails = async (employeeId: number, data: EmployeeHrDetails) => {
     const response = await fetch(`/api/employee/details/hr-details/${employeeId}`, {
         method: 'POST',
         headers: {
@@ -62,8 +62,22 @@ export const addHrDetails = async (employeeId: number, data: HrDetailsFormData) 
         },
         body: JSON.stringify(data),
     })
-
     if (!response.ok) {
         throw new Error('Failed to add hr details')
     }
+    return true;
+
+}
+export const editHrDetails = async (employeeId: number, data: EmployeeHrDetailsFormData) => {
+    const response = await fetch(`/api/employee/details/hr-details/${data.employeeId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    if (!response.ok) {
+        throw new Error('Failed to add bank details')
+    }
+    return true
 }
