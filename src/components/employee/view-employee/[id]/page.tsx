@@ -28,6 +28,7 @@ import {
   from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { capitalizeFirstLetter } from '@/utils/StringUtils';
+import dayjs from 'dayjs';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -274,8 +275,8 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         {hrDetails &&
           <Grid container spacing={2} key={hrDetails?.id}>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Date of Joining:</strong> {hrDetails?.dateOfJoining}</Typography>
-              <Typography><strong>Bonus:</strong> ${hrDetails?.bonus?.toFixed(2)}</Typography>
+            <Typography><strong>Date of Joining:</strong> {hrDetails?.dateOfJoining ? dayjs(hrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
+            <Typography><strong>Bonus:</strong> ${hrDetails?.bonus ? Number(hrDetails.bonus).toFixed(2) : ''}</Typography>
               <Typography><strong>Passport Number:</strong> {hrDetails?.passportNumber}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
