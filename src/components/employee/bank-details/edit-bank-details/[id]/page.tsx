@@ -5,15 +5,12 @@ import { Container, Paper, CircularProgress, LinearProgress, Snackbar, Alert } f
 import { z } from 'zod'
 import BankDetailsForm from '../../BankDetailsForm'
 import { useRouter } from 'next/navigation'
-import { BankDetailsFormData } from '../../schema'
+import { AddEditBankDetailsFormProps, BankDetailsFormData } from '../../schema'
 
 
-interface EditBankDetailsFormProps {
-  employeeId: number
-  initialData: BankDetailsFormData
-}
 
-export default function EditBankDetails({ employeeId, initialData }: EditBankDetailsFormProps) {
+
+export default function EditBankDetails({ employeeId, initialData }: AddEditBankDetailsFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')

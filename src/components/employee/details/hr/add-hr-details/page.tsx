@@ -1,19 +1,25 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Alert, Container, LinearProgress, Paper, Snackbar } from '@mui/material'
-import BankDetailsForm from '../BankDetailsForm'
 import { useRouter } from 'next/navigation'
-import { AddEditBankDetailsFormProps, BankDetailsFormData } from '../schema'
+import { HrDetailsFormData } from '../constants'
+import HrDetailsForm from '../hrDetailsForm'
 
-export default function AddBankDetails({ employeeId, initialData }: AddEditBankDetailsFormProps) {
+
+interface AddEditHrDetailFormProps {
+  employeeId: number
+  initialData: EmployeeHrDetails
+}
+
+export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetailFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false);
   
-  const handleSubmit = async (data: BankDetailsFormData) => {
+  const handleSubmit = async (data: HrDetailsFormData) => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/employee/details/bank-details', {
@@ -55,7 +61,7 @@ export default function AddBankDetails({ employeeId, initialData }: AddEditBankD
     <Container component="main" maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
         {isLoading && <LinearProgress />}
-        <BankDetailsForm onSubmit={handleSubmit}
+        <HrDetailsForm onSubmit={handleSubmit}
           isEditing={false}
           employeeId={employeeId}
           initialData={initialData} />

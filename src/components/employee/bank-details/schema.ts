@@ -1,5 +1,10 @@
 import { z } from 'zod'
 
+export interface AddEditBankDetailsFormProps {
+    employeeId: number
+    initialData: BankDetailsFormData
+  }
+
 export const bankDetailsSchema = z.object({
     employeeId: z.number().int().positive(),
     bankName: z.string().min(1, 'Bank name is required'),

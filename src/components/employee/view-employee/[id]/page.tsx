@@ -114,7 +114,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           throw new Error('Failed changing active status')
         }
         window.alert(`${capitalizeFirstLetter(action)} Successful`);
-       // window.location.reload();
+        // window.location.reload();
         if (action) {
           setBackgroundColor('bg-inherit');
         }
@@ -190,14 +190,14 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
       case DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS:
         router.push(`/employee/employee/edit-employee?id=${employeeId}`)
         break;
+      case DETAIL_TYPE_ENUM.HR_DETAILS:
+        router.push(`/employee/details/hr-details/add-edit/${employeeId}?id=${employeeId}`)
+        break;
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
         router.push(`/employee/details/bank-details/add-edit/${employeeId}?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS:
         router.push(`/employee/details/emergency-contacts/add-edit/${employeeId}?id=${employeeId}`)
-        break;
-      case DETAIL_TYPE_ENUM.HR_DETAILS:
-        router.push(`/employee/details/hr-details/add-edit/${employeeId}?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.LEAVE_BALANCES:
         router.push(`/employee/details/leave-balances/add-edit/${employeeId}?id=${employeeId}`)
