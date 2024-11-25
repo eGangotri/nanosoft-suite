@@ -1,4 +1,5 @@
 import { BankDetailsFormData } from "@/components/employee/bank-details/schema";
+import { HrDetailsFormData } from "@/components/employee/details/hr/constants";
 
 export const getEmployeeData = async (employeeId: string): Promise<EmployeeData | EmployeeError> => {
     const response = await fetch(`/api/employee/${employeeId}/?id=${employeeId}`)
@@ -49,5 +50,20 @@ export const fetchBankDetails = async (employeeId: number) => {
     catch (error) {
         console.error('Error fetching bank details:', error)
         throw new Error('Failed to fetch bank details')
+    }
+}
+
+
+export const addHrDetails = async (employeeId: number, data: HrDetailsFormData) => {
+    const response = await fetch(`/api/employee/details/hr-details/${employeeId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to add hr details')
     }
 }

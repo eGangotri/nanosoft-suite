@@ -7,6 +7,8 @@ import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import EditBankDetails from '@/components/employee/bank-details/edit-bank-details/[id]/page';
 import { fetchHrDetails } from '@/services/employeeService';
+import AddHrDetails from '@/components/employee/details/hr/add-hr-details/page';
+import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]/page';
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
@@ -79,9 +81,9 @@ const AddBankDetailsPage: React.FC = () => {
     return (
         <DashboardLayout>
             {addEdit === ADD_EDIT_ENUM.ADD ? (
-                <AddBankDetails employeeId={employeeId} initialData={initialData} />
+                <AddHrDetails employeeId={employeeId} initialData={initialData} />
             ) : (
-                <EditBankDetails employeeId={employeeId} initialData={initialData} />
+                <EditHrDetails employeeId={employeeId} initialData={initialData} />
             )}
         </DashboardLayout>
     );

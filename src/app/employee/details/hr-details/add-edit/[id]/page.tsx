@@ -1,14 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
-import AddBankDetails from '@/components/employee/bank-details/add-bank-details/page';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
-import EditBankDetails from '@/components/employee/bank-details/edit-bank-details/[id]/page';
-import { fetchBankDetails } from '@/services/employeeService';
-import { BankDetailsFormData } from '@/components/employee/bank-details/schema';
-import AddHrDetailsPage from '../../add/[id]/page';
-import EditHrDetailsPage from '../../edit/[id]/page';
+import { fetchBankDetails, fetchHrDetails } from '@/services/employeeService';
+import AddHrDetails from '@/components/employee/details/hr/add-hr-details/page';
+import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]/page';
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
@@ -42,7 +39,7 @@ const AddBankDetailsPage: React.FC = () => {
         const init = async (employeeId: number) => {
             try {
                 setEmployeeId(employeeId);
-                const data = await fetchBankDetails(employeeId);
+                const data = await fetchHrDetails(employeeId);
                 console.log(`data: ${JSON.stringify(data)} ${data?.employeeId === employeeId}`);
                 if (data && data.employeeId === employeeId) {
                     setInitialData(data);
@@ -80,9 +77,9 @@ const AddBankDetailsPage: React.FC = () => {
     return (
         <DashboardLayout>
             {addEdit === ADD_EDIT_ENUM.ADD ? (
-                <AddHrDetailsPage employeeId={employeeId} initialData={initialData} />
+                <AddHrDetails employeeId={employeeId} initialData={initialData} />
             ) : (
-                <EditHrDetailsPage employeeId={employeeId} initialData={initialData} />
+                <EditHrDetails employeeId={employeeId} initialData={initialData} />
             )}
         </DashboardLayout>
     );

@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { HrDetailsFormData } from '../../constants'
 
-export default function EditBankDetails({ employeeId, initialData }: AddEditHrDetailFormProps) {
+export default function EditHrDetails({ employeeId, initialData }: AddEditHrDetailFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')

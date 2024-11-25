@@ -22,19 +22,9 @@ export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetai
   const handleSubmit = async (data: HrDetailsFormData) => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/employee/details/bank-details', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
 
-      if (!response.ok) {
-        throw new Error('Failed to add bank details')
-      }
 
-      setSnackbarMessage('Bank details added successfully')
+      setSnackbarMessage('Hr details added successfully')
       setSnackbarSeverity('success')
       setOpenSnackbar(true)
 
