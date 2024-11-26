@@ -24,10 +24,10 @@ export const extractEmployeePortion = (json: EmployeeData): Employee => {
 }
 
 export const initCaps = (str: string) => {
-    return str ? str?.charAt(0)?.toUpperCase() + str?.slice(1) : "";
+    return str ? str?.charAt(0)?.toUpperCase() + str?.slice(1).toLowerCase() : "";
 }
 
-export const divideNames = (employee: Employee) => {
+export const divideNames = (employee: { firstName: string, middleName?: string|null, lastName: string }) => {
     return {
         firstName: initCaps(employee.firstName),
         middleName: initCaps(employee.middleName || ""),
@@ -35,13 +35,15 @@ export const divideNames = (employee: Employee) => {
     }
 }
 
-export const formatedEmployeeName = (employee: Employee) => {
+export const formatedEmployeeName = (employee: { firstName: string, 
+    middleName?: string|null, lastName: string }) => {
     const { firstName, middleName, lastName } = divideNames(employee);
     const fullName = `${firstName} ${middleName} ${lastName}`.trim();
     return fullName
 }
 
-export const formatedEmployeeNameWithMidInitials = (employee: Employee) => {
+export const formatedEmployeeNameWithMidInitials = (employee:
+     { firstName: string, middleName?: string|null, lastName: string }) => {
     const { firstName, middleName, lastName } = divideNames(employee);
     const midInitial = middleName.length > 0 ? middleName.charAt(0) + ". " : "";
     const withMidInitial = `${firstName} ${midInitial}${lastName}`.trim();

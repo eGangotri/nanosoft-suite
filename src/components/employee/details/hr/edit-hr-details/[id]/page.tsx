@@ -41,7 +41,7 @@ export default function EditHrDetails({ employee, initialData }: AddEditHrDetail
   };
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component="main">
       {isLoading && <CircularProgress />}
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
         <HrDetailsForm initialData={initialData}

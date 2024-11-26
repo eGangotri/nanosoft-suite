@@ -18,13 +18,17 @@ import {
   Alert,
   MenuItem,
   Select,
-  CircularProgress
+  CircularProgress,
+  InputLabel,
+  Autocomplete
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
+import { CITIZEN_CATEGORIES, MARITAL_CATEGORIES, NATIONALITIES } from '@/utils/FormConsts'
+import { initCaps } from './EmployeeUtils'
 
 const today = dayjs();
 
@@ -67,7 +71,16 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
       postalCode: '',
     },
   })
-  
+
+
+  const [showExpiryDate, setShowExpiryDate] = useState(initialData?.citizenshipStatus === "FOREIGNER" || false);
+
+  const citizenshipStatus = watch('citizenshipStatus');
+
+  React.useEffect(() => {
+    setShowExpiryDate(citizenshipStatus === "FOREIGNER");
+  }, [citizenshipStatus]);
+
   const onSubmitForm = async (data: EmployeeFormData): Promise<void> => {
     try {
       setIsLoading(true);
@@ -141,20 +154,38 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               )}
             />
           </div>
-          <Controller
-            name="designation"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                label="Designation"
-                variant="outlined"
-                fullWidth
-                error={!!error}
-                helperText={error?.message}
-              />
-            )}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Controller
+              name="designation"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  label="Designation"
+                  variant="outlined"
+                  fullWidth
+                  error={!!error}
+                  helperText={error?.message}
+                />
+              )}
+            />
+            <Controller
+              name="maritalStatus"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl fullWidth error={!!error}>
+                  <FormLabel>Marital Status</FormLabel>
+                  <Select {...field}>
+                    {MARITAL_CATEGORIES.map((status: string) => (
+                      <MenuItem key={status} value={status}>{status}</MenuItem>
+                    ))}
+                  </Select>
+                  {error && <FormHelperText>{error.message}</FormHelperText>}
+                </FormControl>
+              )}
+            />
+
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="dateOfBirth"
@@ -179,14 +210,21 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               name="nationality"
               control={control}
               render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Nationality"
-                  variant="outlined"
-                  fullWidth
-                  error={!!error}
-                  helperText={error?.message}
-                />
+                <FormControl fullWidth error={!!error} sx={{ mt: 2, mb: 1 }}>
+                  <Autocomplete
+                    {...field}
+                    options={NATIONALITIES}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Nationality"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                    onChange={(_, data) => field.onChange(data)}
+                  />
+                </FormControl>
               )}
             />
           </div>
@@ -229,9 +267,9 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               <FormControl error={!!error} component="fieldset">
                 <FormLabel component="legend">Citizenship Status</FormLabel>
                 <RadioGroup {...field} row>
-                  <FormControlLabel value="citizen" control={<Radio />} label="Citizen" />
-                  <FormControlLabel value="pr" control={<Radio />} label="PR" />
-                  <FormControlLabel value="foreigner" control={<Radio />} label="Foreigner" />
+                  {CITIZEN_CATEGORIES.map((status: string) => (
+                    <FormControlLabel value={status} control={<Radio />} label={status==="PR"?status:initCaps(status)} />
+                  ))}
                 </RadioGroup>
                 {error && <FormHelperText>{error.message}</FormHelperText>}
               </FormControl>
@@ -253,7 +291,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 />
               )}
             />
-            <Controller
+
+            {showExpiryDate && <Controller
               name="expiryDate"
               control={control}
               render={({ field, fieldState: { error } }) => (
@@ -271,25 +310,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                   }}
                 />
               )}
-            />
+            />}
           </div>
-          <Controller
-            name="maritalStatus"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <FormControl fullWidth error={!!error}>
-                <FormLabel>Marital Status</FormLabel>
-                <Select {...field}>
-                  <MenuItem value="Single">Single</MenuItem>
-                  <MenuItem value="Married">Married</MenuItem>
-                  <MenuItem value="Divorced">Divorced</MenuItem>
-                  <MenuItem value="Defacto">Defacto</MenuItem>
-                  <MenuItem value="Separated">Separated</MenuItem>
-                </Select>
-                {error && <FormHelperText>{error.message}</FormHelperText>}
-              </FormControl>
-            )}
-          />
 
           <Controller
             name="addressLine1"
@@ -365,17 +387,18 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               )}
             />
           </div>
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            className="mt-6"
-          >
-            {isLoading ? <CircularProgress size={24} /> : isEditMode ?
-              'Update Employee' : 'Add Employee'}
-          </Button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              className="mt-6"
+            >
+              {isLoading ? <CircularProgress size={24} /> : isEditMode ?
+                'Update Employee' : 'Add Employee'}
+            </Button>
+          </div>
         </form>
       </Box>
       <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>

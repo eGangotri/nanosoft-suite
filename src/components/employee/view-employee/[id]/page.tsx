@@ -29,6 +29,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { capitalizeFirstLetter } from '@/utils/StringUtils';
 import dayjs from 'dayjs';
+import { formatedEmployeeName } from '../../EmployeeUtils';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -245,7 +246,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           employeeId={employee?.id} detailId={-1} />
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            <Typography><strong>Name:</strong> {`${employee?.firstName} ${employee?.middleName || ''} ${employee?.lastName}`}</Typography>
+            <Typography><strong>Name:</strong> {`${formatedEmployeeName(employee)}`}</Typography>
             <Typography><strong>Designation:</strong> {employee?.designation}</Typography>
             <Typography><strong>Date of Birth:</strong> {employee?.dateOfBirth}</Typography>
             <Typography><strong>Nationality:</strong> {employee?.nationality}</Typography>

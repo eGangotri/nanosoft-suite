@@ -44,7 +44,7 @@ export default function AddHrDetails({ employee, initialData }: AddEditHrDetailF
 
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container component="main" >
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
         {isLoading && <LinearProgress />}
         <HrDetailsForm onSubmit={handleSubmit}

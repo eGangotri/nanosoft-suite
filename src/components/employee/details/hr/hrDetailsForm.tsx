@@ -9,6 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { EmployeeHrDetailsFormData, employeeHrDetailsSchema, VALID_PASS_TYPES } from './constants';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { formatedEmployeeName } from '../../EmployeeUtils';
 
 const today = dayjs();
 interface HrDetailsFormProps {
@@ -41,46 +42,47 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box>
         <Typography variant="h6" gutterBottom>
-          {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {emplo}
+          {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(employee)}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <Controller
-            name="dateOfJoining"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <DatePicker
-                value={field.value ? dayjs(field.value) : null} // Convert value to dayjs object
-                onChange={(newValue) => field.onChange(newValue?.toISOString() || null)} // Convert dayjs back to ISO string
-                maxDate={today} // Use dayjs for the maxDate
-                label="Date of Joining"
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    error: !!error,
-                    helperText: error?.message,
-                  },
-                }}
-              />
-            )}
-          />
-          <Controller
-            name="bonus"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                margin="normal"
-                required
-                fullWidth
-                id="bonus"
-                label="Bonus"
-                type="number"
-                error={!!errors.bonus}
-                helperText={errors.bonus?.message}
-              />
-            )}
-          />
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Controller
+              name="dateOfJoining"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <DatePicker
+                  value={field.value ? dayjs(field.value) : null} // Convert value to dayjs object
+                  onChange={(newValue) => field.onChange(newValue?.toISOString() || null)} // Convert dayjs back to ISO string
+                  maxDate={today} // Use dayjs for the maxDate
+                  label="Date of Joining"
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      error: !!error,
+                      helperText: error?.message,
+                    },
+                  }}
+                />
+              )}
+            />
+            <Controller
+              name="bonus"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="bonus"
+                  label="Bonus"
+                  type="number"
+                  error={!!errors.bonus}
+                  helperText={errors.bonus?.message}
+                />
+              )}
+            />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Controller
               name="passportNumber"
@@ -88,7 +90,6 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               render={({ field }) => (
                 <TextField
                   {...field}
-                  margin="normal"
                   required
                   fullWidth
                   id="passportNumber"
@@ -137,7 +138,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="passType"
               control={control}
@@ -184,6 +185,8 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 />
               )}
             />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
             <Controller
               name="renewalApplyDate"
@@ -204,10 +207,6 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 />
               )}
             />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
             <Controller
               name="newApplyDate"
               control={control}
