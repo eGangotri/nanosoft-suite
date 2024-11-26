@@ -254,53 +254,53 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           <Controller
             name="clientId"
             control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                select
-                margin="normal"
-                fullWidth
-                id="clientId"
-                label="Client"
-                error={!!errors.clientId}
-                helperText={errors.clientId?.message}
-              >
-                <>
-                  {/* <MenuItem key="-1" value={null}>None</MenuItem> */}
-                  {clients?.map((client) => (
-                    <MenuItem key={client.id} value={client.id}>
-                      {client.companyName}
-                    </MenuItem>
-                  ))}
-                </>
-              </TextField>
+            render={({ field, fieldState: { error } }) => (
+              <FormControl fullWidth margin="normal" error={!!error}>
+                <InputLabel id="client-label">Client</InputLabel>
+                <Select
+                  {...field}
+                  labelId="client-label"
+                  id="clientId"
+                  label="Client"
+                  required
+                >
+                  {clients?.map((client: Client) => {
+                    return (
+                      <MenuItem key={client.id} value={client.id}>
+                        {client.companyName}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+                {error && <FormHelperText>{error.message}</FormHelperText>}
+              </FormControl>
             )}
           />
-          <Controller
-            name="remarks"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                margin="normal"
-                fullWidth
-                id="remarks"
-                label="Remarks"
-                multiline
-                rows={4}
-                error={!!errors.remarks}
-                helperText={errors.remarks?.message}
-              />
-            )}
+      <Controller
+        name="remarks"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            margin="normal"
+            fullWidth
+            id="remarks"
+            label="Remarks"
+            multiline
+            rows={4}
+            error={!!errors.remarks}
+            helperText={errors.remarks?.message}
           />
-          <div className="grid grid-cols-3">
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-              {isEditing ? 'Update' : 'Add'} HR Details
-            </Button>
-          </div>
-        </form>
-      </Box>
-    </LocalizationProvider>
+        )}
+      />
+      <div className="grid grid-cols-3">
+        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          {isEditing ? 'Update' : 'Add'} HR Details
+        </Button>
+      </div>
+    </form>
+      </Box >
+    </LocalizationProvider >
   );
 };
 
