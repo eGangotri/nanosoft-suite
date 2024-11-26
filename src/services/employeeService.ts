@@ -1,14 +1,11 @@
 import { BankDetailsFormData } from "@/components/employee/bank-details/schema";
 import { EmployeeHrDetailsFormData } from "@/components/employee/details/hr/constants";
 
-export const getEmployeeData = async (employeeId: string): Promise<EmployeeData | EmployeeError> => {
+export const getEmployeeData = async (employeeId: number):
+ Promise<EmployeeData|null> => {
     const response = await fetch(`/api/employee/${employeeId}/?id=${employeeId}`)
     if (!response.ok) {
-        return {
-            employeeId: employeeId,
-            error: `Employee with ID ${employeeId} not found`,
-            status: response.status
-        };
+        return null;
     } else {
         const data: EmployeeData = await response.json()
         return data

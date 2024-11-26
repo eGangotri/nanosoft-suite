@@ -14,7 +14,7 @@ export async function GET(
       return NextResponse.json({});
     }
     const employeeHrDetails = await nanosoftPrisma.employeeHrDetails.findUnique({
-      where: { id: employeeId },
+      where: { employeeId: employeeId },
       include: {
         client: true,
         employee: true

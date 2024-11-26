@@ -236,7 +236,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   return (
     <Box className={`max-w-6xl mx-auto p-6 ${backgroundColor} ${employee?.active === false ? 'bg-red-500' : ''}`}>
       <Typography variant="h4" gutterBottom>
-        Employee Details for {employee?.firstName} {employee?.lastName} ({JSON.stringify(hrDetails)})
+        Employee Details for {employee?.firstName} {employee?.lastName}
       </Typography>
 
       <Paper elevation={3} className="p-6 mb-6">

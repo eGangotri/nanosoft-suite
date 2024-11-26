@@ -53,12 +53,6 @@ export interface EmployeeFormProps {
   onSubmit: (data: EmployeeFormData) => Promise<void>
 }
 
-
-export const initCaps = (str: string) => {
-    return str ? str?.charAt(0)?.toUpperCase() + str?.slice(1) : "";
-}
-
-
 export
     const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
         '& .inactive-row': {

@@ -5,15 +5,10 @@ import { Alert, Container, LinearProgress, Paper, Snackbar } from '@mui/material
 import { useRouter } from 'next/navigation'
 import HrDetailsForm from '../hrDetailsForm'
 import { addHrDetails } from '@/services/employeeService'
-import { EmployeeHrDetailsFormData } from '../constants'
+import { AddEditHrDetailFormProps, EmployeeHrDetailsFormData } from '../constants'
 
 
-interface AddEditHrDetailFormProps {
-  employeeId: number
-  initialData: EmployeeHrDetailsFormData
-}
-
-export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetailFormProps) {
+export default function AddHrDetails({ employee, initialData }: AddEditHrDetailFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
@@ -24,14 +19,14 @@ export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetai
     console.log('Submitting Hr details:', data)
     try {
       setIsLoading(true);
-      await addHrDetails(employeeId, data);
+      await addHrDetails(employee.id, data);
       setSnackbarMessage('Hr details added successfully')
       setSnackbarSeverity('success')
       setOpenSnackbar(true)
 
       // Redirect to the Hr details list page after a short delay
       setTimeout(() => {
-        router.push(`/employee/employee/view-employee/${employeeId}`)
+        router.push(`/employee/employee/view-employee/${employee.id}`)
       }, 2000)
     } catch (error) {
       console.error('Error adding Hr details:', error)
@@ -54,7 +49,7 @@ export default function AddHrDetails({ employeeId, initialData }: AddEditHrDetai
         {isLoading && <LinearProgress />}
         <HrDetailsForm onSubmit={handleSubmit}
           isEditing={false}
-          employeeId={employeeId}
+          employee={employee}
           initialData={initialData} />
       </Paper>
       <Snackbar

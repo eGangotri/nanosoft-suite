@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 
 export interface AddEditHrDetailFormProps {
-  employeeId: number
+  employee: Employee
   initialData: EmployeeHrDetails
 }
 
@@ -34,7 +34,7 @@ export const employeeHrDetailsSchema = z.object({
   passportIssueDate: requiredDateSchema,
   passportExpiryDate: requiredDateSchema,
   passType: z.string().min(1).max(5),
-  passExpiryDate: requiredDateSchema,
+  passExpiryDate: nullableDateSchema,
   renewalApplyDate: nullableDateSchema,
   newApplyDate: nullableDateSchema,
   passCancelledDate: nullableDateSchema,
@@ -43,6 +43,7 @@ export const employeeHrDetailsSchema = z.object({
 });
 
 //export type EmployeeHrDetailsFormData = Omit<EmployeeHrDetails, 'id' | 'employee' | 'client'>;
-export type EmployeeHrDetailsFormData = z.infer<typeof employeeHrDetailsSchema>;
+//export type EmployeeHrDetailsFormData = z.infer<typeof employeeHrDetailsSchema>;
+export type EmployeeHrDetailsFormData = EmployeeHrDetails
 
 export const VALID_PASS_TYPES = ["EP", "PEP", "WP", "SPass"] as const;

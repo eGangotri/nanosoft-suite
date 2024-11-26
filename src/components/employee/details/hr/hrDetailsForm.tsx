@@ -17,7 +17,7 @@ interface HrDetailsFormProps {
   employees?: { id: number; name: string }[];
   clients?: { id: number; companyName: string }[];
   isEditing: boolean,
-  employeeId: number,
+  employee: Employee,
 }
 
 const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
@@ -26,7 +26,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   employees,
   clients,
   isEditing,
-  employeeId,
+  employee,
 }) => {
   const {
     control,
@@ -36,13 +36,12 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
     resolver: zodResolver(employeeHrDetailsSchema),
     defaultValues: initialData
   });
-  const [employeeName, setEmployeeName] = useState('')
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box>
         <Typography variant="h6" gutterBottom>
-          {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {employeeName}
+          {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {emplo}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <Controller

@@ -3,16 +3,17 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { fetchHrDetails } from '@/services/employeeService';
+import { fetchHrDetails, getEmployeeData } from '@/services/employeeService';
 import AddHrDetails from '@/components/employee/details/hr/add-hr-details/page';
 import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]/page';
 import { EmployeeHrDetailsFormData } from '@/components/employee/details/hr/constants';
+import { extractEmployeePortion } from '@/components/employee/EmployeeUtils';
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
 const AddHRDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
-    const [employeeId, setEmployeeId] = useState(0);
+    const [employee, setEmployee] = useState({} as Employee);
     const [initialData, setInitialData] = useState<EmployeeHrDetailsFormData>({
         id: 0,
         employeeId: 0,
@@ -39,18 +40,38 @@ const AddHRDetailsPage: React.FC = () => {
     useEffect(() => {
         const init = async (employeeId: number) => {
             try {
-                setEmployeeId(employeeId);
-                const data = await fetchHrDetails(employeeId);
-                console.log(`data: ${JSON.stringify(data)} ${data?.employeeId === employeeId}`);
-                if (data && data.employeeId === employeeId) {
-                    setInitialData(data);
-                    setAddEdit(ADD_EDIT_ENUM.EDIT);
-                } else {
-                    setAddEdit(ADD_EDIT_ENUM.ADD);
-                    setInitialData({
-                        ...initialData,
-                        employeeId: employeeId
-                    });
+                const data: EmployeeData | null = await getEmployeeData(employeeId);
+                if (data) {
+                    const _employee: Employee = extractEmployeePortion(data as EmployeeData);
+                    setEmployee(_employee);
+                    if (data && employee.id === employeeId) {
+                        setInitialData(data.hrDetails);
+                        setAddEdit(ADD_EDIT_ENUM.EDIT);
+                    } else {
+                        setAddEdit(ADD_EDIT_ENUM.ADD);
+                        setInitialData({
+                            id: 0,
+                            employeeId: employeeId,
+                            dateOfJoining: new Date(),
+                            bonus: 0,
+                            passportNumber: "",
+                            passportIssueDate: new Date(),
+                            passportExpiryDate: new Date(),
+                            passType: "",
+                            passExpiryDate: null,
+                            renewalApplyDate: null,
+                            newApplyDate: null,
+                            passCancelledDate: null,
+                            clientId: null,
+                            remarks: null,
+                            employee: employee as Employee, // Replace with a valid empty `Employee` object if required
+                            client: null, // Replace with a valid empty `Client` object if required
+                        });
+                    }
+                }
+                else {
+                    console.error(`No employee with id found. ${employeeId}`);
+                    throw new Error(`No employee with id found. ${employeeId}`);
                 }
             } catch (error) {
                 console.error('Error fetching Hr details:', error);
@@ -78,9 +99,9 @@ const AddHRDetailsPage: React.FC = () => {
     return (
         <DashboardLayout>
             {addEdit === ADD_EDIT_ENUM.ADD ? (
-                <AddHrDetails employeeId={employeeId} initialData={initialData} />
+                <AddHrDetails employee={employee} initialData={initialData} />
             ) : (
-                <EditHrDetails employeeId={employeeId} initialData={initialData} />
+                <EditHrDetails employee={employee} initialData={initialData} />
             )}
         </DashboardLayout>
     );

@@ -32,8 +32,9 @@ import {
   from '@mui/icons-material';
 
 import { useRouter } from 'next/navigation';
-import { initCaps, StyledDataGrid } from './constants'
+import { StyledDataGrid } from './constants'
 import { capitalizeFirstLetter } from '@/utils/StringUtils'
+import { formatedEmployeeName, formatedEmployeeNameWithMidInitials } from './EmployeeUtils'
 
 
 export default function EmployeeListPage() {
@@ -49,14 +50,8 @@ export default function EmployeeListPage() {
       width: 160,
       renderCell: (params: GridRenderCellParams) => {
         const { row } = params;
-        const firstName = initCaps(row.firstName);
-        const middleName = initCaps(row.middleName);
-        const lastName = initCaps(row.lastName);
-        const fullName = `${firstName} ${middleName} ${lastName}`.trim();
-        const midInitial = middleName.length > 0 ? middleName.charAt(0) + ". " : "";
-        const withMidInitial = `${firstName} ${midInitial}${lastName}`.trim();
-        return (<Tooltip title={`${fullName}`}>
-          <span>{withMidInitial}</span>
+        return (<Tooltip title={`${formatedEmployeeName(row)}`}>
+          <span>{formatedEmployeeNameWithMidInitials(row)}</span>
         </Tooltip>)
       }
     },

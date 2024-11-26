@@ -149,7 +149,7 @@ declare global {
   }
 
   interface EmployeeError {
-    employeeId: string;
+    employeeId: number;
     error: string;
     status: number;
   }
