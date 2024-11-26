@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Typography,
@@ -16,6 +16,7 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
+  Stack,
 } from '@mui/material'
 import {
   Edit as EditIcon,
@@ -29,7 +30,8 @@ import {
 import { useRouter } from 'next/navigation';
 import { capitalizeFirstLetter } from '@/utils/StringUtils';
 import dayjs from 'dayjs';
-import { formatedEmployeeName } from '../../EmployeeUtils';
+import { formatedEmployeeName, initCaps, initCapsForCitizenStatus } from '../../EmployeeUtils';
+import { CITIZEN_CATEGORIES } from '@/utils/FormConsts';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -50,7 +52,16 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   const [backgroundColor, setBackgroundColor] = useState('bg-inherit');
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  useEffect(() => {
+    if (employeeData?.active === false) {
+      setBackgroundColor('bg-red-300')
+    }
+    else {
+      setBackgroundColor('bg-inherit')
+    }
+  }, [employeeData]);
+
   const setLoading = (id: number | string, isLoading: boolean) => {
     setLoadingStates(prev => ({ ...prev, [id]: isLoading }))
   }
@@ -121,7 +132,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           setBackgroundColor('bg-inherit');
         }
         else {
-          setBackgroundColor('bg-red-500');
+          setBackgroundColor('bg-red-300');
         }
       } catch (error) {
         setLoading(`${action}-${employeeId}`, false)
@@ -136,8 +147,9 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
     detailType: string,
     employeeId: number,
     detailId: number
-  }> = ({ title, detailType, employeeId, detailId }) => (
-    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+    className?: string
+  }> = ({ title, detailType, employeeId, detailId,className }) => (
+    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} className={className}>
       <Typography variant="h6">{title}</Typography>
       <Box>
         <IconButton size="small" onClick={() => handleAddEdit(detailType, employeeId)}>
@@ -235,17 +247,17 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   }
 
   return (
-    <Box className={`max-w-6xl mx-auto p-6 ${backgroundColor} ${employee?.active === false ? 'bg-red-500' : ''}`}>
+    <Box className={`max-w-6xl mx-auto p-6 ${backgroundColor}`}>
       <Typography variant="h4" gutterBottom>
-        Employee Details for {employee?.firstName} {employee?.lastName}
+        Employee Details for {employee?.firstName} {employee?.lastName} ({initCapsForCitizenStatus(employee.citizenshipStatus)})
       </Typography>
 
       <Paper elevation={3} className="p-6 mb-6">
         <SectionHeader title="Main Employee Information"
           detailType={DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS}
           employeeId={employee?.id} detailId={-1} />
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+        <Grid container spacing={2} >
+          <Grid item xs={12} sm={6} >
             <Typography><strong>Name:</strong> {`${formatedEmployeeName(employee)}`}</Typography>
             <Typography><strong>Designation:</strong> {employee?.designation}</Typography>
             <Typography><strong>Date of Birth:</strong> {employee?.dateOfBirth}</Typography>
@@ -276,14 +288,17 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         {hrDetails &&
           <Grid container spacing={2} key={hrDetails?.id}>
             <Grid item xs={12} sm={6}>
-            <Typography><strong>Date of Joining:</strong> {hrDetails?.dateOfJoining ? dayjs(hrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
-            <Typography><strong>Bonus:</strong> ${hrDetails?.bonus ? Number(hrDetails.bonus).toFixed(2) : ''}</Typography>
-              <Typography><strong>Passport Number:</strong> {hrDetails?.passportNumber}</Typography>
+              <Typography><strong>Date of Joining:</strong> {hrDetails?.dateOfJoining ? dayjs(hrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
+              <Typography><strong>Bonus:</strong> ${hrDetails?.bonus ? Number(hrDetails.bonus).toFixed(2) : ''}</Typography>
+              {employee.citizenshipStatus === CITIZEN_CATEGORIES[2] &&
+                (<Typography><strong>Pass Type:</strong> {hrDetails?.passType}</Typography>)}
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Pass Type:</strong> {hrDetails?.passType}</Typography>
-              <Typography><strong>Pass Expiry Date:</strong> {hrDetails?.passExpiryDate ? hrDetails?.passExpiryDate : 'N/A'}</Typography>
+              <Typography><strong>Passport Number:</strong> {hrDetails?.passportNumber}</Typography>
               <Typography><strong>Client:</strong> {hrDetails?.client ? hrDetails?.client.companyName : 'N/A'}</Typography>
+              {employee.citizenshipStatus === CITIZEN_CATEGORIES[2] &&
+                <Typography><strong>Pass Expiry Date:</strong> {hrDetails?.passExpiryDate ? hrDetails?.passExpiryDate : 'N/A'}</Typography>
+              }
             </Grid>
           </Grid>
         }

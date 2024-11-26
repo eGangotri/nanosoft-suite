@@ -28,7 +28,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
 import { CITIZEN_CATEGORIES, MARITAL_CATEGORIES, NATIONALITIES } from '@/utils/FormConsts'
-import { initCaps } from './EmployeeUtils'
+import { initCaps, initCapsForCitizenStatus } from './EmployeeUtils'
 
 const today = dayjs();
 
@@ -268,7 +268,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 <FormLabel component="legend">Citizenship Status</FormLabel>
                 <RadioGroup {...field} row>
                   {CITIZEN_CATEGORIES.map((status: string) => (
-                    <FormControlLabel value={status} control={<Radio />} label={status==="PR"?status:initCaps(status)} />
+                    <FormControlLabel value={status} control={<Radio />} label={initCapsForCitizenStatus(status)} />
                   ))}
                 </RadioGroup>
                 {error && <FormHelperText>{error.message}</FormHelperText>}

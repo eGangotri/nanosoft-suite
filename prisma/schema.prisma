@@ -146,7 +146,7 @@ model EmployeeHrDetails {
   passportNumber     String    @map("passport_number") @db.VarChar(20)
   passportIssueDate  DateTime  @map("passport_issue_date") @db.Date
   passportExpiryDate DateTime  @map("passport_expiry_date") @db.Date
-  passType           String    @map("pass_type") @db.VarChar(5)
+  passType           String    @map("pass_type") 
   passExpiryDate     DateTime? @map("pass_expiry_date") @db.Date
   renewalApplyDate   DateTime? @map("renewal_apply_date") @db.Date
   newApplyDate       DateTime? @map("new_apply_date") @db.Date

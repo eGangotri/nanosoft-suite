@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { fetchHrDetails, getEmployeeData } from '@/services/employeeService';
+import { fetchClients, fetchHrDetails, getEmployeeData } from '@/services/employeeService';
 import AddHrDetails from '@/components/employee/details/hr/add-hr-details/page';
 import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]/page';
 import { EmployeeHrDetailsFormData } from '@/components/employee/details/hr/constants';
@@ -14,6 +14,7 @@ const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 const AddHRDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employee, setEmployee] = useState({} as Employee);
+    const [clients, setClients] = useState<Client[]>([]);
     const [initialData, setInitialData] = useState<EmployeeHrDetailsFormData>({
         id: 0,
         employeeId: 0,
@@ -41,13 +42,23 @@ const AddHRDetailsPage: React.FC = () => {
         const init = async (employeeId: number) => {
             try {
                 const data: EmployeeData | null = await getEmployeeData(employeeId);
+                const _clients: Client[] = await fetchClients();
                 if (data) {
                     const _employee: Employee = extractEmployeePortion(data as EmployeeData);
                     setEmployee(_employee);
-                    if (data && employee.id === employeeId) {
+                    setClients(_clients);
+                    console.log(`--data found for ID:
+                         ${employeeId}
+                         ${_employee.id}
+                         ${JSON.stringify(data)}
+                        ${JSON.stringify(data.hrDetails)}`);
+
+                    if (data?.hrDetails?.employeeId === employeeId) {
+                        console.log("edit", data.hrDetails.employeeId === employeeId);
                         setInitialData(data.hrDetails);
                         setAddEdit(ADD_EDIT_ENUM.EDIT);
                     } else {
+                        console.log("add");
                         setAddEdit(ADD_EDIT_ENUM.ADD);
                         setInitialData({
                             id: 0,
@@ -74,7 +85,7 @@ const AddHRDetailsPage: React.FC = () => {
                     throw new Error(`No employee with id found. ${employeeId}`);
                 }
             } catch (error) {
-                console.error('Error fetching Hr details:', error);
+                console.error('Error in Hr details:', error);
                 throw new Error('Failed to fetch Hr details');
             } finally {
                 setLoading(false);
@@ -99,9 +110,9 @@ const AddHRDetailsPage: React.FC = () => {
     return (
         <DashboardLayout>
             {addEdit === ADD_EDIT_ENUM.ADD ? (
-                <AddHrDetails employee={employee} initialData={initialData} />
+                <AddHrDetails employee={employee} initialData={initialData} clients={clients} />
             ) : (
-                <EditHrDetails employee={employee} initialData={initialData} />
+                <EditHrDetails employee={employee} initialData={initialData} clients={clients} />
             )}
         </DashboardLayout>
     );

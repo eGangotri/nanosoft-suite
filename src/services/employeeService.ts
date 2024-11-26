@@ -2,12 +2,23 @@ import { BankDetailsFormData } from "@/components/employee/bank-details/schema";
 import { EmployeeHrDetailsFormData } from "@/components/employee/details/hr/constants";
 
 export const getEmployeeData = async (employeeId: number):
- Promise<EmployeeData|null> => {
+    Promise<EmployeeData | null> => {
     const response = await fetch(`/api/employee/${employeeId}/?id=${employeeId}`)
     if (!response.ok) {
         return null;
     } else {
         const data: EmployeeData = await response.json()
+        return data
+    }
+}
+
+export const fetchClients = async ():
+    Promise<Client[]> => {
+    const response = await fetch(`/api/clients/`)
+    if (!response.ok) {
+        return [];
+    } else {
+        const data: Client[] = await response.json()
         return data
     }
 }

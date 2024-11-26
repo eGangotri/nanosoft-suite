@@ -1,10 +1,12 @@
+import { VALID_PASS_TYPES } from '@/utils/FormConsts';
 import dayjs from 'dayjs';
 import { z } from 'zod';
 
 
 export interface AddEditHrDetailFormProps {
   employee: Employee
-  initialData: EmployeeHrDetails
+  initialData: EmployeeHrDetailsFormData
+  clients: Client[]
 }
 
 // Base date schema
@@ -33,7 +35,7 @@ export const employeeHrDetailsSchema = z.object({
   passportNumber: z.string().min(1).max(20),
   passportIssueDate: requiredDateSchema,
   passportExpiryDate: requiredDateSchema,
-  passType: z.string().min(1).max(5),
+  passType: z.union([z.enum(VALID_PASS_TYPES as [string, ...string[]]), z.null(),z.literal('')]),
   passExpiryDate: nullableDateSchema,
   renewalApplyDate: nullableDateSchema,
   newApplyDate: nullableDateSchema,
@@ -45,5 +47,3 @@ export const employeeHrDetailsSchema = z.object({
 //export type EmployeeHrDetailsFormData = Omit<EmployeeHrDetails, 'id' | 'employee' | 'client'>;
 //export type EmployeeHrDetailsFormData = z.infer<typeof employeeHrDetailsSchema>;
 export type EmployeeHrDetailsFormData = EmployeeHrDetails
-
-export const VALID_PASS_TYPES = ["EP", "PEP", "WP", "SPass"] as const;

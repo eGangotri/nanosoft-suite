@@ -5,10 +5,10 @@ import { Alert, Container, LinearProgress, Paper, Snackbar } from '@mui/material
 import { useRouter } from 'next/navigation'
 import HrDetailsForm from '../hrDetailsForm'
 import { addHrDetails } from '@/services/employeeService'
-import { AddEditHrDetailFormProps, EmployeeHrDetailsFormData } from '../constants'
+import { AddEditHrDetailFormProps } from '../constants'
 
 
-export default function AddHrDetails({ employee, initialData }: AddEditHrDetailFormProps) {
+export default function AddHrDetails({ employee, initialData,clients }: AddEditHrDetailFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
@@ -50,6 +50,7 @@ export default function AddHrDetails({ employee, initialData }: AddEditHrDetailF
         <HrDetailsForm onSubmit={handleSubmit}
           isEditing={false}
           employee={employee}
+          clients={clients}
           initialData={initialData} />
       </Paper>
       <Snackbar

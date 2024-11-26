@@ -196,3 +196,4 @@ export const NATIONALITIES = [
 
 export const MARITAL_CATEGORIES = ["Single", "Married", "Divorced", "Defacto", "Separated"]
 export const CITIZEN_CATEGORIES = ["CITIZEN", "PR", "FOREIGNER"]
+export const VALID_PASS_TYPES = ["EP", "PEP", "WP", "SPass"];

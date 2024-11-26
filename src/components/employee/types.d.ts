@@ -24,7 +24,7 @@ declare global {
     middleName: string | null;
     bankDetails: EmployeeBankDetails | null;
     emergencyContacts: EmployeeEmergencyContact[];
-    hrDetails: EmployeeHrDetails[];
+    hrDetails: EmployeeHrDetails;
     leaveBalances: EmployeeLeaveBalance[];
     workHistory: EmployeeWorkHistory[];
   }
@@ -123,31 +123,6 @@ declare global {
     leaveBalances: EmployeeLeaveBalance[];
     workHistory: EmployeeWorkHistory[];
   }
-
-
-  interface Employee {
-    id: number;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    designation: string;
-    dateOfBirth: Date;
-    nationality: string;
-    email: string;
-    mobile: string;
-    citizenshipStatus: string;
-    nricOrFinNo: string;
-    expiryDate: Date | null;
-    maritalStatus: string;
-    addressLine1: string;
-    addressLine2: string | null;
-    city: string;
-    country: string;
-    postalCode: string;
-    deleted: boolean;
-    active: boolean;
-  }
-
   interface EmployeeError {
     employeeId: number;
     error: string;

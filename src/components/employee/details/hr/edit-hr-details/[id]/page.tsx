@@ -1,14 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Container, Paper, CircularProgress, LinearProgress, Snackbar, Alert } from '@mui/material'
-import { z } from 'zod'
+import { Container, Paper, CircularProgress, Snackbar, Alert } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { AddEditHrDetailFormProps, EmployeeHrDetailsFormData } from '../../constants'
 import HrDetailsForm from '../../hrDetailsForm'
 import { editHrDetails } from '@/services/employeeService'
 
-export default function EditHrDetails({ employee, initialData }: AddEditHrDetailFormProps) {
+export default function EditHrDetails({ employee, initialData,clients }: AddEditHrDetailFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
@@ -46,6 +45,7 @@ export default function EditHrDetails({ employee, initialData }: AddEditHrDetail
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
         <HrDetailsForm initialData={initialData}
           onSubmit={handleSubmit}
+          clients={clients}
           isEditing={true}
           employee={employee}
           />

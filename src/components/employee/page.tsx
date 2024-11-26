@@ -284,7 +284,7 @@ export default function EmployeeListPage() {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={() => handleNavigation(`/employee/details/hr-details/${selectedEmployee?.id}/`)}>
+        <MenuItem onClick={() => handleNavigation(`/employee/details/hr-details/add-edit/${selectedEmployee?.id}?id=${selectedEmployee?.id}/`)}>
           <PersonIcon fontSize="small" sx={{ marginRight: 1 }} />HR Details
         </MenuItem>
         <MenuItem onClick={() => handleNavigation(`/employee/details/bank-details/add-edit/${selectedEmployee?.id}?id=${selectedEmployee?.id}`)}>
