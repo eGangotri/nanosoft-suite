@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { Typography, Container, Paper } from '@mui/material';
 import { PrismaClient } from '@prisma/client';
 import { EmergencyContactPageProps, EmployeeEmergencyContactFormData } from '../../constants';
+import { EmployeeEmergencyContactForm } from '../../employeeContactForm';
 
 
 export default function EmergencyContactPage({ employeeId, initialData }: EmergencyContactPageProps) {

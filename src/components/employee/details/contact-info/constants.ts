@@ -1,4 +1,10 @@
 import { z } from 'zod';
+export interface EmergencyContactPageProps {
+    employeeId: number;
+    initialData?: EmployeeEmergencyContactFormData;
+    onSubmit: (data: EmployeeEmergencyContactFormData) => void;
+  }
+  
 
 export const employeeEmergencyContactSchema = z.object({
   employeeId: z.number().int().positive(),
@@ -9,9 +15,3 @@ export const employeeEmergencyContactSchema = z.object({
 });
 
 export type EmployeeEmergencyContactFormData = z.infer<typeof employeeEmergencyContactSchema>;
-
-export interface EmergencyContactPageProps {
-    employeeId: number;
-    initialData?: EmployeeEmergencyContactFormData;
-  }
-  

@@ -1,8 +1,6 @@
+import nanosoftPrisma from '@/lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-import { employeeEmergencyContactSchema } from '../../../schemas/employeeEmergencyContactSchema';
 
-const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
@@ -27,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 async function handleGet(id: number, res: NextApiResponse) {
   try {
-    const contact = await prisma.employeeEmergencyContact.findUnique({
+    const contact = await nanosoftPrisma.employeeEmergencyContact.findUnique({
       where: { id },
     });
     if (contact) {
@@ -44,7 +42,7 @@ async function handleGet(id: number, res: NextApiResponse) {
 async function handlePut(id: number, req: NextApiRequest, res: NextApiResponse) {
   try {
     const validatedData = employeeEmergencyContactSchema.parse(req.body);
-    const updatedContact = await prisma.employeeEmergencyContact.update({
+    const updatedContact = await nanosoftPrisma.employeeEmergencyContact.update({
       where: { id },
       data: validatedData,
     });
@@ -63,7 +61,7 @@ async function handlePut(id: number, req: NextApiRequest, res: NextApiResponse) 
 
 async function handleDelete(id: number, res: NextApiResponse) {
   try {
-    await prisma.employeeEmergencyContact.delete({
+    await nanosoftPrisma.employeeEmergencyContact.delete({
       where: { id },
     });
     res.status(204).end();

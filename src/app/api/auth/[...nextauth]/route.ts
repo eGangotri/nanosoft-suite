@@ -36,7 +36,7 @@ const authOptions: AuthOptions = {
           return null
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await nanosoftPrisma.user.findUnique({
           where: {
             email: credentials.email
           },

@@ -17,7 +17,7 @@ interface HrDetailsFormProps {
   initialData: EmployeeHrDetailsFormData;
   onSubmit: (data: EmployeeHrDetailsFormData) => void;
   employees?: { id: number; name: string }[];
-  clients?: { id: number; companyName: string }[];
+  clients?: Client[];
   isEditing: boolean,
   employee: Employee,
 }
