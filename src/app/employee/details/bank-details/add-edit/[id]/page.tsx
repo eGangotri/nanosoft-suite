@@ -1,12 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
-import AddBankDetails from '@/components/employee/bank-details/add-bank-details/page';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
-import EditBankDetails from '@/components/employee/bank-details/edit-bank-details/[id]/page';
 import { fetchBankDetails } from '@/services/employeeService';
-import { BankDetailsFormData } from '@/components/employee/bank-details/schema';
+import { BankDetailsFormData } from '@/components/employee/details/bank-details/schema';
+import AddBankDetails from '@/components/employee/details/bank-details/add-bank-details/page';
+import EditBankDetails from '@/components/employee/details/bank-details/edit-bank-details/[id]/page';
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 

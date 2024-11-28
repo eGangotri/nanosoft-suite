@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { bankDetailsSchema } from '@/components/employee/bank-details/schema'
 import nanosoftPrisma from '@/lib/prisma';
+import { bankDetailsSchema } from '@/components/employee/details/bank-details/schema';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const employeeId = parseInt(params.id)
