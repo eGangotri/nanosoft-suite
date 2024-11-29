@@ -38,11 +38,11 @@ const AddEditEmercencyContactInfo: React.FC = () => {
                          ${employeeId}
                          ${_employee.id}
                          ${JSON.stringify(data)}
-                        ${JSON.stringify(data.emergencyContacts)}`);
+                        ${JSON.stringify(data.EmployeeEmergencyContact)}`);
 
-                    if (data?.emergencyContacts?.length > 0) {
-                        console.log("edit", data.emergencyContacts[0].employeeId === employeeId);
-                        setInitialData(data.emergencyContacts[0] as EmployeeEmergencyContactFormData);
+                    if (data?.EmployeeEmergencyContact?.length > 0) {
+                        console.log("edit", data.EmployeeEmergencyContact[0].employeeId === employeeId);
+                        setInitialData(data.EmployeeEmergencyContact[0] as EmployeeEmergencyContactFormData);
                         setAddEdit(ADD_EDIT_ENUM.EDIT);
                     } else {
                         console.log("add");

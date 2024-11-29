@@ -16,8 +16,8 @@ export async function GET(
     const employeeHrDetails = await nanosoftPrisma.employeeHrDetails.findUnique({
       where: { employeeId: employeeId },
       include: {
-        client: true,
-        employee: true
+        Client: true,
+        Employee: true
       }
     });
 

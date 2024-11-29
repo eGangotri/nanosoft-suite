@@ -52,11 +52,11 @@ const AddHRDetailsPage: React.FC = () => {
                          ${employeeId}
                          ${_employee.id}
                          ${JSON.stringify(data)}
-                        ${JSON.stringify(data.hrDetails)}`);
+                        ${JSON.stringify(data.EmployeeHrDetails)}`);
 
-                    if (data?.hrDetails?.employeeId === employeeId) {
-                        console.log("edit", data.hrDetails.employeeId === employeeId);
-                        setInitialData(data.hrDetails);
+                    if (data?.EmployeeHrDetails?.employeeId === employeeId) {
+                        console.log("edit", data.EmployeeHrDetails.employeeId === employeeId);
+                        setInitialData(data.EmployeeHrDetails);
                         setAddEdit(ADD_EDIT_ENUM.EDIT);
                     } else {
                         console.log("add");

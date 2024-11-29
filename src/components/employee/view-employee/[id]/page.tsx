@@ -197,7 +197,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
       </Box>
     </Box>
   )
-  const { emergencyContacts, bankDetails, hrDetails, leaveBalances, workHistory, ...employee } = employeeData
+  const { EmployeeEmergencyContact, EmployeeBankDetails: EmployeeBankDetails, EmployeeHrDetails, EmployeeLeaveBalance: EmployeeLeaveBalance, workHistory, ...employee } = employeeData
 
   const handleAddEdit = (detailType: string, employeeId: number) => {
     switch (detailType) {
@@ -284,20 +284,20 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
       <Paper elevation={3} className="p-6 mb-6">
         <SectionHeader title="HR Details" detailType={DETAIL_TYPE_ENUM.HR_DETAILS}
           employeeId={employee?.id}
-          detailId={hrDetails?.id} />
-        {hrDetails &&
-          <Grid container spacing={2} key={hrDetails?.id}>
+          detailId={EmployeeHrDetails?.id} />
+        {EmployeeHrDetails &&
+          <Grid container spacing={2} key={EmployeeHrDetails?.id}>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Date of Joining:</strong> {hrDetails?.dateOfJoining ? dayjs(hrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
-              <Typography><strong>Bonus:</strong> ${hrDetails?.bonus ? Number(hrDetails.bonus).toFixed(2) : ''}</Typography>
+              <Typography><strong>Date of Joining:</strong> {EmployeeHrDetails?.dateOfJoining ? dayjs(EmployeeHrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
+              <Typography><strong>Bonus:</strong> ${EmployeeHrDetails?.bonus ? Number(EmployeeHrDetails.bonus).toFixed(2) : ''}</Typography>
               {employee.citizenshipStatus === CITIZEN_CATEGORIES[2] &&
-                (<Typography><strong>Pass Type:</strong> {hrDetails?.passType}</Typography>)}
+                (<Typography><strong>Pass Type:</strong> {EmployeeHrDetails?.passType}</Typography>)}
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Passport Number:</strong> {hrDetails?.passportNumber}</Typography>
-              <Typography><strong>Client:</strong> {hrDetails?.client ? hrDetails?.client.companyName : 'N/A'}</Typography>
+              <Typography><strong>Passport Number:</strong> {EmployeeHrDetails?.passportNumber}</Typography>
+              <Typography><strong>Client:</strong> {EmployeeHrDetails?.client ? EmployeeHrDetails?.client.companyName : 'N/A'}</Typography>
               {employee.citizenshipStatus === CITIZEN_CATEGORIES[2] &&
-                <Typography><strong>Pass Expiry Date:</strong> {hrDetails?.passExpiryDate ? hrDetails?.passExpiryDate : 'N/A'}</Typography>
+                <Typography><strong>Pass Expiry Date:</strong> {EmployeeHrDetails?.passExpiryDate ? EmployeeHrDetails?.passExpiryDate : 'N/A'}</Typography>
               }
             </Grid>
           </Grid>
@@ -308,11 +308,11 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         <SectionHeader title="Bank Details"
           detailType={DETAIL_TYPE_ENUM.BANK_DETAILS}
           employeeId={employee?.id}
-          detailId={bankDetails?.id} />
-        <Typography><strong>Bank Name:</strong> {bankDetails?.bankName}</Typography>
-        <Typography><strong>Account Holder:</strong> {bankDetails?.employeeBankingName}</Typography>
-        <Typography><strong>Account Number:</strong> {bankDetails?.accountNumber}</Typography>
-        <Typography><strong>Account Type:</strong> {bankDetails?.accountType}</Typography>
+          detailId={EmployeeBankDetails?.id} />
+        <Typography><strong>Bank Name:</strong> {EmployeeBankDetails?.bankName}</Typography>
+        <Typography><strong>Account Holder:</strong> {EmployeeBankDetails?.employeeBankingName}</Typography>
+        <Typography><strong>Account Number:</strong> {EmployeeBankDetails?.accountNumber}</Typography>
+        <Typography><strong>Account Type:</strong> {EmployeeBankDetails?.accountType}</Typography>
       </Paper>
 
       <Paper elevation={3} className="p-6 mb-6">
@@ -321,7 +321,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           employeeId={employee?.id}
           detailId={0}
         />
-        {emergencyContacts?.map((entry: EmployeeEmergencyContact) => (
+        {EmployeeEmergencyContact?.map((entry: EmployeeEmergencyContact) => (
           <Box key={entry?.id} mb={2}>
             <Typography><strong>Name:</strong> {entry?.personName}</Typography>
             <Typography><strong>Relationship:</strong> {entry?.relationship}</Typography>
@@ -347,7 +347,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {leaveBalances?.map((entry: EmployeeLeaveBalance) => (
+              {EmployeeLeaveBalance?.map((entry: EmployeeLeaveBalance) => (
                 <TableRow key={entry?.id}>
                   <TableCell component="th" scope="row">
                     {entry?.leaveType?.name}

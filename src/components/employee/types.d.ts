@@ -24,10 +24,10 @@ declare global {
     active: boolean;
     deleted: boolean;
     middleName: string | null;
-    bankDetails: EmployeeBankDetails | null;
-    emergencyContacts: EmployeeEmergencyContact[];
-    hrDetails: EmployeeHrDetails;
-    leaveBalances: EmployeeLeaveBalance[];
+    EmployeeBankDetails: EmployeeBankDetails | null;
+    EmployeeEmergencyContact: EmployeeEmergencyContact[];
+    EmployeeHrDetails: EmployeeHrDetails;
+    EmployeeLeaveBalance: EmployeeLeaveBalance[];
     workHistory: EmployeeWorkHistory[];
   }
 
@@ -120,11 +120,11 @@ declare global {
 
   interface EmployeeData extends Employee {
     employee: Employee;
-    bankDetails: EmployeeBankDetails | null;
-    emergencyContacts: EmployeeEmergencyContact[];
-    hrDetails: EmployeeHrDetails;
-    leaveBalances: EmployeeLeaveBalance[];
-    workHistory: EmployeeWorkHistory[];
+    EmployeeBankDetails: EmployeeBankDetails | null;
+    EmployeeEmergencyContact: EmployeeEmergencyContact[];
+    EmployeeHrDetails: EmployeeHrDetails;
+    EmployeeLeaveBalance: EmployeeLeaveBalance[];
+    EmployeeWorkHistory: EmployeeWorkHistory[];
   }
   interface EmployeeError {
     employeeId: number;
