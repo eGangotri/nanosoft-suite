@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography, CircularProgress } from '@mui/material'
-import { EmployeeFormData } from '../employee-form'
 import { BankDetailsFormData, bankDetailsSchema } from './schema'
 import { useRouter } from 'next/navigation'
+import { EmployeeFormData } from '../../constants'
 
 
 interface BankDetailsFormProps {
