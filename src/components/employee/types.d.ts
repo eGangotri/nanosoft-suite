@@ -10,7 +10,9 @@ declare global {
     nationality: string;
     email: string;
     mobile: string;
-    citizenshipStatus: string;
+    citizenshipStatus: CitizenCategory;
+    gender: string;
+    race: string;
     nricOrFinNo: string;
     expiryDate: Date | null;
     maritalStatus: string;

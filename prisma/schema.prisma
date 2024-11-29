@@ -113,26 +113,26 @@ enum CitizenshipStatus {
 }
 
 model Employee {
-  id                Int               @id @default(autoincrement())
-  firstName         String            @map("first_name")
-  lastName          String            @map("last_name")
+  id                Int                        @id @default(autoincrement())
+  firstName         String                       
+  lastName          String
   designation       String
-  dateOfBirth       DateTime          @map("date_of_birth") @db.Date
+  dateOfBirth       DateTime                   @db.Date
   nationality       String
-  email             String            @unique
+  email             String                     @unique
   mobile            String
-  citizenshipStatus CitizenshipStatus @map("citizenship_status")
+  citizenshipStatus CitizenshipStatus
   nricOrFinNo       String                     @unique
-  expiryDate        DateTime?                   @db.Date
-  maritalStatus     String                     
-  addressLine1      String                     
-  addressLine2      String?                    
+  expiryDate        DateTime?                  @db.Date
+  maritalStatus     String
+  addressLine1      String
+  addressLine2      String?
   city              String
   country           String
-  postalCode        String                     
+  postalCode        String
   active            Boolean                    @default(true)
   deleted           Boolean                    @default(false)
-  middleName        String?                   
+  middleName        String?
   bankDetails       EmployeeBankDetails?
   emergencyContacts EmployeeEmergencyContact[]
   hrDetails         EmployeeHrDetails?
@@ -140,6 +140,7 @@ model Employee {
   workHistory       EmployeeWorkHistory[]
   gender            Gender
   race              Race
+
   @@map("employee")
 }
 

@@ -27,7 +27,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
-import { CITIZEN_CATEGORIES, MARITAL_CATEGORIES, NATIONALITIES } from '@/utils/FormConsts'
+import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, RACE_TYPE } from '@/utils/FormConsts'
 import { initCaps, initCapsForCitizenStatus } from './EmployeeUtils'
 
 const today = dayjs();
@@ -275,7 +275,39 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               </FormControl>
             )}
           />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Controller
+              name="race"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl error={!!error} component="fieldset">
+                  <FormLabel component="legend">Race</FormLabel>
+                  <RadioGroup {...field} row>
+                    {RACE_TYPE.map((status: string) => (
+                      <FormControlLabel value={status} control={<Radio />} label={status} />
+                    ))}
+                  </RadioGroup>
+                  {error && <FormHelperText>{error.message}</FormHelperText>}
+                </FormControl>
+              )}
+            />
 
+            <Controller
+              name="gender"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl error={!!error} component="fieldset">
+                  <FormLabel component="legend">Gender</FormLabel>
+                  <RadioGroup {...field} row>
+                    {GENDER_TYPE.map((status: string) => (
+                      <FormControlLabel value={status} control={<Radio />} label={status} />
+                    ))}
+                  </RadioGroup>
+                  {error && <FormHelperText>{error.message}</FormHelperText>}
+                </FormControl>
+              )}
+            />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="nricOrFinNo"
