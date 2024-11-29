@@ -80,9 +80,9 @@ const AddEditEmercencyContactInfo: React.FC = () => {
     return (
         <DashboardLayout>
             {addEdit === ADD_EDIT_ENUM.ADD ? (
-                <AddHrDetails employee={employee} initialData={initialData} clients={clients} />
+                <AddEditEmercencyContactInfo employee={employee} initialData={initialData} clients={clients} />
             ) : (
-                <EditHrDetails employee={employee} initialData={initialData} clients={clients} />
+                <AddEditEmercencyContactInfo employee={employee} initialData={initialData} clients={clients} />
             )}
         </DashboardLayout>
     );

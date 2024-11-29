@@ -9,19 +9,19 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const employee = await nanosoftPrisma.employee.findUnique({
       where: { id: employeeId },
       include: {
-        bankDetails: true,
-        emergencyContacts: true,
-        hrDetails: {
+        EmployeeBankDetails: true,
+        EmployeeEmergencyContact: true,
+        EmployeeHrDetails: {
           include: {
-            client: true,
+            Client: true,
           },
         },
-        leaveBalances: {
+        EmployeeLeaveBalance: {
           include: {
-            leaveType: true,
+            LeaveType: true,
           },
         },
-        workHistory: true,
+        EmployeeWorkHistory: true,
       },
     })
 

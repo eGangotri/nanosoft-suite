@@ -38,10 +38,20 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
     resolver: zodResolver(employeeHrDetailsSchema),
     defaultValues: initialData
   });
-  const allErrors = Object.values(errors).map(error => error.message).filter(Boolean);
+  const allErrors = Object.values(errors).map(error => JSON.stringify(error)).filter(Boolean);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box>{allErrors}
+      <Box>
+        {allErrors.length > 0 && (
+          <Box>
+            <Typography variant="h6" color="error">Errors:</Typography>
+            <ul>
+              {allErrors.map((error, index) => (
+                <li key={index}>:{error}</li>
+              ))}
+            </ul>
+          </Box>
+        )}
         <Typography variant="h6" gutterBottom className='pb-2'>
           {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(employee)} ({initCapsForCitizenStatus(employee.citizenshipStatus)})
         </Typography>
@@ -63,6 +73,26 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                       helperText: error?.message,
                     },
                   }}
+                />
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Controller
+              name="salary"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="salary"
+                  label="Salary"
+                  type="number"
+                  error={!!errors.salary}
+                  helperText={errors.salary?.message}
                 />
               )}
             />
@@ -146,7 +176,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 <Controller
                   name="passType"
                   control={control}
-                  rules={{ required: 'Pass Type is required' }}
+                  // rules={{ required: 'Pass Type is required' }}
                   render={({ field, fieldState: { error } }) => (
                     <FormControl fullWidth margin="normal" error={!!error}>
                       <InputLabel id="pass-type-label">Pass Type</InputLabel>
@@ -155,7 +185,6 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                         labelId="pass-type-label"
                         id="passType"
                         label="Pass Type"
-                        required
                       >
                         {VALID_PASS_TYPES.map((_passType: string) => {
                           return (
@@ -262,7 +291,6 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                   labelId="client-label"
                   id="clientId"
                   label="Client"
-                  required
                 >
                   {clients?.map((client: Client) => {
                     return (
@@ -276,29 +304,29 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               </FormControl>
             )}
           />
-      <Controller
-        name="remarks"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            margin="normal"
-            fullWidth
-            id="remarks"
-            label="Remarks"
-            multiline
-            rows={4}
-            error={!!errors.remarks}
-            helperText={errors.remarks?.message}
+          <Controller
+            name="remarks"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                margin="normal"
+                fullWidth
+                id="remarks"
+                label="Remarks"
+                multiline
+                rows={4}
+                error={!!errors.remarks}
+                helperText={errors.remarks?.message}
+              />
+            )}
           />
-        )}
-      />
-      <div className="grid grid-cols-3">
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-          {isEditing ? 'Update' : 'Add'} HR Details
-        </Button>
-      </div>
-    </form>
+          <div className="grid grid-cols-3">
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+              {isEditing ? 'Update' : 'Add'} HR Details
+            </Button>
+          </div>
+        </form>
       </Box >
     </LocalizationProvider >
   );

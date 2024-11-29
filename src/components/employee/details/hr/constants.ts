@@ -36,7 +36,7 @@ export const employeeHrDetailsSchema = z.object({
   passportNumber: z.string().min(1).max(20),
   passportIssueDate: requiredDateSchema,
   passportExpiryDate: requiredDateSchema,
-  passType: z.union([z.enum(VALID_PASS_TYPES as [string, ...string[]]), z.null(),z.literal('')]),
+  passType: z.string().nullable(),
   passExpiryDate: nullableDateSchema,
   renewalApplyDate: nullableDateSchema,
   newApplyDate: nullableDateSchema,

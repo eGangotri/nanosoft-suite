@@ -36,10 +36,11 @@ declare global {
     employeeId: number;
     dateOfJoining: Date;
     bonus: number;
+    salary: number;
     passportNumber: string;
     passportIssueDate: Date;
     passportExpiryDate: Date;
-    passType: string;
+    passType: string| null;
     passExpiryDate: Date | null;
     renewalApplyDate: Date | null;
     newApplyDate: Date | null;

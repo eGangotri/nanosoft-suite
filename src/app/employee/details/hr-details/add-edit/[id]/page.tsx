@@ -15,11 +15,12 @@ const AddHRDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employee, setEmployee] = useState({} as Employee);
     const [clients, setClients] = useState<Client[]>([]);
-    const [initialData, setInitialData] = useState<EmployeeHrDetailsFormData>({
+    const emptyData = {
         id: 0,
         employeeId: 0,
         dateOfJoining: new Date(),
         bonus: 0,
+        salary: 0,
         passportNumber: "",
         passportIssueDate: new Date(),
         passportExpiryDate: new Date(),
@@ -33,7 +34,7 @@ const AddHRDetailsPage: React.FC = () => {
         employee: {} as Employee, // Replace with default/empty Employee object if available
         client: null, // Replace with default/empty Client object if available
     }
-    );
+    const [initialData, setInitialData] = useState<EmployeeHrDetailsFormData>(emptyData);
     const [loading, setLoading] = useState(true);
     const params = useParams();
     const id = params.id as string;
@@ -60,24 +61,7 @@ const AddHRDetailsPage: React.FC = () => {
                     } else {
                         console.log("add");
                         setAddEdit(ADD_EDIT_ENUM.ADD);
-                        setInitialData({
-                            id: 0,
-                            employeeId: employeeId,
-                            dateOfJoining: new Date(),
-                            bonus: 0,
-                            passportNumber: "",
-                            passportIssueDate: new Date(),
-                            passportExpiryDate: new Date(),
-                            passType: "",
-                            passExpiryDate: null,
-                            renewalApplyDate: null,
-                            newApplyDate: null,
-                            passCancelledDate: null,
-                            clientId: null,
-                            remarks: null,
-                            employee: employee as Employee, // Replace with a valid empty `Employee` object if required
-                            client: null, // Replace with a valid empty `Client` object if required
-                        });
+                        setInitialData({ ...emptyData, employeeId: employeeId });
                     }
                 }
                 else {
