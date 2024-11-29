@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography } from '@mui/material'
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography, CircularProgress } from '@mui/material'
 import { EmployeeFormData } from '../employee-form'
 import { BankDetailsFormData, bankDetailsSchema } from './schema'
+import { useRouter } from 'next/navigation'
 
 
 interface BankDetailsFormProps {
@@ -17,12 +18,13 @@ interface BankDetailsFormProps {
 
 export default function BankDetailsForm({ initialData, onSubmit, isEditing, employeeId }: BankDetailsFormProps) {
   const [employeeName, setEmployeeName] = useState('')
-
+  const router = useRouter()
   const {
     control,
     handleSubmit,
     setValue,
     formState: { errors },
+    reset,
   } = useForm<BankDetailsFormData>({
     resolver: zodResolver(bankDetailsSchema),
     defaultValues: initialData || {
@@ -33,6 +35,7 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
       accountType: 'Savings',
     },
   })
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,8 +123,28 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
         )}
       />
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        {isEditing ? 'Update' : 'Add'} Bank Details
       </Button>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
+              {isLoading ? <CircularProgress size={24} /> :
+              (isEditing ? 'Update Bank Details' : 'Add Bank Details')} 
+
+            </Button>
+            <Button type="reset"
+              onClick={() => reset(initialData)} // Reset the form to initial values
+              fullWidth
+              variant="contained"
+              className="mr-2 pr-2">
+              Reset
+            </Button>
+            <Button type="button"
+              fullWidth
+              variant="contained"
+              className="mr-2 pr-2"
+              onClick={() => router.push(`/employee/employee/view-employee/${employeeId}`)}>
+              Cancel
+            </Button>
+          </div>
     </Box>
   )
 }

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TextField, Button, Box, Typography, MenuItem, FormControl, InputLabel, Select, FormHelperText } from '@mui/material';
+import { TextField, Button, Box, Typography, MenuItem, FormControl, InputLabel, Select, FormHelperText, CircularProgress } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { EmployeeHrDetailsFormData, employeeHrDetailsSchema } from './constants';
@@ -42,6 +42,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   });
   const allErrors = Object.values(errors).map(error => JSON.stringify(error)).filter(Boolean);
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -326,21 +327,22 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
             )}
           />
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Button type="submit" fullWidth variant="contained" className="m-2 p-2">
-              {isEditing ? 'Update' : 'Add'} HR Details
+            <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
+              {isLoading ? <CircularProgress size={24} /> : (isEditing ? 'Update Hr Details' : 'Add Hr Details')} 
+
             </Button>
             <Button type="reset"
               onClick={() => reset(initialData)} // Reset the form to initial values
               fullWidth
               variant="contained"
-              className="m-2 p-2">
+              className="mr-2 pr-2">
               Reset
             </Button>
-            <Button type="button" 
-            fullWidth 
-            variant="contained"
-             className="m-2 p-2" 
-             onClick={() => router.push(`/employee/employee/view-employee/${employee.id}`)}>
+            <Button type="button"
+              fullWidth
+              variant="contained"
+              className="mr-2 pr-2"
+              onClick={() => router.push(`/employee/employee/view-employee/${employee.id}`)}>
               Cancel
             </Button>
           </div>

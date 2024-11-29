@@ -28,7 +28,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
 import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, RACE_TYPE } from '@/utils/FormConsts'
-import { initCaps, initCapsForCitizenStatus } from './EmployeeUtils'
+import { initCapsForCitizenStatus } from './EmployeeUtils'
+import { useRouter } from 'next/navigation'
 
 const today = dayjs();
 
@@ -40,7 +41,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
     message: '',
     severity: 'success',
   })
-
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -425,10 +426,24 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               variant="contained"
               color="primary"
               fullWidth
-              className="mt-6"
+              className="mr-2 pr-2"
             >
               {isLoading ? <CircularProgress size={24} /> : isEditMode ?
                 'Update Employee' : 'Add Employee'}
+            </Button>
+            <Button type="reset"
+              onClick={() => reset(initialData)} // Reset the form to initial values
+              fullWidth
+              variant="contained"
+              className="mr-2 pr-2">
+              Reset
+            </Button>
+            <Button type="button"
+              fullWidth
+              variant="contained"
+              className="mr-2 pr-2"
+              onClick={() => router.push(`/employee/employee/`)}>
+              Cancel
             </Button>
           </div>
         </form>
