@@ -197,7 +197,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
       </Box>
     </Box>
   )
-  const { EmployeeEmergencyContact, EmployeeBankDetails: EmployeeBankDetails, EmployeeHrDetails, EmployeeLeaveBalance: EmployeeLeaveBalance, workHistory, ...employee } = employeeData
+  const { EmployeeEmergencyContact, EmployeeBankDetails: EmployeeBankDetails, EmployeeHrDetails, EmployeeLeaveBalance: EmployeeLeaveBalance, EmployeeWorkHistory: EmployeeWorkHistory, ...employee } = employeeData
 
   const handleAddEdit = (detailType: string, employeeId: number) => {
     switch (detailType) {
@@ -365,7 +365,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           detailType={DETAIL_TYPE_ENUM.WORK_HISTORY}
           employeeId={employee?.id}
           detailId={0} />
-        {workHistory?.map((entry: EmployeeWorkHistory) => (
+        {EmployeeWorkHistory?.map((entry: EmployeeWorkHistory) => (
           <Box key={entry?.id} mb={2}>
             <Typography variant="subtitle1">{entry?.jobTitle}</Typography>
             <Typography><strong>Period:</strong> {entry?.startDate} - {entry?.endDate ? entry?.endDate : 'Present'}</Typography>

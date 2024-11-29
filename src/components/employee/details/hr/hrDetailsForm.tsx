@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { formatedEmployeeName, initCapsForCitizenStatus } from '../../EmployeeUtils';
 import { CITIZEN_CATEGORIES, VALID_PASS_TYPES } from '@/utils/FormConsts';
+import { useRouter } from 'next/navigation'
 
 const today = dayjs();
 interface HrDetailsFormProps {
@@ -33,12 +34,15 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<EmployeeHrDetailsFormData>({
     resolver: zodResolver(employeeHrDetailsSchema),
     defaultValues: initialData
   });
   const allErrors = Object.values(errors).map(error => JSON.stringify(error)).filter(Boolean);
+  const router = useRouter()
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box>
@@ -321,9 +325,23 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               />
             )}
           />
-          <div className="grid grid-cols-3">
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Button type="submit" fullWidth variant="contained" className="m-2 p-2">
               {isEditing ? 'Update' : 'Add'} HR Details
+            </Button>
+            <Button type="reset"
+              onClick={() => reset(initialData)} // Reset the form to initial values
+              fullWidth
+              variant="contained"
+              className="m-2 p-2">
+              Reset
+            </Button>
+            <Button type="button" 
+            fullWidth 
+            variant="contained"
+             className="m-2 p-2" 
+             onClick={() => router.push(`/employee/employee/view-employee/${employee.id}`)}>
+              Cancel
             </Button>
           </div>
         </form>

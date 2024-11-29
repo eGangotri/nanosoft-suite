@@ -28,7 +28,7 @@ declare global {
     EmployeeEmergencyContact: EmployeeEmergencyContact[];
     EmployeeHrDetails: EmployeeHrDetails;
     EmployeeLeaveBalance: EmployeeLeaveBalance[];
-    workHistory: EmployeeWorkHistory[];
+    EmployeeWorkHistory: EmployeeWorkHistory[];
   }
 
   interface EmployeeHrDetails {
