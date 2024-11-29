@@ -32,6 +32,7 @@ export const employeeHrDetailsSchema = z.object({
   employeeId: z.number().int().positive(),
   dateOfJoining: requiredDateSchema,
   bonus: z.coerce.number().nonnegative(),
+  salary: z.coerce.number().nonnegative(),
   passportNumber: z.string().min(1).max(20),
   passportIssueDate: requiredDateSchema,
   passportExpiryDate: requiredDateSchema,
@@ -42,6 +43,7 @@ export const employeeHrDetailsSchema = z.object({
   passCancelledDate: nullableDateSchema,
   clientId: z.number().int().positive().nullable().optional(),
   remarks: z.string().nullable(),
+  wpNumber: z.string().nullable(),
 });
 
 //export type EmployeeHrDetailsFormData = Omit<EmployeeHrDetails, 'id' | 'employee' | 'client'>;
