@@ -115,6 +115,7 @@ model Employee {
   middleName               String?
   gender                   String?
   race                     String?
+  photo                    String?                    @db.VarChar(255)
   EmployeeBankDetails      EmployeeBankDetails?
   EmployeeEmergencyContact EmployeeEmergencyContact[]
   EmployeeHrDetails        EmployeeHrDetails?

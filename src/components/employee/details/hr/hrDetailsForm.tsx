@@ -10,7 +10,7 @@ import { EmployeeHrDetailsFormData, employeeHrDetailsSchema } from './constants'
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { formatedEmployeeName } from '../../EmployeeUtils';
-import { CITIZEN_CATEGORIES, isMalaysianAndNonPRForeigner, isWepMandatory, VALID_PASS_TYPES } from '@/utils/FormConsts';
+import { CITIZEN_CATEGORIES, isMalaysianAndNonPRForeigner, isWepMandatory, VALID_PASS_TYPES, VALID_PASS_TYPES_VALUES } from '@/utils/FormConsts';
 import { useRouter } from 'next/navigation'
 
 const today = dayjs();
@@ -212,7 +212,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                         id="passType"
                         label="Pass Type"
                       >
-                        {VALID_PASS_TYPES.map((_passType: string) => {
+                        {VALID_PASS_TYPES_VALUES.map((_passType: string) => {
                           return (
                             <MenuItem key={_passType} value={_passType}>
                               {_passType}
