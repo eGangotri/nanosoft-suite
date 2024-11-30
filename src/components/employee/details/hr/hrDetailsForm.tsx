@@ -9,7 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { EmployeeHrDetailsFormData, employeeHrDetailsSchema } from './constants';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { formatedEmployeeName, initCapsForCitizenStatus } from '../../EmployeeUtils';
+import { formatedEmployeeName } from '../../EmployeeUtils';
 import { CITIZEN_CATEGORIES, isMalaysianAndNonPRForeigner, isWepMandatory, VALID_PASS_TYPES } from '@/utils/FormConsts';
 import { useRouter } from 'next/navigation'
 
@@ -79,7 +79,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           </Box>
         )}
         <Typography variant="h6" gutterBottom className='pb-2'>
-          {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(employee)} ({initCapsForCitizenStatus(employee.citizenshipStatus)})
+          {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(employee)} ({employee.citizenshipStatus})
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{ }
@@ -196,7 +196,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               )}
             />
           </div>
-          {employee.citizenshipStatus === CITIZEN_CATEGORIES[2] &&
+          {employee.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner &&
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Controller
@@ -306,7 +306,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 />
               </div>
             </>}
-          {(employee.citizenshipStatus === CITIZEN_CATEGORIES[2] && showWorkPermitNoField) &&
+          {(employee.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner && showWorkPermitNoField) &&
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Controller

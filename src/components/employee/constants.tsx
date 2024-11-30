@@ -2,7 +2,13 @@ import { styled } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid'
 import * as z from 'zod';
 import dayjs from 'dayjs';
-import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, NATIONALITY_VALUES, RACE_TYPE } from "@/utils/FormConsts";
+import {
+  CITIZEN_CATEGORIES_VALUES,
+  GENDER_TYPE_VALUES,
+  MARITAL_CATEGORIES_VALUES,
+  NATIONALITY_VALUES,
+  RACE_TYPE_VALUES
+} from "@/utils/FormConsts";
 
 export type CitizenshipStatus = 'citizen' | 'pr' | 'foreigner'
 export type MaritalStatus = 'Single' | 'Married' | 'Divorced' | 'Defacto' | 'Separated'
@@ -25,9 +31,9 @@ export const employeeSchema = z.object({
   nationality: z.enum(NATIONALITY_VALUES as [string, ...string[]]),
   email: z.string().email('Invalid email address').regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, 'Invalid email format'),
   mobile: z.string().regex(/^\+?[1-9]\d{1,14}$/, 'Invalid mobile number'),
-  citizenshipStatus: z.enum(CITIZEN_CATEGORIES as [string, ...string[]]),
-  race: z.enum(RACE_TYPE as [string, ...string[]]),
-  gender: z.enum(GENDER_TYPE as [string, ...string[]]),
+  citizenshipStatus: z.enum(CITIZEN_CATEGORIES_VALUES as [string, ...string[]]),
+  race: z.enum(RACE_TYPE_VALUES as [string, ...string[]]),
+  gender: z.enum(GENDER_TYPE_VALUES as [string, ...string[]]),
   nricOrFinNo: z.string().regex(/^[STFGM]\d{7}[A-Za-z]$/, 'Invalid NRIC/FIN format'),
   expiryDate: z.preprocess((arg) => {
     if (typeof arg === "string" || arg instanceof Date) {
@@ -38,7 +44,7 @@ export const employeeSchema = z.object({
     }
     return null; // Fallback for invalid types
   }, z.date().optional()),
-  maritalStatus: z.enum(MARITAL_CATEGORIES as [string, ...string[]]),
+  maritalStatus: z.enum(MARITAL_CATEGORIES_VALUES as [string, ...string[]]),
   addressLine1: z.string().min(1, 'Address Line 1 is required'),
   addressLine2: z.string().optional(),
   city: z.string().min(1, 'City is required'),

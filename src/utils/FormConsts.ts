@@ -1,4 +1,8 @@
 
+const convertEnumToValues = (enumObj: any) => {
+  return Object.values(enumObj) as [string, ...string[]];
+}
+
 export enum NATIONALITIES {
   Singapore = "Singapore",
   India = "India",
@@ -195,27 +199,68 @@ export enum NATIONALITIES {
   Zimbabwe = "Zimbabwe"
 }
 
-export const NATIONALITY_VALUES = Object.values(NATIONALITIES) as [string, ...string[]];
-
-
-export const MARITAL_CATEGORIES = ["Single", "Married", "Divorced", "Defacto", "Separated"]
-export const CITIZEN_CATEGORIES = ["Citizen", "PR", "Foreigner"]
-export const VALID_PASS_TYPES = ["EP", "PEP", "WP", "SPass", ""];
-export const VALID_PASS_TYPES_ENUM = ["EP", "PEP", "WP", "SPass", ""];
-export const RACE_TYPE = ["Chinese", "Indian", "Malay", "Others"];
-export const GENDER_TYPE = ["Male", "Female"];
-
-export type CitizenCategory = typeof CITIZEN_CATEGORIES[number];
-export type MaritalCategory = typeof MARITAL_CATEGORIES[number];
-export type ValidPassType = typeof VALID_PASS_TYPES[number];
-export type RaceType = typeof RACE_TYPE[number];
-export type GenderType = typeof GENDER_TYPE[number];
-
-export const isWepMandatory = (passType: ValidPassType|null) => {
-  return passType === "WP" || passType === "SPass";
+export enum MARITAL_CATEGORIES {
+  Single = "Single",
+  Married = "Married",
+  Divorced = "Divorced",
+  Defacto = "Defacto",
+  Separated = "Separated"
 }
 
-export const isMalaysianAndNonPRForeigner = (employee:Employee) => {
-  return employee && employee.nationality === NATIONALITIES.Malaysia && employee.citizenshipStatus === "Foreigner";
+export enum CITIZEN_CATEGORIES {
+  Citizen = "Citizen",
+  PR = "PR",
+  Foreigner = "Foreigner"
 }
 
+
+export const getCitizenColor = (citizenCategory: string, active = true) => {
+  console.log("citizenCategory", citizenCategory);
+  if (active) {
+    return `${citizenCategory}`;
+  }
+  else {
+    return `${citizenCategory}-red-gradient-color`;
+  }
+}
+
+export const getCitizenBgColor = (citizenCategory: string, active = true) => {
+  return `bg-${getCitizenColor(citizenCategory, active)}`;
+}
+export enum VALID_PASS_TYPES {
+  EP = "EP",
+  PEP = "PEP",
+  WP = "WP",
+  SPass = "SPass",
+  Empty = ""
+}
+
+export enum RACE_TYPE {
+  Chinese = "Chinese",
+  Indian = "Indian",
+  Malay = "Malay",
+  Others = "Others"
+}
+
+export enum GENDER_TYPE {
+  Male = "Male",
+  Female = "Female"
+}
+export const NATIONALITY_VALUES = convertEnumToValues(NATIONALITIES);
+export const CITIZEN_CATEGORIES_VALUES = convertEnumToValues(CITIZEN_CATEGORIES);
+export const MARITAL_CATEGORIES_VALUES = convertEnumToValues(MARITAL_CATEGORIES);
+export const VALID_PASS_TYPES_VALUES = convertEnumToValues(VALID_PASS_TYPES);
+export const RACE_TYPE_VALUES = convertEnumToValues(RACE_TYPE);
+export const GENDER_TYPE_VALUES = convertEnumToValues(GENDER_TYPE);
+
+
+
+
+export const isWepMandatory = (passType?: string | null) => {
+  return passType === VALID_PASS_TYPES.WP || passType === VALID_PASS_TYPES.SPass;
+}
+
+export const isMalaysianAndNonPRForeigner = (employee: Employee | null) => {
+  return employee && employee?.nationality === NATIONALITIES.Malaysia &&
+    employee?.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner;
+}

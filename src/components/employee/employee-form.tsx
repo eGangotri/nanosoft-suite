@@ -27,8 +27,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
-import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, NATIONALITY_VALUES, RACE_TYPE } from '@/utils/FormConsts'
-import { initCapsForCitizenStatus } from './EmployeeUtils'
+import { CITIZEN_CATEGORIES_VALUES, GENDER_TYPE_VALUES, MARITAL_CATEGORIES_VALUES,  NATIONALITY_VALUES, RACE_TYPE_VALUES } from '@/utils/FormConsts'
 import { useRouter } from 'next/navigation'
 
 const today = dayjs();
@@ -177,7 +176,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 <FormControl fullWidth error={!!error}>
                   <FormLabel>Marital Status</FormLabel>
                   <Select {...field}>
-                    {MARITAL_CATEGORIES.map((status: string) => (
+                    {MARITAL_CATEGORIES_VALUES.map((status: string) => (
                       <MenuItem key={status} value={status}>{status}</MenuItem>
                     ))}
                   </Select>
@@ -268,8 +267,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               <FormControl error={!!error} component="fieldset">
                 <FormLabel component="legend">Citizenship Status</FormLabel>
                 <RadioGroup {...field} row>
-                  {CITIZEN_CATEGORIES.map((status: string) => (
-                    <FormControlLabel value={status} control={<Radio />} label={initCapsForCitizenStatus(status)} />
+                  {CITIZEN_CATEGORIES_VALUES.map((status: string) => (
+                    <FormControlLabel value={status} control={<Radio />} label={status} />
                   ))}
                 </RadioGroup>
                 {error && <FormHelperText>{error.message}</FormHelperText>}
@@ -284,7 +283,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 <FormControl error={!!error} component="fieldset">
                   <FormLabel component="legend">Race</FormLabel>
                   <RadioGroup {...field} row>
-                    {RACE_TYPE.map((status: string) => (
+                    {RACE_TYPE_VALUES.map((status: string) => (
                       <FormControlLabel value={status} control={<Radio />} label={status} />
                     ))}
                   </RadioGroup>
@@ -300,7 +299,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 <FormControl error={!!error} component="fieldset">
                   <FormLabel component="legend">Gender</FormLabel>
                   <RadioGroup {...field} row>
-                    {GENDER_TYPE.map((status: string) => (
+                    {GENDER_TYPE_VALUES.map((status: string) => (
                       <FormControlLabel value={status} control={<Radio />} label={status} />
                     ))}
                   </RadioGroup>

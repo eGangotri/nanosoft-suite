@@ -30,8 +30,8 @@ import {
 import { useRouter } from 'next/navigation';
 import { capitalizeFirstLetter } from '@/utils/StringUtils';
 import dayjs from 'dayjs';
-import { formatedEmployeeName, initCaps, initCapsForCitizenStatus } from '../../EmployeeUtils';
-import { CITIZEN_CATEGORIES } from '@/utils/FormConsts';
+import { formatedEmployeeName, initCaps } from '../../EmployeeUtils';
+import { CITIZEN_CATEGORIES, getCitizenBgColor } from '@/utils/FormConsts';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -49,17 +49,14 @@ const DETAIL_TYPE_ENUM = {
 export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   const router = useRouter();
   const [loadingStates, setLoadingStates] = useState<{ [key: number | string]: boolean }>({});
-  const [backgroundColor, setBackgroundColor] = useState('bg-inherit');
+  const [backgroundColor, setBackgroundColor] = useState("Citizen");
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+
   useEffect(() => {
-    if (employeeData?.active === false) {
-      setBackgroundColor('bg-red-300')
-    }
-    else {
-      setBackgroundColor('bg-inherit')
-    }
+    setBackgroundColor(getCitizenBgColor(employeeData.citizenshipStatus, employeeData?.active))
+    console.log("backgroundColor", backgroundColor);
   }, [employeeData]);
 
   const setLoading = (id: number | string, isLoading: boolean) => {
@@ -127,13 +124,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           throw new Error('Failed changing active status')
         }
         window.alert(`${capitalizeFirstLetter(action)} Successful`);
-        // window.location.reload();
-        if (action) {
-          setBackgroundColor('bg-inherit');
-        }
-        else {
-          setBackgroundColor('bg-red-300');
-        }
+        window.location.reload();
       } catch (error) {
         setLoading(`${action}-${employeeId}`, false)
         window.alert(`Error changing active status for employee:${error}`)
@@ -148,7 +139,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
     employeeId: number,
     detailId: number
     className?: string
-  }> = ({ title, detailType, employeeId, detailId,className }) => (
+  }> = ({ title, detailType, employeeId, detailId, className }) => (
     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} className={className}>
       <Typography variant="h6">{title}</Typography>
       <Box>
@@ -249,7 +240,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   return (
     <Box className={`max-w-6xl mx-auto p-6 ${backgroundColor}`}>
       <Typography variant="h4" gutterBottom>
-        Employee Details for {employee?.firstName} {employee?.lastName} ({initCapsForCitizenStatus(employee.citizenshipStatus)})
+        Employee Details for {employee?.firstName} {employee?.lastName} ({employee.citizenshipStatus})
       </Typography>
 
       <Paper elevation={3} className="p-6 mb-6">

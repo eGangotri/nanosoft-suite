@@ -27,13 +27,6 @@ export const initCaps = (str: string) => {
     return str ? str?.charAt(0)?.toUpperCase() + str?.slice(1).toLowerCase() : "";
 }
 
-export const initCapsForCitizenStatus = (str: string) => {
-    if (str === "PR") {
-        return "PR";
-    }
-    return str ? str?.charAt(0)?.toUpperCase() + str?.slice(1).toLowerCase() : "";
-}
-
 export const divideNames = (employee: { firstName: string, middleName?: string | null, lastName: string }) => {
     return {
         firstName: initCaps(employee.firstName),
