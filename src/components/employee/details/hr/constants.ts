@@ -46,6 +46,4 @@ export const employeeHrDetailsSchema = z.object({
   malaysiaIC: z.string().optional().nullable(),
 });
 
-//export type EmployeeHrDetailsFormData = Omit<EmployeeHrDetails, 'id' | 'employee' | 'client'>;
-//export type EmployeeHrDetailsFormData = z.infer<typeof employeeHrDetailsSchema>;
 export type EmployeeHrDetailsFormData = EmployeeHrDetails
