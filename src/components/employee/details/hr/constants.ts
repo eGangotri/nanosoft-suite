@@ -41,8 +41,9 @@ export const employeeHrDetailsSchema = z.object({
   newApplyDate: nullableDateSchema,
   passCancelledDate: nullableDateSchema,
   clientId: z.number().int().positive().nullable().optional(),
-  remarks: z.string().nullable(),
-  wpNumber: z.string().nullable(),
+  remarks: z.string().optional().nullable(),
+  workpermitNumber: z.string().optional().nullable(),
+  malaysiaIC: z.string().optional().nullable(),
 });
 
 //export type EmployeeHrDetailsFormData = Omit<EmployeeHrDetails, 'id' | 'employee' | 'client'>;

@@ -2,7 +2,7 @@ import { styled } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid'
 import * as z from 'zod';
 import dayjs from 'dayjs';
-import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, RACE_TYPE } from "@/utils/FormConsts";
+import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, NATIONALITY_VALUES, RACE_TYPE } from "@/utils/FormConsts";
 
 export type CitizenshipStatus = 'citizen' | 'pr' | 'foreigner'
 export type MaritalStatus = 'Single' | 'Married' | 'Divorced' | 'Defacto' | 'Separated'
@@ -22,7 +22,7 @@ export const employeeSchema = z.object({
     return null; // Fallback for invalid types
   }, z.date().refine((date) => date <= new Date() && date >= new Date(1900, 0, 1), 'Invalid date of birth')),
 
-  nationality: z.enum(NATIONALITIES as [string, ...string[]]),
+  nationality: z.enum(NATIONALITY_VALUES as [string, ...string[]]),
   email: z.string().email('Invalid email address').regex(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, 'Invalid email format'),
   mobile: z.string().regex(/^\+?[1-9]\d{1,14}$/, 'Invalid mobile number'),
   citizenshipStatus: z.enum(CITIZEN_CATEGORIES as [string, ...string[]]),

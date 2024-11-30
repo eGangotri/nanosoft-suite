@@ -10,14 +10,13 @@ import { EmployeeHrDetailsFormData, employeeHrDetailsSchema } from './constants'
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { formatedEmployeeName, initCapsForCitizenStatus } from '../../EmployeeUtils';
-import { CITIZEN_CATEGORIES, isWepMandatory, VALID_PASS_TYPES } from '@/utils/FormConsts';
+import { CITIZEN_CATEGORIES, isMalaysianAndNonPRForeigner, isWepMandatory, VALID_PASS_TYPES } from '@/utils/FormConsts';
 import { useRouter } from 'next/navigation'
 
 const today = dayjs();
 interface HrDetailsFormProps {
   initialData: EmployeeHrDetailsFormData;
   onSubmit: (data: EmployeeHrDetailsFormData) => void;
-  employees?: { id: number; name: string }[];
   clients?: Client[];
   isEditing: boolean,
   employee: Employee,
@@ -26,7 +25,6 @@ interface HrDetailsFormProps {
 const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   initialData,
   onSubmit,
-  employees,
   clients,
   isEditing,
   employee,
@@ -48,14 +46,22 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   console.log('Form Values:', formValues);
   console.log('Form Errors:', errors);
 
-  const [showWPNumberField, setShowWPNumberField] = useState(isWepMandatory(initialData?.passType));
+  const [showWorkPermitNoField, setShowWorkPermitNoField] = useState(isWepMandatory(initialData?.passType));
+  const nonPRMalaysian = isMalaysianAndNonPRForeigner(employee) ;
 
   const passTypeWatch = watch('passType');
 
   React.useEffect(() => {
     console.log('WP Number:', passTypeWatch, isWepMandatory(passTypeWatch));
-    setShowWPNumberField(isWepMandatory(passTypeWatch));
-    console.log('showWPNumberField:', showWPNumberField);
+    setShowWorkPermitNoField(isWepMandatory(passTypeWatch));
+    console.log('showworkpermitNumberField:', showWorkPermitNoField);
+
+  }, [passTypeWatch]);
+
+  React.useEffect(() => {
+    console.log('WP Number:', passTypeWatch, isWepMandatory(passTypeWatch));
+    setShowWorkPermitNoField(isWepMandatory(passTypeWatch));
+    console.log('showworkpermitNumberField:', showWorkPermitNoField);
 
   }, [passTypeWatch]);
 
@@ -300,21 +306,40 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 />
               </div>
             </>}
-          {(employee.citizenshipStatus === CITIZEN_CATEGORIES[2] && showWPNumberField) &&
+          {(employee.citizenshipStatus === CITIZEN_CATEGORIES[2] && showWorkPermitNoField) &&
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Controller
-                  name="wpNumber"
+                  name="workpermitNumber"
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      required
                       fullWidth
-                      id="wpNumber"
+                      id="workpermitNumber"
                       label="Work Permit Number"
-                      error={!!errors.wpNumber}
-                      helperText={errors.wpNumber?.message}
+                      error={!!errors.workpermitNumber}
+                      helperText={errors.workpermitNumber?.message}
+                      onChange={(e) => field.onChange(e.target.value.toUpperCase())} // Convert input to uppercase
+                    />
+                  )}
+                />
+              </div>
+            </>}
+          {nonPRMalaysian &&
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Controller
+                  name="malaysiaIC"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      id="malaysiaIC"
+                      label="Malaysia IC"
+                      error={!!errors.malaysiaIC}
+                      helperText={errors.malaysiaIC?.message}
                       onChange={(e) => field.onChange(e.target.value.toUpperCase())} // Convert input to uppercase
                     />
                   )}

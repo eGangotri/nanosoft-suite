@@ -27,7 +27,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
-import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, RACE_TYPE } from '@/utils/FormConsts'
+import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, NATIONALITY_VALUES, RACE_TYPE } from '@/utils/FormConsts'
 import { initCapsForCitizenStatus } from './EmployeeUtils'
 import { useRouter } from 'next/navigation'
 
@@ -214,7 +214,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                 <FormControl fullWidth error={!!error} sx={{ mt: 2, mb: 1 }}>
                   <Autocomplete
                     {...field}
-                    options={NATIONALITIES}
+                    options={NATIONALITY_VALUES}
                     renderInput={(params) => (
                       <TextField
                         {...params}
