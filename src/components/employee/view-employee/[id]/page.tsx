@@ -280,6 +280,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           <Grid container spacing={2} key={EmployeeHrDetails?.id}>
             <Grid item xs={12} sm={6}>
               <Typography><strong>Date of Joining:</strong> {EmployeeHrDetails?.dateOfJoining ? dayjs(EmployeeHrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
+              <Typography><strong>Salary:</strong> ${EmployeeHrDetails?.salary ? Number(EmployeeHrDetails.salary).toFixed(2) : ''}</Typography>
               <Typography><strong>Bonus:</strong> ${EmployeeHrDetails?.bonus ? Number(EmployeeHrDetails.bonus).toFixed(2) : ''}</Typography>
               {isForeigner(employee.employee) &&
                 (<Typography><strong>Pass Type:</strong> {EmployeeHrDetails?.passType}</Typography>)}
