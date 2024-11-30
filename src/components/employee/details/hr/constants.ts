@@ -5,8 +5,17 @@ import { z } from 'zod';
 export interface AddEditHrDetailFormProps {
   employee: Employee
   initialData: EmployeeHrDetailsFormData
-  clients: Client[]
+  allClients: Client[]
 }
+
+export interface HrDetailsFormProps {
+  initialData: EmployeeHrDetailsFormData;
+  onSubmit: (data: EmployeeHrDetailsFormData) => void;
+  allClients?: Client[];
+  isEditing: boolean,
+  employee: Employee,
+}
+
 
 // Base date schema
 const baseDateSchema = z.preprocess((arg) => {
@@ -40,10 +49,17 @@ export const employeeHrDetailsSchema = z.object({
   renewalApplyDate: nullableDateSchema,
   newApplyDate: nullableDateSchema,
   passCancelledDate: nullableDateSchema,
-  clientId: z.number().int().positive().nullable().optional(),
   remarks: z.string().optional().nullable(),
   workpermitNumber: z.string().optional().nullable(),
   malaysiaIC: z.string().optional().nullable(),
+  clientIds: z.array(z.number().int().positive()).optional(), // New field for client IDs
+});
+
+// New schema for the many-to-many relationship
+export const employeeHrDetailsClientSchema = z.object({
+  employeeHrId: z.number().int().positive(),
+  clientId: z.number().int().positive(),
+  assignedDate: z.date(),
 });
 
 export type EmployeeHrDetailsFormData = EmployeeHrDetails

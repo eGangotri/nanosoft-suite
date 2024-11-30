@@ -3,29 +3,27 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TextField, Button, Box, Typography, MenuItem, FormControl, InputLabel, Select, FormHelperText, CircularProgress } from '@mui/material';
+import { TextField, Button, Box, Typography, MenuItem, FormControl, InputLabel, Select, FormHelperText, CircularProgress, ListItemText, OutlinedInput, Checkbox } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { EmployeeHrDetailsFormData, employeeHrDetailsSchema } from './constants';
+import { EmployeeHrDetailsFormData, employeeHrDetailsSchema, HrDetailsFormProps } from './constants';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { formatedEmployeeName } from '../../EmployeeUtils';
-import { CITIZEN_CATEGORIES, isMalaysianAndNonPRForeigner, isWepMandatory, VALID_PASS_TYPES, VALID_PASS_TYPES_VALUES } from '@/utils/FormConsts';
+import {
+  CITIZEN_CATEGORIES,
+  isMalaysianForeigner,
+  isWepMandatory
+  , VALID_PASS_TYPES_VALUES
+} from '@/utils/FormConsts';
 import { useRouter } from 'next/navigation'
 
 const today = dayjs();
-interface HrDetailsFormProps {
-  initialData: EmployeeHrDetailsFormData;
-  onSubmit: (data: EmployeeHrDetailsFormData) => void;
-  clients?: Client[];
-  isEditing: boolean,
-  employee: Employee,
-}
 
 const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   initialData,
   onSubmit,
-  clients,
+  allClients,
   isEditing,
   employee,
 }) => {
@@ -47,7 +45,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   console.log('Form Errors:', errors);
 
   const [showWorkPermitNoField, setShowWorkPermitNoField] = useState(isWepMandatory(initialData?.passType));
-  const nonPRMalaysian = isMalaysianAndNonPRForeigner(employee) ;
+  const nonPRMalaysian = isMalaysianForeigner(employee);
 
   const passTypeWatch = watch('passType');
 
@@ -347,24 +345,29 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               </div>
             </>}
           <Controller
-            name="clientId"
+            name="clientIds"
             control={control}
+            defaultValue={[]}
             render={({ field, fieldState: { error } }) => (
               <FormControl fullWidth margin="normal" error={!!error}>
-                <InputLabel id="client-label">Client</InputLabel>
+                <InputLabel id="clients-label">Clients</InputLabel>
                 <Select
                   {...field}
-                  labelId="client-label"
-                  id="clientId"
-                  label="Client"
+                  labelId="clients-label"
+                  id="clientIds"
+                  multiple
+                  input={<OutlinedInput label="Clients" />}
+                  renderValue={(selected: number[]) => {
+                    const selectedClients = allClients?.filter(client => selected.includes(client.id)) || [];
+                    return selectedClients?.map(client => client.companyName).join(', ');
+                  }}
                 >
-                  {clients?.map((client: Client) => {
-                    return (
-                      <MenuItem key={client.id} value={client.id}>
-                        {client.companyName}
-                      </MenuItem>
-                    );
-                  })}
+                  {allClients?.map((client: Client) => (
+                    <MenuItem key={client.id} value={client.id}>
+                      <Checkbox checked={field?.value?.includes(client.id)} />
+                      <ListItemText primary={client.companyName} />
+                    </MenuItem>
+                  ))}
                 </Select>
                 {error && <FormHelperText>{error.message}</FormHelperText>}
               </FormControl>

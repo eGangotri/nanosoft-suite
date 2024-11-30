@@ -1,5 +1,5 @@
 import { GEO_FENCES } from "./consts";
-import { GeoFenceBounds } from "./type";
+import { GeoFenceBounds } from "./types";
 
 //TODO: Make both a Setting
 export const CHOSEN_BOUNDS = GEO_FENCES.SINGAPORE_BOUNDS;

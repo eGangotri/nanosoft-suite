@@ -7,12 +7,14 @@ import { AddEditHrDetailFormProps, EmployeeHrDetailsFormData } from '../../const
 import HrDetailsForm from '../../hrDetailsForm'
 import { editHrDetails } from '@/services/employeeService'
 
-export default function EditHrDetails({ employee, initialData,clients }: AddEditHrDetailFormProps) {
+export default function EditHrDetails({ employee, initialData, allClients }: AddEditHrDetailFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+
   const handleSubmit = async (data: EmployeeHrDetailsFormData) => {
     try {
       setIsLoading(true);
@@ -45,10 +47,10 @@ export default function EditHrDetails({ employee, initialData,clients }: AddEdit
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
         <HrDetailsForm initialData={initialData}
           onSubmit={handleSubmit}
-          clients={clients}
+          allClients={allClients}
           isEditing={true}
           employee={employee}
-          />
+        />
       </Paper>
       <Snackbar
         open={openSnackbar}

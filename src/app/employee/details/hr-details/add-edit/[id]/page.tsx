@@ -32,7 +32,10 @@ const AddHRDetailsPage: React.FC = () => {
         clientId: null,
         remarks: null,
         employee: {} as Employee, // Replace with default/empty Employee object if available
-        client: null, // Replace with default/empty Client object if available
+        workpermitNumber: null,
+        malaysiaIC: null,
+        clientIds: [], // Optional field, can be an empty array
+        EmployeeHrDetailsClients: [] // Initialize as an empty array
     }
     const [initialData, setInitialData] = useState<EmployeeHrDetailsFormData>(emptyData);
     const [loading, setLoading] = useState(true);
@@ -94,9 +97,9 @@ const AddHRDetailsPage: React.FC = () => {
     return (
         <DashboardLayout>
             {addEdit === ADD_EDIT_ENUM.ADD ? (
-                <AddHrDetails employee={employee} initialData={initialData} clients={clients} />
+                <AddHrDetails employee={employee} initialData={initialData} allClients={clients} />
             ) : (
-                <EditHrDetails employee={employee} initialData={initialData} clients={clients} />
+                <EditHrDetails employee={employee} initialData={initialData} allClients={clients} />
             )}
         </DashboardLayout>
     );

@@ -8,7 +8,7 @@ import { addHrDetails } from '@/services/employeeService'
 import { AddEditHrDetailFormProps } from '../constants'
 
 
-export default function AddHrDetails({ employee, initialData,clients }: AddEditHrDetailFormProps) {
+export default function AddHrDetails({ employee, initialData, allClients }: AddEditHrDetailFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
@@ -50,7 +50,7 @@ export default function AddHrDetails({ employee, initialData,clients }: AddEditH
         <HrDetailsForm onSubmit={handleSubmit}
           isEditing={false}
           employee={employee}
-          clients={clients}
+          allClients={allClients}
           initialData={initialData} />
       </Paper>
       <Snackbar

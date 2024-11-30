@@ -16,8 +16,12 @@ export async function GET(
     const employeeHrDetails = await nanosoftPrisma.employeeHrDetails.findUnique({
       where: { employeeId: employeeId },
       include: {
-        Client: true,
-        Employee: true
+        Employee: true,
+        EmployeeHrDetailsClients: {
+          include: {
+            Client: true
+          }
+        }
       }
     });
 
@@ -42,9 +46,26 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   try {
+    const { clientIds, ...otherData } = result.data
     const updatedHRDetail = await nanosoftPrisma.employeeHrDetails.update({
       where: { employeeId: employeeId },
-      data: result.data,
+      data: {
+        ...otherData,
+        EmployeeHrDetailsClients: {
+          deleteMany: {}, // Remove existing associations
+          create: clientIds?.map(clientId => ({
+            clientId,
+            assignedDate: new Date() // You might want to use a specific date here
+          })) || []
+        }
+      },
+      include: {
+        EmployeeHrDetailsClients: {
+          include: {
+            Client: true
+          }
+        }
+      }
     })
 
     if (!updatedHRDetail.id) {

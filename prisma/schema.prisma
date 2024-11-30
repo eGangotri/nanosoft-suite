@@ -77,18 +77,18 @@ model User_Role {
 }
 
 model Client {
-  id                Int                 @id(map: "client_pkey") @default(autoincrement())
-  companyName       String              @db.VarChar(100)
-  industry          String?             @db.VarChar(50)
-  primaryContact    String?             @db.VarChar(100)
-  contactEmail      String?             @db.VarChar(100)
-  contactPhone      String?             @db.VarChar(20)
-  currentOpenings   Int?                @default(0)
-  lastContactDate   DateTime?           @db.Date
-  nextFollowUp      DateTime?           @db.Date
-  status            String?             @db.VarChar(20)
-  notes             String?
-  EmployeeHrDetails EmployeeHrDetails[]
+  id                       Int                        @id(map: "client_pkey") @default(autoincrement())
+  companyName              String                     @db.VarChar(100)
+  industry                 String?                    @db.VarChar(50)
+  primaryContact           String?                    @db.VarChar(100)
+  contactEmail             String?                    @db.VarChar(100)
+  contactPhone             String?                    @db.VarChar(20)
+  currentOpenings          Int?                       @default(0)
+  lastContactDate          DateTime?                  @db.Date
+  nextFollowUp             DateTime?                  @db.Date
+  status                   String?                    @db.VarChar(20)
+  notes                    String?
+  EmployeeHrDetailsClients EmployeeHrDetailsClients[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -147,27 +147,24 @@ model EmployeeEmergencyContact {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model EmployeeHrDetails {
-  id                 Int       @id(map: "employee_hr_details_pkey") @default(autoincrement())
-  employeeId         Int       @unique(map: "employee_hr_details_employee_id_key")
-  dateOfJoining      DateTime  @db.Date
-  bonus              Decimal   @db.Decimal(10, 2)
-  passportNumber     String    @db.VarChar(20)
-  passportIssueDate  DateTime  @db.Date
-  passportExpiryDate DateTime  @db.Date
-  passType           String?   @db.VarChar(5)
-  passExpiryDate     DateTime? @db.Date
-  renewalApplyDate   DateTime? @db.Date
-  newApplyDate       DateTime? @db.Date
-  passCancelledDate  DateTime? @db.Date
-  clientId           Int?
-  remarks            String?
-  salary             Decimal   @default(0) @db.Decimal(10, 2)
-  workpermitNumber   String?   @db.VarChar(10)
-  malaysiaIC         String?   @db.VarChar(12)
-  Employee           Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "employee_hr_details_employee_id_fkey")
-  Client             Client?   @relation(fields: [clientId], references: [id], onUpdate: NoAction, map: "fk_employee_hr_details_client")
-
-  @@index([clientId], map: "idx_employee_hr_details_client_id")
+  id                       Int                        @id(map: "employee_hr_details_pkey") @default(autoincrement())
+  employeeId               Int                        @unique(map: "employee_hr_details_employee_id_key")
+  dateOfJoining            DateTime                   @db.Date
+  bonus                    Decimal                    @db.Decimal(10, 2)
+  passportNumber           String                     @db.VarChar(20)
+  passportIssueDate        DateTime                   @db.Date
+  passportExpiryDate       DateTime                   @db.Date
+  passType                 String?                    @db.VarChar(5)
+  passExpiryDate           DateTime?                  @db.Date
+  renewalApplyDate         DateTime?                  @db.Date
+  newApplyDate             DateTime?                  @db.Date
+  passCancelledDate        DateTime?                  @db.Date
+  remarks                  String?
+  salary                   Decimal                    @default(0) @db.Decimal(10, 2)
+  workpermitNumber         String?                    @db.VarChar(10)
+  malaysiaIC               String?                    @db.VarChar(12)
+  Employee                 Employee                   @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "employee_hr_details_employee_id_fkey")
+  EmployeeHrDetailsClients EmployeeHrDetailsClients[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -239,6 +236,20 @@ model LeaveType {
   EmployeeLeaveBalance EmployeeLeaveBalance[]
   LeaveBalance         LeaveBalance[]
   LeaveRequest         LeaveRequest[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model EmployeeHrDetailsClients {
+  id                Int               @id @default(autoincrement())
+  employeeHrId      Int
+  clientId          Int
+  assignedDate      DateTime?         @default(now()) @db.Timestamptz(6)
+  Client            Client            @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_client")
+  EmployeeHrDetails EmployeeHrDetails @relation(fields: [employeeHrId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_employee_hr_details")
+
+  @@unique([employeeHrId, clientId])
+  @@index([clientId], map: "idx_employee_hr_details_clients_client_id")
+  @@index([employeeHrId], map: "idx_employee_hr_details_clients_employee_hr_id")
 }
 
 enum UserRole {

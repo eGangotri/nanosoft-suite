@@ -31,7 +31,7 @@ import { useRouter } from 'next/navigation';
 import { capitalizeFirstLetter } from '@/utils/StringUtils';
 import dayjs from 'dayjs';
 import { formatedEmployeeName, initCaps } from '../../EmployeeUtils';
-import { CITIZEN_CATEGORIES, getCitizenBgColor } from '@/utils/FormConsts';
+import { CITIZEN_CATEGORIES, getCitizenBgColor, isForeigner } from '@/utils/FormConsts';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -281,13 +281,15 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
             <Grid item xs={12} sm={6}>
               <Typography><strong>Date of Joining:</strong> {EmployeeHrDetails?.dateOfJoining ? dayjs(EmployeeHrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
               <Typography><strong>Bonus:</strong> ${EmployeeHrDetails?.bonus ? Number(EmployeeHrDetails.bonus).toFixed(2) : ''}</Typography>
-              {employee.citizenshipStatus === CITIZEN_CATEGORIES[2] &&
+              {isForeigner(employee.employee) &&
                 (<Typography><strong>Pass Type:</strong> {EmployeeHrDetails?.passType}</Typography>)}
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography><strong>Passport Number:</strong> {EmployeeHrDetails?.passportNumber}</Typography>
-              <Typography><strong>Client:</strong> {EmployeeHrDetails?.client ? EmployeeHrDetails?.client.companyName : 'N/A'}</Typography>
-              {employee.citizenshipStatus === CITIZEN_CATEGORIES[2] &&
+              <Typography><strong>Client:</strong>
+                {EmployeeHrDetails?.EmployeeHrDetailsClients?.length > 0 ? EmployeeHrDetails?.EmployeeHrDetailsClients?.map(ehdc => ehdc?.Client?.companyName)?.join(",") : "'N/A'"}
+              </Typography>
+              {isForeigner(employee.employee) &&
                 <Typography><strong>Pass Expiry Date:</strong> {EmployeeHrDetails?.passExpiryDate ? EmployeeHrDetails?.passExpiryDate : 'N/A'}</Typography>
               }
             </Grid>

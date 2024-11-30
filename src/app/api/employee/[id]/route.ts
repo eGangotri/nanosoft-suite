@@ -13,7 +13,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
         EmployeeEmergencyContact: true,
         EmployeeHrDetails: {
           include: {
-            Client: true,
+            EmployeeHrDetailsClients: {
+              include: {
+                Client: true
+              }
+            }
           },
         },
         EmployeeLeaveBalance: {

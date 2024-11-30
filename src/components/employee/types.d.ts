@@ -40,17 +40,27 @@ declare global {
     passportNumber: string;
     passportIssueDate: Date;
     passportExpiryDate: Date;
-    passType: string| null;
+    passType: string | null;
     passExpiryDate: Date | null;
     renewalApplyDate: Date | null;
     newApplyDate: Date | null;
     passCancelledDate: Date | null;
-    clientId: number | null;
     remarks: string | null;
     employee: Employee;
-    client: Client | null;
     workpermitNumber: string | null;
     malaysiaIC: string | null;
+    clientIds?: number[]; // Transient field for form handling
+    EmployeeHrDetailsClients: EmployeeHrDetailsClient[]; // Changed from clients: Client[]
+  }
+
+  // New interface to represent the many-to-many relationship
+  export interface EmployeeHrDetailsClient {
+    id: number;
+    employeeHrId: number;
+    clientId: number;
+    assignedDate: Date;
+    employeeHrDetails: EmployeeHrDetails;
+    Client: Client;
   }
 
   interface EmployeeEmergencyContact {

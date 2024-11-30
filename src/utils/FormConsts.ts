@@ -260,7 +260,12 @@ export const isWepMandatory = (passType?: string | null) => {
   return passType === VALID_PASS_TYPES.WP || passType === VALID_PASS_TYPES.SPass;
 }
 
-export const isMalaysianAndNonPRForeigner = (employee: Employee | null) => {
+export const isMalaysianForeigner = (employee: Employee | null) => {
   return employee && employee?.nationality === NATIONALITIES.Malaysia &&
+    isForeigner(employee);
+}
+
+export const isForeigner = (employee: Employee | null) => {
+  return employee &&
     employee?.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner;
 }
