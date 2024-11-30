@@ -48,6 +48,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   const nonPRMalaysian = isMalaysianForeigner(employee);
 
   const passTypeWatch = watch('passType');
+  const _clientIds = watch('clientIds');
 
   React.useEffect(() => {
     console.log('WP Number:', passTypeWatch, isWepMandatory(passTypeWatch));
@@ -372,7 +373,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 {error && <FormHelperText>{error.message}</FormHelperText>}
               </FormControl>
             )}
-          />
+          />{_clientIds}
           <Controller
             name="remarks"
             control={control}

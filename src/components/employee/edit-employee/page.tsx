@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { EmployeeFormData } from '../constants'
+import EmployeeForm from '../employee-form'
 
 const EditEmployeePage: React.FC<{ id: string }> = ({ id }) => {
   const [isLoading, setIsLoading] = useState(false)

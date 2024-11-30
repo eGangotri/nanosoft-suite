@@ -59,7 +59,13 @@ const AddHRDetailsPage: React.FC = () => {
 
                     if (data?.EmployeeHrDetails?.employeeId === employeeId) {
                         console.log("edit", data.EmployeeHrDetails.employeeId === employeeId);
-                        setInitialData(data.EmployeeHrDetails);
+                        const hrDets = data.EmployeeHrDetails;
+                        const clientIds = hrDets.EmployeeHrDetailsClients?.map((c: { clientId: number }) => c?.clientId) || [];
+                        console.log(`--clientIds: ${JSON.stringify(clientIds)}`);
+                        setInitialData({
+                            ...data.EmployeeHrDetails,
+                            clientIds
+                        });
                         setAddEdit(ADD_EDIT_ENUM.EDIT);
                     } else {
                         console.log("add");
