@@ -1,4 +1,4 @@
-import { BankDetailsFormData } from "@/components/employee/bank-details/schema";
+import { BankDetailsFormData } from "@/components/employee/details/bank-details/schema";
 import { EmployeeHrDetailsFormData } from "@/components/employee/details/hr/constants";
 
 export const getEmployeeData = async (employeeId: number):

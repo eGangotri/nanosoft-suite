@@ -1,4 +1,4 @@
-import { bankDetailsSchema } from '@/components/employee/bank-details/schema'
+import { bankDetailsSchema } from '@/components/employee/details/bank-details/schema'
 import nanosoftPrisma from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 

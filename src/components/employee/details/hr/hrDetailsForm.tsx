@@ -10,7 +10,7 @@ import { EmployeeHrDetailsFormData, employeeHrDetailsSchema } from './constants'
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { formatedEmployeeName, initCapsForCitizenStatus } from '../../EmployeeUtils';
-import { CITIZEN_CATEGORIES, VALID_PASS_TYPES } from '@/utils/FormConsts';
+import { CITIZEN_CATEGORIES, isWepMandatory, VALID_PASS_TYPES } from '@/utils/FormConsts';
 import { useRouter } from 'next/navigation'
 
 const today = dayjs();
@@ -35,6 +35,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<EmployeeHrDetailsFormData>({
     resolver: zodResolver(employeeHrDetailsSchema),
@@ -43,6 +44,20 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   const allErrors = Object.values(errors).map(error => JSON.stringify(error)).filter(Boolean);
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const formValues = watch();
+  console.log('Form Values:', formValues);
+  console.log('Form Errors:', errors);
+
+  const [showWPNumberField, setShowWPNumberField] = useState(isWepMandatory(initialData?.passType));
+
+  const passTypeWatch = watch('passType');
+
+  React.useEffect(() => {
+    console.log('WP Number:', passTypeWatch, isWepMandatory(passTypeWatch));
+    setShowWPNumberField(isWepMandatory(passTypeWatch));
+    console.log('showWPNumberField:', showWPNumberField);
+
+  }, [passTypeWatch]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -181,7 +196,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 <Controller
                   name="passType"
                   control={control}
-                  // rules={{ required: 'Pass Type is required' }}
+                  rules={{ required: 'Pass Type is required for Foreigners' }}
                   render={({ field, fieldState: { error } }) => (
                     <FormControl fullWidth margin="normal" error={!!error}>
                       <InputLabel id="pass-type-label">Pass Type</InputLabel>
@@ -285,6 +300,27 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 />
               </div>
             </>}
+          {(employee.citizenshipStatus === CITIZEN_CATEGORIES[2] && showWPNumberField) &&
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Controller
+                  name="wpNumber"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      required
+                      fullWidth
+                      id="wpNumber"
+                      label="Work Permit Number"
+                      error={!!errors.wpNumber}
+                      helperText={errors.wpNumber?.message}
+                      onChange={(e) => field.onChange(e.target.value.toUpperCase())} // Convert input to uppercase
+                    />
+                  )}
+                />
+              </div>
+            </>}
           <Controller
             name="clientId"
             control={control}
@@ -328,7 +364,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           />
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
-              {isLoading ? <CircularProgress size={24} /> : (isEditing ? 'Update Hr Details' : 'Add Hr Details')} 
+              {isLoading ? <CircularProgress size={24} /> : (isEditing ? 'Update Hr Details' : 'Add Hr Details')}
 
             </Button>
             <Button type="reset"

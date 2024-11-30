@@ -49,6 +49,7 @@ declare global {
     remarks: string | null;
     employee: Employee;
     client: Client | null;
+    wpNumber: string | null;
   }
 
   interface EmployeeEmergencyContact {

@@ -195,8 +195,9 @@ export const NATIONALITIES = [
 ];
 
 export const MARITAL_CATEGORIES = ["Single", "Married", "Divorced", "Defacto", "Separated"]
-export const CITIZEN_CATEGORIES = ["CITIZEN", "PR", "FOREIGNER"]
+export const CITIZEN_CATEGORIES = ["Citizen", "PR", "Foreigner"]
 export const VALID_PASS_TYPES = ["EP", "PEP", "WP", "SPass", ""];
+export const VALID_PASS_TYPES_ENUM = ["EP", "PEP", "WP", "SPass", ""];
 export const RACE_TYPE = ["Chinese", "Indian", "Malay", "Others"];
 export const GENDER_TYPE = ["Male", "Female"];
 
@@ -204,4 +205,8 @@ export type CitizenCategory = typeof CITIZEN_CATEGORIES[number];
 export type MaritalCategory = typeof MARITAL_CATEGORIES[number];
 export type ValidPassType = typeof VALID_PASS_TYPES[number];
 export type RaceType = typeof RACE_TYPE[number];
-export type GenderType  = typeof GENDER_TYPE[number];
+export type GenderType = typeof GENDER_TYPE[number];
+
+export const isWepMandatory = (passType: ValidPassType|null) => {
+  return passType === "WP" || passType === "SPass";
+}
