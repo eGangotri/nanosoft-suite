@@ -28,7 +28,7 @@ import {
 }
   from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-import { capitalizeFirstLetter } from '@/utils/StringUtils';
+import { capitalizeFirstLetter, formatStringAsDate } from '@/utils/StringUtils';
 import dayjs from 'dayjs';
 import { formatedEmployeeName, initCaps } from '../../EmployeeUtils';
 import { CITIZEN_CATEGORIES, getCitizenBgColor, isForeigner } from '@/utils/FormConsts';
@@ -251,7 +251,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           <Grid item xs={12} sm={6} >
             <Typography><strong>Name:</strong> {`${formatedEmployeeName(employee)}`}</Typography>
             <Typography><strong>Designation:</strong> {employee?.designation}</Typography>
-            <Typography><strong>Date of Birth:</strong> {employee?.dateOfBirth}</Typography>
+            <Typography><strong>Date of Birth:</strong> {formatStringAsDate(employee?.dateOfBirth)}</Typography>
             <Typography><strong>Nationality:</strong> {employee?.nationality}</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -291,7 +291,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
                 {EmployeeHrDetails?.EmployeeHrDetailsClients?.length > 0 ? EmployeeHrDetails?.EmployeeHrDetailsClients?.map(ehdc => ehdc?.Client?.companyName)?.join(",") : "'N/A'"}
               </Typography>
               {isForeigner(employee.employee) &&
-                <Typography><strong>Pass Expiry Date:</strong> {EmployeeHrDetails?.passExpiryDate ? EmployeeHrDetails?.passExpiryDate : 'N/A'}</Typography>
+                <Typography><strong>Pass Expiry Date:</strong> {EmployeeHrDetails?.passExpiryDate ? formatStringAsDate(EmployeeHrDetails?.passExpiryDate) : 'N/A'}</Typography>
               }
             </Grid>
           </Grid>
@@ -302,7 +302,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         <SectionHeader title="Bank Details"
           detailType={DETAIL_TYPE_ENUM.BANK_DETAILS}
           employeeId={employee?.id}
-          detailId={EmployeeBankDetails?.id} />
+          detailId={EmployeeBankDetails?.id || 0} />
         <Typography><strong>Bank Name:</strong> {EmployeeBankDetails?.bankName}</Typography>
         <Typography><strong>Account Holder:</strong> {EmployeeBankDetails?.employeeBankingName}</Typography>
         <Typography><strong>Account Number:</strong> {EmployeeBankDetails?.accountNumber}</Typography>
@@ -362,7 +362,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         {EmployeeWorkHistory?.map((entry: EmployeeWorkHistory) => (
           <Box key={entry?.id} mb={2}>
             <Typography variant="subtitle1">{entry?.jobTitle}</Typography>
-            <Typography><strong>Period:</strong> {entry?.startDate} - {entry?.endDate ? entry?.endDate : 'Present'}</Typography>
+            <Typography><strong>Period:</strong> {formatStringAsDate(entry?.startDate)} - {entry?.endDate ? formatStringAsDate(entry?.endDate) : 'Present'}</Typography>
             <Typography><strong>Department:</strong> {entry?.department || 'N/A'}</Typography>
             <Typography><strong>Responsibilities:</strong> {entry?.responsibilities || 'N/A'}</Typography>
             <Typography><strong>Technologies:</strong> {entry?.technologiesUsed || 'N/A'}</Typography>
