@@ -49,7 +49,7 @@ const DETAIL_TYPE_ENUM = {
 export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   const router = useRouter();
   const [loadingStates, setLoadingStates] = useState<{ [key: number | string]: boolean }>({});
-  const [backgroundColor, setBackgroundColor] = useState("Citizen");
+  const [backgroundColor, setBackgroundColor] = useState(getCitizenBgColor(CITIZEN_CATEGORIES.Citizen, true));
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');

@@ -19,7 +19,9 @@ import {
   MenuItem,
   Select,
   CircularProgress,
-  InputLabel,
+  Card,
+  CardContent,
+  Divider,
   Autocomplete
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
@@ -27,7 +29,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
-import { CITIZEN_CATEGORIES_VALUES, GENDER_TYPE_VALUES, MARITAL_CATEGORIES_VALUES, NATIONALITY_VALUES, RACE_TYPE_VALUES } from '@/utils/FormConsts'
+import { CITIZEN_CATEGORIES, CITIZEN_CATEGORIES_VALUES, GENDER_TYPE_VALUES, MARITAL_CATEGORIES_VALUES, NATIONALITY_VALUES, RACE_TYPE_VALUES } from '@/utils/FormConsts'
 import { useRouter } from 'next/navigation'
 
 const today = dayjs();
@@ -56,11 +58,12 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
 
 
   const [showExpiryDate, setShowExpiryDate] = useState(initialData?.citizenshipStatus === "FOREIGNER" || false);
-
+  const [showForeignAddress, setShowForeignAddress] = useState(initialData?.citizenshipStatus !== CITIZEN_CATEGORIES.Citizen)
   const citizenshipStatus = watch('citizenshipStatus');
 
   React.useEffect(() => {
-    setShowExpiryDate(citizenshipStatus === "FOREIGNER");
+    setShowExpiryDate(citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)
+    setShowForeignAddress(citizenshipStatus !== CITIZEN_CATEGORIES.Citizen)
   }, [citizenshipStatus]);
 
   const onSubmitForm = async (data: EmployeeFormData): Promise<void> => {
@@ -327,52 +330,138 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
             />}
           </div>
 
-          <Controller
-            name="localAddressLine1"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                label="Address Line 1"
-                variant="outlined"
-                fullWidth
-                error={!!error}
-                helperText={error?.message}
-              />
-            )}
-          />
+          <Card className="mt-6">
+            <CardContent>
+              <Typography variant="h6" className="mb-4">Address Information</Typography>
+              <Divider className="mb-4" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className='flex flex-col gap-3'>
+                  <Typography variant="subtitle1" className="mb-4">Local Address</Typography>
+                  <Controller
+                    name="localAddressLine1"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Address Line 1"
+                        variant="outlined"
+                        fullWidth
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="localAddressLine2"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Address Line 2"
+                        variant="outlined"
+                        fullWidth
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="localPostalCode"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Postal Code"
+                        variant="outlined"
+                        fullWidth
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                </div>
 
-          <Controller
-            name="localAddressLine2"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                label="Address Line 2"
-                variant="outlined"
-                fullWidth
-                error={!!error}
-                helperText={error?.message}
-              />
-            )}
-          />
+                {showForeignAddress && (
+                  <div className='flex flex-col gap-3'>
+                    <Typography variant="subtitle1" className="mb-4">Foreign Address</Typography>
+                    <Controller
+                      name="foreignAddressLine1"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          label="Address Line 1"
+                          variant="outlined"
+                          fullWidth
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="foreignAddressLine2"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          label="Address Line 2"
+                          variant="outlined"
+                          fullWidth
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      <Controller
+                        name="foreignAddressCity"
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                          <TextField
+                            {...field}
+                            label="City"
+                            variant="outlined"
+                            fullWidth
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+                      <Controller
+                        name="foreignAddressCountry"
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                          <TextField
+                            {...field}
+                            label="Country"
+                            variant="outlined"
+                            fullWidth
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+                    </div>
+                    <Controller
+                      name="foreignAddressPostalCode"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          label="Postal Code"
+                          variant="outlined"
+                          fullWidth
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Controller
-              name="localPostalCode"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Postal Code"
-                  variant="outlined"
-                  fullWidth
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button
               type="submit"
