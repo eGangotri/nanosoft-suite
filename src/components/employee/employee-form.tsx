@@ -343,7 +343,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                     render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
-                        label="Address Line 1"
+                        label="Block No./ Building Name"
                         variant="outlined"
                         fullWidth
                         error={!!error}
@@ -357,7 +357,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                     render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
-                        label="Address Line 2"
+                        label="Level/Unit No."
                         variant="outlined"
                         fullWidth
                         error={!!error}
