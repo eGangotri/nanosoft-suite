@@ -105,17 +105,20 @@ model Employee {
   nricOrFinNo              String                     @unique(map: "employee_nric_or_fin_no_key")
   expiryDate               DateTime?                  @db.Date
   maritalStatus            String
-  addressLine1             String
-  addressLine2             String?
-  city                     String
-  country                  String
-  postalCode               String
+  foreignAddressLine1      String?
+  foreignAddressLine2      String?
+  foreignAddressCity       String?
+  foreignAddressCountry    String?
+  foreignAddressPostalCode String?
   active                   Boolean                    @default(true)
   deleted                  Boolean                    @default(false)
   middleName               String?
   gender                   String?
   race                     String?
   photo                    String?                    @db.VarChar(255)
+  localAddressLine1        String
+  localAddressLine2        String
+  localPostalCode          String                     @db.VarChar(6)
   EmployeeBankDetails      EmployeeBankDetails?
   EmployeeEmergencyContact EmployeeEmergencyContact[]
   EmployeeHrDetails        EmployeeHrDetails?

@@ -27,7 +27,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
-import { CITIZEN_CATEGORIES_VALUES, GENDER_TYPE_VALUES, MARITAL_CATEGORIES_VALUES,  NATIONALITY_VALUES, RACE_TYPE_VALUES } from '@/utils/FormConsts'
+import { CITIZEN_CATEGORIES_VALUES, GENDER_TYPE_VALUES, MARITAL_CATEGORIES_VALUES, NATIONALITY_VALUES, RACE_TYPE_VALUES } from '@/utils/FormConsts'
 import { useRouter } from 'next/navigation'
 
 const today = dayjs();
@@ -51,25 +51,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
     reset,
   } = useForm<EmployeeFormData>({
     resolver: zodResolver(employeeSchema),
-    defaultValues: initialData || {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      designation: '',
-      dateOfBirth: new Date(),
-      nationality: '',
-      email: '',
-      mobile: '',
-      citizenshipStatus: 'citizen',
-      nricOrFinNo: '',
-      expiryDate: undefined,
-      maritalStatus: 'Single',
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      country: '',
-      postalCode: '',
-    },
+    defaultValues: initialData
   })
 
 
@@ -346,7 +328,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
           </div>
 
           <Controller
-            name="addressLine1"
+            name="localAddressLine1"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -361,7 +343,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
           />
 
           <Controller
-            name="addressLine2"
+            name="localAddressLine2"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -377,35 +359,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Controller
-              name="city"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="City"
-                  variant="outlined"
-                  fullWidth
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-            <Controller
-              name="country"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Country"
-                  variant="outlined"
-                  fullWidth
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-            <Controller
-              name="postalCode"
+              name="localPostalCode"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField

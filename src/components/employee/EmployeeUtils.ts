@@ -12,14 +12,21 @@ export const extractEmployeePortion = (json: EmployeeData): Employee => {
         nricOrFinNo: json.nricOrFinNo,
         expiryDate: json.expiryDate ? new Date(json.expiryDate) : null,
         maritalStatus: json.maritalStatus,
-        addressLine1: json.addressLine1,
-        addressLine2: json.addressLine2 || null,
-        city: json.city,
-        country: json.country,
-        postalCode: json.postalCode,
+
         active: json.active,
         deleted: json.deleted,
-        middleName: json.middleName || null
+        middleName: json.middleName || null,
+
+        localAddressLine1: json?.localAddressLine1 || "",
+        localAddressLine2: json?.localAddressLine2 || "",
+        localPostalCode: json?.localPostalCode || "",
+
+        foreignAddressLine1: json?.foreignAddressLine1 || "",
+        foreignAddressLine2: json?.foreignAddressLine2 || "",
+        foreignAddressCity: json?.foreignAddressCity || "",
+        foreignAddressCountry: json?.foreignAddressCountry || "",
+        foreignAddressPostalCode: json?.foreignAddressPostalCode || ""
+
     } as Employee;
 }
 

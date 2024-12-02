@@ -8,6 +8,7 @@ import AddHrDetails from '@/components/employee/details/hr/add-hr-details/page';
 import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]/page';
 import { EmployeeHrDetailsFormData } from '@/components/employee/details/hr/constants';
 import { extractEmployeePortion } from '@/components/employee/EmployeeUtils';
+import { createEmptyEmployee, createEmptyHRDetails } from '@/app/employee/employee/EmployeeUtil';
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
@@ -15,28 +16,14 @@ const AddHRDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employee, setEmployee] = useState({} as Employee);
     const [clients, setClients] = useState<Client[]>([]);
+    const emptyEmployee = createEmptyEmployee() as Employee
+    const employeeHrDetails = createEmptyHRDetails();
+
     const emptyData = {
-        id: 0,
-        employeeId: 0,
-        dateOfJoining: new Date(),
-        bonus: 0,
-        salary: 0,
-        passportNumber: "",
-        passportIssueDate: new Date(),
-        passportExpiryDate: new Date(),
-        passType: "",
-        passExpiryDate: null,
-        renewalApplyDate: null,
-        newApplyDate: null,
-        passCancelledDate: null,
-        clientId: null,
-        remarks: null,
-        employee: {} as Employee, // Replace with default/empty Employee object if available
-        workpermitNumber: null,
-        malaysiaIC: null,
+        ...employeeHrDetails,
         clientIds: [], // Optional field, can be an empty array
         EmployeeHrDetailsClients: [] // Initialize as an empty array
-    }
+    } 
     const [initialData, setInitialData] = useState<EmployeeHrDetailsFormData>(emptyData);
     const [loading, setLoading] = useState(true);
     const params = useParams();

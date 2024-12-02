@@ -19,11 +19,16 @@ export async function POST(request: Request) {
         nricOrFinNo: body.nricOrFinNo,
         expiryDate: body.expiryDate ? new Date(body.expiryDate) : null,
         maritalStatus: body.maritalStatus,
-        addressLine1: body.addressLine1,
-        addressLine2: body.addressLine2 || null,
-        city: body.city,
-        country: body.country,
-        postalCode: body.postalCode,
+
+        localAddressLine1: body.localAddressLine1,
+        localAddressLine2: body.localAddressLine2,
+        localPostalCode: body.localPostalCode,
+
+        foreignAddressLine1: body.foreignAddressLine1,
+        foreignAddressLine2: body.foreignAddressLine2,
+        foreignAddressCity: body.foreignAddressCity,
+        foreignAddressCountry: body.foreignAddressCountry,
+        foreignAddressPostalCode: body.foreignAddressPostalCode
       },
     })
     return NextResponse.json(employee, { status: 201 })

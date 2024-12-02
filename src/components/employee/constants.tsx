@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import * as z from 'zod';
 import dayjs from 'dayjs';
 import {
+  CITIZEN_CATEGORIES,
   CITIZEN_CATEGORIES_VALUES,
   GENDER_TYPE_VALUES,
   MARITAL_CATEGORIES_VALUES,
@@ -45,14 +46,57 @@ export const employeeSchema = z.object({
     return null; // Fallback for invalid types
   }, z.date().optional()),
   maritalStatus: z.enum(MARITAL_CATEGORIES_VALUES as [string, ...string[]]),
-  addressLine1: z.string().min(1, 'Address Line 1 is required'),
-  addressLine2: z.string().optional(),
-  city: z.string().min(1, 'City is required'),
-  country: z.string().min(1, 'Country is required'),
-  postalCode: z.string().regex(/^\d{5,9}$/, 'Invalid postal code'),
   deleted: z.boolean().default(false).optional(),
   active: z.boolean().default(true).optional(),
-})
+
+  localAddressLine1: z.string().min(1, 'Address Line 1 is required'),
+  localAddressLine2: z.string().min(1, 'Address Line 1 is required'),
+  localPostalCode: z.string().regex(/^\d{5,9}$/, 'Invalid postal code'),
+  
+  foreignAddressLine1: z.string().optional(),
+  foreignAddressLine2: z.string().optional(),
+  foreignAddressCity: z.string().optional(),
+  foreignAddressCountry: z.string().optional(),
+  foreignAddressPostalCode: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.citizenshipStatus !== CITIZEN_CATEGORIES.Citizen) {
+    if (!data.foreignAddressLine1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressLine1'],
+        message: 'Foreign Address Line 1 is required when active is true',
+      });
+    }
+    if (!data.foreignAddressLine2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressLine2'],
+        message: 'Foreign Address Line 2 is required when citizenship status is not Citizen',
+      });
+    }
+    if (!data.foreignAddressCity) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressCity'],
+        message: 'Foreign Address City is required when citizenship status is not Citizen',
+      });
+    }
+    if (!data.foreignAddressCountry) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressCountry'],
+        message: 'Foreign Address Country is required when citizenship status is not Citizen',
+      });
+    }
+    if (!data.foreignAddressPostalCode) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressPostalCode'],
+        message: 'Foreign Address Postal Code is required when citizenship status is not Citizen',
+      });
+    }
+  }
+});
 
 export type EmployeeFormData = z.infer<typeof employeeSchema>
 

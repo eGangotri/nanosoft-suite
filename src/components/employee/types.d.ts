@@ -16,14 +16,20 @@ declare global {
     nricOrFinNo: string;
     expiryDate: Date | null;
     maritalStatus: string;
-    addressLine1: string;
-    addressLine2: string | null;
-    city: string;
-    country: string;
-    postalCode: string;
     active: boolean;
     deleted: boolean;
     middleName: string | null;
+
+    localAddressLine1: String
+    localAddressLine2: String
+    localPostalCode: String
+
+    foreignAddressLine1?: String;
+    foreignAddressLine2?: String;
+    foreignAddressCity?: String;
+    foreignAddressCountry?: String;
+    foreignAddressPostalCode?: String;
+
     EmployeeBankDetails: EmployeeBankDetails | null;
     EmployeeEmergencyContact: EmployeeEmergencyContact[];
     EmployeeHrDetails: EmployeeHrDetails;
