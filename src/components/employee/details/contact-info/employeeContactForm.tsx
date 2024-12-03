@@ -3,6 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Box } from '@mui/material';
 import { EmergencyContactPageProps, EmployeeEmergencyContactFormData, employeeEmergencyContactSchema } from './constants';
+import { EMERGENCY_CONTACT_CATEGORIES_VALUES } from '@/utils/FormConsts';
 
 export const EmployeeEmergencyContactForm: React.FC<EmergencyContactPageProps> = ({
   initialData,
@@ -41,12 +42,12 @@ export const EmployeeEmergencyContactForm: React.FC<EmergencyContactPageProps> =
             <FormControl error={!!errors.relationship}>
               <InputLabel>Relationship</InputLabel>
               <Select {...field} label="Relationship">
-                <MenuItem value="spouse">Spouse</MenuItem>
-                <MenuItem value="friend">Friend</MenuItem>
-                <MenuItem value="parent">Parent</MenuItem>
-                <MenuItem value="sibling">Sibling</MenuItem>
-                <MenuItem value="landlord">Landlord</MenuItem>
-                <MenuItem value="other">Other</MenuItem>
+                {EMERGENCY_CONTACT_CATEGORIES_VALUES.map((value) => ( 
+                  <MenuItem key={value} value={value}>
+                    {value}
+                  </MenuItem>
+                ))
+                }
               </Select>
             </FormControl>
           )}

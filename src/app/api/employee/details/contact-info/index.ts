@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import { employeeEmergencyContactSchema } from '../../../schemas/employeeEmergencyContactSchema';
+import { employeeEmergencyContactSchema } from '@/components/employee/details/contact-info/constants';
 
 const prisma = new PrismaClient();
 

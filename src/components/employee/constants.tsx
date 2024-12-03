@@ -11,8 +11,6 @@ import {
   RACE_TYPE_VALUES
 } from "@/utils/FormConsts";
 
-export type CitizenshipStatus = 'citizen' | 'pr' | 'foreigner'
-export type MaritalStatus = 'Single' | 'Married' | 'Divorced' | 'Defacto' | 'Separated'
 
 export const employeeSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
@@ -52,7 +50,7 @@ export const employeeSchema = z.object({
   localAddressLine1: z.string().min(1, 'Address Line 1 is required'),
   localAddressLine2: z.string().min(1, 'Address Line 1 is required'),
   localPostalCode: z.string().regex(/^\d{5,9}$/, 'Invalid postal code'),
-  
+
   foreignAddressLine1: z.string().optional(),
   foreignAddressLine2: z.string().optional(),
   foreignAddressCity: z.string().optional(),

@@ -3,6 +3,16 @@ const convertEnumToValues = (enumObj: any) => {
   return Object.values(enumObj) as [string, ...string[]];
 }
 
+export enum EMERGENCY_CONTACT_CATEGORIES {
+  Spouse = "Spouse",
+  Friend = "Friend",
+  Parent = "Parent",
+  Sibling = "Sibling",
+  Landlord = "Landlord",
+  Other = "Other"
+
+}
+
 export enum NATIONALITIES {
   Singapore = "Singapore",
   India = "India",
@@ -199,6 +209,7 @@ export enum NATIONALITIES {
   Zimbabwe = "Zimbabwe"
 }
 
+
 export enum MARITAL_CATEGORIES {
   Single = "Single",
   Married = "Married",
@@ -227,6 +238,7 @@ export const getCitizenColor = (citizenCategory: string, active = true) => {
 export const getCitizenBgColor = (citizenCategory: string, active = true) => {
   return `bg-${getCitizenColor(citizenCategory, active)}`;
 }
+
 export enum VALID_PASS_TYPES {
   EP = "EP",
   PEP = "PEP",
@@ -252,6 +264,7 @@ export const MARITAL_CATEGORIES_VALUES = convertEnumToValues(MARITAL_CATEGORIES)
 export const VALID_PASS_TYPES_VALUES = convertEnumToValues(VALID_PASS_TYPES);
 export const RACE_TYPE_VALUES = convertEnumToValues(RACE_TYPE);
 export const GENDER_TYPE_VALUES = convertEnumToValues(GENDER_TYPE);
+export const EMERGENCY_CONTACT_CATEGORIES_VALUES = convertEnumToValues(EMERGENCY_CONTACT_CATEGORIES);
 
 
 
