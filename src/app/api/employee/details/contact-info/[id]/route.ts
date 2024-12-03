@@ -1,77 +1,77 @@
+import { employeeEmergencyContactSchema } from '@/components/employee/details/contact-info/constants';
 import nanosoftPrisma from '@/lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+  const id = parseInt(params.id)
   const contactId = Number(id);
 
   if (isNaN(contactId)) {
-    return res.status(400).json({ message: 'Invalid ID' });
+    NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
 
-  switch (req.method) {
-    case 'GET':
-      return handleGet(contactId, res);
-    case 'PUT':
-      return handlePut(contactId, req, res);
-    case 'DELETE':
-      return handleDelete(contactId, res);
-    default:
-      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-}
-
-async function handleGet(id: number, res: NextApiResponse) {
   try {
-    const contact = await nanosoftPrisma.employeeEmergencyContact.findUnique({
-      where: { id },
+    const contacts = await nanosoftPrisma.employeeEmergencyContact.findMany({
+      where: { employeeId: contactId },
     });
-    if (contact) {
-      res.status(200).json(contact);
+    if (contacts.length > 0) {
+      NextResponse.json(contacts);
     } else {
-      res.status(404).json({ message: 'Emergency contact not found' });
+      NextResponse.json({ error: 'Emergency contact not found' }, { status: 404 });
     }
   } catch (error) {
     console.error('Error fetching emergency contact:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-async function handlePut(id: number, req: NextApiRequest, res: NextApiResponse) {
+export async function PUT(req: NextApiRequest, { params }: { params: { id: string } }) {
+  const id = parseInt(params.id)
+  const contactId = Number(id);
+
+  if (isNaN(contactId)) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  }
+
   try {
     const validatedData = employeeEmergencyContactSchema.parse(req.body);
     const updatedContact = await nanosoftPrisma.employeeEmergencyContact.update({
-      where: { id },
+      where: { id: contactId },
       data: validatedData,
     });
-    res.status(200).json(updatedContact);
+    NextResponse.json(updatedContact);
   } catch (error) {
     console.error('Error updating emergency contact:', error);
-    if (error.name === 'ZodError') {
-      res.status(400).json({ message: 'Invalid input data', errors: error.errors });
-    } else if (error.name === 'PrismaClientKnownRequestError' && error.code === 'P2025') {
-      res.status(404).json({ message: 'Emergency contact not found' });
+    if (error instanceof Error && error.name === 'ZodError') {
+      NextResponse.json({ error: 'Invalid input data', errors: (error as any).errors }, { status: 400 });
+    } else if (error instanceof Error && error.name === 'PrismaClientKnownRequestError' && (error as any).code === 'P2025') {
+      NextResponse.json({ error: 'Emergency contact not found' }, { status: 404 });
     } else {
-      res.status(500).json({ message: 'Internal server error' });
+      NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
   }
 }
 
-async function handleDelete(id: number, res: NextApiResponse) {
+export async function DELETE(req: NextApiRequest, { params }: { params: { id: string } }) {
+  const id = parseInt(params.id)
+  const contactId = Number(id);
+
+  if (isNaN(contactId)) {
+    NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  }
+
   try {
     await nanosoftPrisma.employeeEmergencyContact.delete({
-      where: { id },
+      where: { id: contactId },
     });
-    res.status(204).end();
+    NextResponse.json({"message": "Emergency contact deleted successfully"});
   } catch (error) {
     console.error('Error deleting emergency contact:', error);
-    if (error.name === 'PrismaClientKnownRequestError' && error.code === 'P2025') {
-      res.status(404).json({ message: 'Emergency contact not found' });
+    if (error instanceof Error && error.name === 'PrismaClientKnownRequestError' && (error as any).code === 'P2025') {
+      NextResponse.json({ error: 'Emergency contact not found' }, { status: 404 });
     } else {
-      res.status(500).json({ message: 'Internal server error' });
+      NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
   }
 }
-

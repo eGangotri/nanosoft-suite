@@ -9,6 +9,7 @@ import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]
 import { EmployeeHrDetailsFormData } from '@/components/employee/details/hr/constants';
 import { extractEmployeePortion } from '@/components/employee/EmployeeUtils';
 import { EmployeeEmergencyContactFormData } from '@/components/employee/details/contact-info/constants';
+import { RELATIONSHIP_CATEGORIES } from '@/utils/FormConsts';
 
 const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
@@ -16,9 +17,9 @@ const AddEditEmercencyContactInfo: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employee, setEmployee] = useState({} as Employee);
     const [initialData, setInitialData] = useState<EmployeeEmergencyContactFormData>({
-        employeeId: 1,
+        employeeId: 0,
         personName: "",
-        relationship: "friend",
+        relationship: RELATIONSHIP_CATEGORIES.Spouse,
         mobile: "",
         address: ""
     }
@@ -80,9 +81,10 @@ const AddEditEmercencyContactInfo: React.FC = () => {
     return (
         <DashboardLayout>
             {addEdit === ADD_EDIT_ENUM.ADD ? (
-                <AddEditEmercencyContactInfo employee={employee} initialData={initialData} clients={clients} />
+                <AddEditEmercencyContactInfo employee={employee}
+                    initialData={initialData} />
             ) : (
-                <AddEditEmercencyContactInfo employee={employee} initialData={initialData} clients={clients} />
+                <AddEditEmercencyContactInfo employee={employee} initialData={initialData} />
             )}
         </DashboardLayout>
     );

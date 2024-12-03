@@ -4,19 +4,7 @@ import { employeeEmergencyContactSchema } from '@/components/employee/details/co
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  switch (req.method) {
-    case 'GET':
-      return handleGet(req, res);
-    case 'POST':
-      return handlePost(req, res);
-    default:
-      res.setHeader('Allow', ['GET', 'POST']);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-}
-
-async function handleGet(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
   try {
     const contacts = await prisma.employeeEmergencyContact.findMany();
     res.status(200).json(contacts);
@@ -26,7 +14,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-async function handlePost(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
   try {
     const validatedData = employeeEmergencyContactSchema.parse(req.body);
     const newContact = await prisma.employeeEmergencyContact.create({
@@ -36,10 +24,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   } catch (error) {
     console.error('Error creating emergency contact:', error);
     if (error.name === 'ZodError') {
-      res.status(400).json({ message: 'Invalid input data', errors: error.errors });
+      res.status(400).json({ message: 'Invalid input data', errors: (error as any).errors });
     } else {
       res.status(500).json({ message: 'Internal server error' });
     }
   }
 }
-

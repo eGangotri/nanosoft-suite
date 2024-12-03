@@ -16,14 +16,14 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
-  Stack,
-} from '@mui/material'
+} from '@mui/material';
+
 import {
   Edit as EditIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
   Block as DeactivateIcon,
-  Restore as ActivateIcon
+  Restore as ActivateIcon,
 
 }
   from '@mui/icons-material';
@@ -32,6 +32,7 @@ import { capitalizeFirstLetter, formatStringAsDate } from '@/utils/StringUtils';
 import dayjs from 'dayjs';
 import { formatedEmployeeName, initCaps } from '../../EmployeeUtils';
 import { CITIZEN_CATEGORIES, getCitizenBgColor, isForeigner } from '@/utils/FormConsts';
+import { SectionBodyWithEditDelete } from './SectionBodyWithEditDelete';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -67,9 +68,9 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
     setOpenSnackbar(false);
   };
 
-  const executeDeletion = async (employeeId: number, deletePath: string, deleteEmp = false) => {
+  const executeDeletion = async (_id: number, deletePath: string, deleteEmp = false) => {
     if (window.confirm('Are you sure you want to delete?')) {
-      setLoading(`del-${employeeId}`, true)
+      setLoading(`del-${_id}`, true)
       try {
         const response = await fetch(deletePath, {
           method: 'DELETE',
@@ -78,7 +79,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           },
           body: JSON.stringify({ deleted: true }),
         })
-        setLoading(`del-${employeeId}`, false)
+        setLoading(`del-${_id}`, false)
         if (!response.ok) {
           console.error('Error deleting:', response.statusText)
           setSnackbarMessage('Deletion failed')
@@ -93,16 +94,40 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           router.push(`/employee`)
         }
         else {
-          router.replace(`/employee/employee/view-employee/${employeeId}`);
+          router.replace(`/employee/employee/view-employee/${_id}`);
           window.location.reload();
         }
       } catch (error) {
-        setLoading(`del-${employeeId}`, false)
+        setLoading(`del-${_id}`, false)
         console.error('Error deleting employee:', error)
         setSnackbarMessage('Deletion failed')
         setSnackbarSeverity('error')
         setOpenSnackbar(true)
       }
+    }
+  }
+
+
+  const handleDelete = (detailType: string, id: number) => {
+    switch (detailType) {
+      case DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS:
+        executeDeletion(id, `/api/employee/${id}`, true)
+        router.push(`/employee/employee`)
+        break;
+      case DETAIL_TYPE_ENUM.BANK_DETAILS:
+        executeDeletion(id, `/api/employee/details/bank-details/${id}`)
+        break;
+      case DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS:
+        executeDeletion(id, `/api/employee/details/contact-info/${id}`)
+        break;
+      case DETAIL_TYPE_ENUM.HR_DETAILS:
+        break;
+      case DETAIL_TYPE_ENUM.LEAVE_BALANCES:
+        break;
+      case DETAIL_TYPE_ENUM.WORK_HISTORY:
+        break;
+      default:
+        break;
     }
   }
 
@@ -133,6 +158,13 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
     }
   }
 
+  // Define the handleEdit and handleDelete functions
+  const handleEdit = (id: number) => {
+    // Your edit logic here
+  };
+
+
+
   const SectionHeader: React.FC<{
     title: string,
     detailType: string,
@@ -146,12 +178,13 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         <IconButton size="small" onClick={() => handleAddEdit(detailType, employeeId)}>
           {(detailId && (detailId !== 0)) ? <EditIcon className="h-4 w-4" /> : <AddIcon className="h-4 w-4" />}
         </IconButton>
-        {(detailId && (detailId > 0)) && <IconButton size="small"
-          onClick={() => handleDelete(detailType, employeeId)}>
-          {loadingStates[`del-${employeeId}`] ? <CircularProgress size={24} /> :
-            <DeleteIcon className="h-4 w-4" />
-          }
-        </IconButton>}
+        {(detailId && (detailId > 0)) ?
+          <IconButton size="small"
+            onClick={() => handleDelete(detailType, employeeId)}>
+            {loadingStates[`del-${employeeId}`] ? <CircularProgress size={24} /> :
+              <DeleteIcon className="h-4 w-4" />
+            }
+          </IconButton> : <></>}
         {/*implies Employee*/}
         {(detailId == -1) &&
           <>
@@ -190,52 +223,32 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   )
   const { EmployeeEmergencyContact, EmployeeBankDetails: EmployeeBankDetails, EmployeeHrDetails, EmployeeLeaveBalance: EmployeeLeaveBalance, EmployeeWorkHistory: EmployeeWorkHistory, ...employee } = employeeData
 
-  const handleAddEdit = (detailType: string, employeeId: number) => {
+  const handleAddEdit = (detailType: string, id: number) => {
     switch (detailType) {
       case DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS:
-        router.push(`/employee/employee/edit-employee?id=${employeeId}`)
+        router.push(`/employee/employee/edit-employee?id=${id}`)
         break;
       case DETAIL_TYPE_ENUM.HR_DETAILS:
-        router.push(`/employee/details/hr-details/add-edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/details/hr-details/add-edit/${id}?id=${id}`)
         break;
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
-        router.push(`/employee/details/bank-details/add-edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/details/bank-details/add-edit/${id}?id=${id}`)
         break;
       case DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS:
-        router.push(`/employee/details/emergency-contacts/add-edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/details/contact-info/add-edit/${id}?id=${id}`)
         break;
       case DETAIL_TYPE_ENUM.LEAVE_BALANCES:
-        router.push(`/employee/details/leave-balances/add-edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/details/leave-balances/add-edit/${id}?id=${id}`)
         break;
       case DETAIL_TYPE_ENUM.WORK_HISTORY:
-        router.push(`/employee/details/work-history/add-edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/details/work-history/add-edit/${id}?id=${id}`)
         break;
       default:
         break;
     }
   }
 
-  const handleDelete = (detailType: string, employeeId: number) => {
-    switch (detailType) {
-      case DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS:
-        executeDeletion(employeeId, `/api/employee/${employeeId}`, true)
-        router.push(`/employee/employee`)
-        break;
-      case DETAIL_TYPE_ENUM.BANK_DETAILS:
-        executeDeletion(employeeId, `/api/employee/details/bank-details/${employeeId}`)
-        break;
-      case DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS:
-        break;
-      case DETAIL_TYPE_ENUM.HR_DETAILS:
-        break;
-      case DETAIL_TYPE_ENUM.LEAVE_BALANCES:
-        break;
-      case DETAIL_TYPE_ENUM.WORK_HISTORY:
-        break;
-      default:
-        break;
-    }
-  }
+
 
   return (
     <Box className={`max-w-6xl mx-auto p-6 ${backgroundColor}`}>
@@ -316,13 +329,18 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           detailId={0}
         />
         {EmployeeEmergencyContact?.map((entry: EmployeeEmergencyContact) => (
-          <Box key={entry?.id} mb={2}>
-            <Typography><strong>Name:</strong> {entry?.personName}</Typography>
-            <Typography><strong>Relationship:</strong> {entry?.relationship}</Typography>
-            <Typography><strong>Mobile:</strong> {entry?.mobile}</Typography>
-            <Typography><strong>Address:</strong> {entry?.address}</Typography>
-          </Box>
+          <SectionBodyWithEditDelete
+            key={entry?.id}
+            onEdit={() => handleAddEdit(DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS,entry?.id)}
+            onDelete={() => handleDelete(DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS, entry?.id)}
+          >
+            <p><strong>Name:</strong> {entry?.personName}</p>
+            <p><strong>Relationship:</strong> {entry?.relationship}</p>
+            <p><strong>Mobile:</strong> {entry?.mobile}</p>
+            <p><strong>Address:</strong> {entry?.address}</p>
+          </SectionBodyWithEditDelete>
         ))}
+
       </Paper>
 
 

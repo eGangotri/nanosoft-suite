@@ -3,7 +3,7 @@ const convertEnumToValues = (enumObj: any) => {
   return Object.values(enumObj) as [string, ...string[]];
 }
 
-export enum EMERGENCY_CONTACT_CATEGORIES {
+export enum RELATIONSHIP_CATEGORIES {
   Spouse = "Spouse",
   Friend = "Friend",
   Parent = "Parent",
@@ -264,7 +264,7 @@ export const MARITAL_CATEGORIES_VALUES = convertEnumToValues(MARITAL_CATEGORIES)
 export const VALID_PASS_TYPES_VALUES = convertEnumToValues(VALID_PASS_TYPES);
 export const RACE_TYPE_VALUES = convertEnumToValues(RACE_TYPE);
 export const GENDER_TYPE_VALUES = convertEnumToValues(GENDER_TYPE);
-export const EMERGENCY_CONTACT_CATEGORIES_VALUES = convertEnumToValues(EMERGENCY_CONTACT_CATEGORIES);
+export const EMERGENCY_CONTACT_CATEGORIES_VALUES = convertEnumToValues(RELATIONSHIP_CATEGORIES);
 
 
 
