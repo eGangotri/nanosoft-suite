@@ -14,6 +14,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const body = await request.json()
+  delete body.id;
   const result = bankDetailsSchema.safeParse(body)
 
   if (!result.success) {

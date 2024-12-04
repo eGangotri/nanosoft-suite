@@ -1,17 +1,15 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography, CircularProgress } from '@mui/material'
 import { BankDetailsFormData, BankDetailsFormProps, bankDetailsSchema } from './schema'
 import { useRouter } from 'next/navigation'
-import { EmployeeFormData } from '../../constants'
+import { ACCT_TYPES_VALUES } from '@/utils/FormConsts'
 
 
-
-export default function BankDetailsForm({ initialData, onSubmit, isEditing, employeeId }: BankDetailsFormProps) {
-  const [employeeName, setEmployeeName] = useState('')
+export default function BankDetailsForm({ initialData, onSubmit, isLoading, employeeId }: BankDetailsFormProps) {
   const router = useRouter()
   const {
     control,
@@ -21,33 +19,13 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
     reset,
   } = useForm<BankDetailsFormData>({
     resolver: zodResolver(bankDetailsSchema),
-    defaultValues: initialData || {
-      employeeId: employeeId,
-      bankName: '',
-      employeeBankingName: '',
-      accountNumber: '',
-      accountType: 'Savings',
-    },
+    defaultValues: initialData,
   })
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(`/api/employee/list?id=${employeeId}`);
-      const data:EmployeeFormData = await response.json()
-      console.log('Employee data:', JSON.stringify(data))
-      setEmployeeName(`${data.firstName} ${data.middleName} ${data.lastName}`)
-      setValue('employeeId', employeeId);
-      console.log('Fetching employee data for ID:', employeeId)
-      console.log('Fetching employee data for ID:', JSON.stringify(data))
-    }
-    fetchData()
-  }, [employeeId])
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
       <Typography variant="h6" gutterBottom>
-        {isEditing ? 'Edit Bank Details' : 'Add Bank Details'} for {employeeName}
+        {initialData && initialData?.id && initialData?.id > 0  ? 'Edit Bank Details' : 'Add Bank Details'}
       </Typography>
       <Controller
         name="bankName"
@@ -110,8 +88,11 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
               label="Account Type"
               error={!!errors.accountType}
             >
-              <MenuItem value="Current">Current</MenuItem>
-              <MenuItem value="Savings">Savings</MenuItem>
+              {ACCT_TYPES_VALUES.map((type) => (
+                <MenuItem key={type} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         )}
@@ -120,8 +101,7 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
               {isLoading ? <CircularProgress size={24} /> :
-              (isEditing ? 'Update Bank Details' : 'Add Bank Details')} 
-
+              ( initialData && initialData?.id && initialData?.id > 0  ? 'Update' : 'Add')} 
             </Button>
             <Button type="reset"
               onClick={() => reset(initialData)} // Reset the form to initial values

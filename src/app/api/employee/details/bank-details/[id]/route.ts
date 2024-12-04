@@ -24,7 +24,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const employeeId = parseInt(params.id)
+  const id = parseInt(params.id)
   const body = await request.json()
   const result = bankDetailsSchema.safeParse(body)
 
@@ -33,18 +33,18 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    const updatedBankDetail = await nanosoftPrisma.employeeBankDetails.updateMany({
-      where: { employeeId: employeeId },
+    const updatedBankDetail = await nanosoftPrisma.employeeBankDetails.update({
+      where: { id },
       data: result.data,
     })
 
-    if (updatedBankDetail.count === 0) {
+    if (!updatedBankDetail) {
       return NextResponse.json({ error: 'Bank detail not found for this employee' }, { status: 404 })
     }
 
     // Fetch the updated record to return
     const fetchedBankDetail = await nanosoftPrisma.employeeBankDetails.findFirst({
-      where: { employeeId: employeeId }
+      where: { id }
     })
 
     return NextResponse.json(fetchedBankDetail)

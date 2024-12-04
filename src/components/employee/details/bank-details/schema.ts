@@ -9,7 +9,7 @@ export interface BankDetailsFormProps {
   employeeId: number
   initialData?: BankDetailsFormData
   onSubmit: (data: BankDetailsFormData) => void
-  isEditing: boolean,
+  isLoading?: boolean;
 }
 
 export const bankDetailsSchema = z.object({

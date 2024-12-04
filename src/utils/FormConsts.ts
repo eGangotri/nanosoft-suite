@@ -260,6 +260,11 @@ export enum GENDER_TYPE {
   Male = "Male",
   Female = "Female"
 }
+
+export enum ACCT_TYPES {
+  Savings = "Savings",
+  Checking = "Checking"
+}
 export const NATIONALITY_VALUES = convertEnumToValues(NATIONALITIES);
 export const CITIZEN_CATEGORIES_VALUES = convertEnumToValues(CITIZEN_CATEGORIES);
 export const MARITAL_CATEGORIES_VALUES = convertEnumToValues(MARITAL_CATEGORIES);
@@ -267,6 +272,7 @@ export const VALID_PASS_TYPES_VALUES = convertEnumToValues(VALID_PASS_TYPES);
 export const RACE_TYPE_VALUES = convertEnumToValues(RACE_TYPE);
 export const GENDER_TYPE_VALUES = convertEnumToValues(GENDER_TYPE);
 export const EMERGENCY_CONTACT_CATEGORIES_VALUES = convertEnumToValues(RELATIONSHIP_CATEGORIES);
+export const ACCT_TYPES_VALUES = convertEnumToValues(ACCT_TYPES);
 
 
 

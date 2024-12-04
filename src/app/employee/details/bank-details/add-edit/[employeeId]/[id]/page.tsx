@@ -5,6 +5,8 @@ import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { fetchBankDetails } from '@/services/employeeService';
 import { BankDetailsFormData } from '@/components/employee/details/bank-details/schema';
+import { ACCT_TYPES } from '@/utils/FormConsts';
+import AddEditBankDetailsPage from '@/components/employee/details/bank-details/add-edit/page';
 
 const AddBankDetailsPage: React.FC = () => {
     const emptyBankDetail: BankDetailsFormData = {
@@ -12,7 +14,7 @@ const AddBankDetailsPage: React.FC = () => {
         bankName: '',
         employeeBankingName: '',
         accountNumber: '',
-        accountType: 'Savings',
+        accountType: ACCT_TYPES.Savings,
     };
     const [initialData, setInitialData] = useState<BankDetailsFormData>(emptyBankDetail);
     const [loading, setLoading] = useState(true);
@@ -66,9 +68,8 @@ const AddBankDetailsPage: React.FC = () => {
     }
     return (
         <DashboardLayout>
-            {/* <EmergencyContactPage employeeId={initialData.employeeId}
-                initialData={initialData} /> */}
-            <Typography>{JSON.stringify(initialData)}</Typography>
+            <AddEditBankDetailsPage employeeId={initialData.employeeId}
+                initialData={initialData} />
         </DashboardLayout>
     );
 };
