@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Typography, Container, Paper } from '@mui/material';
+import { Typography, Container, Paper, Snackbar, Alert } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { AddEditBankDetailsFormProps, BankDetailsFormData } from '../schema';
 import BankDetailsForm from '../BankDetailsForm';
 
 
 export default function AddEditBankDetailsPage({ employeeId, initialData }: AddEditBankDetailsFormProps) {
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
   const [editFlag, setEditFlag] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -25,15 +27,25 @@ export default function AddEditBankDetailsPage({ employeeId, initialData }: AddE
       });
       setIsLoading(false);
       if (response.ok) {
-        setSuccessMessage(editFlag ? 'Bank Detail updated successfully!' : 'Bank Detail added successfully!');
+        setSnackbarMessage(`Bank details ${editFlag ? "updated" : "added"} successfully`)
+        setSnackbarSeverity('success')
+        setOpenSnackbar(true)
         router.push(`/employee/employee/view-employee/${employeeId}`)
       } else {
-        throw new Error('Failed to save Bank Detail');
+        setSnackbarMessage(`Failed to ${editFlag ? "updated" : "added"} bank details. Please try again.`)
+        setSnackbarSeverity('error')
+        setOpenSnackbar(true)
       }
     } catch (error) {
-      console.error('Error saving Bank Detail:', error);
-      alert('Failed to save Bank Detail. Please try again.');
+      console.error(`Error ${editFlag ? "updating" : "adding"} bank details.`, error);
+      setSnackbarMessage(`Failed to ${editFlag ? "update" : "add"} bank details. ${error}`)
+      setSnackbarSeverity('error')
+      setOpenSnackbar(true)
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   useEffect(() => {
@@ -46,14 +58,6 @@ export default function AddEditBankDetailsPage({ employeeId, initialData }: AddE
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          {editFlag ? 'Edit' : 'Add'} Bank Detail
-        </Typography>
-        {successMessage && (
-          <Typography color="success" gutterBottom>
-            {successMessage}
-          </Typography>
-        )}
         <BankDetailsForm
           initialData={initialData}
           isLoading={isLoading}
@@ -61,6 +65,16 @@ export default function AddEditBankDetailsPage({ employeeId, initialData }: AddE
           employeeId={employeeId}
         />
       </Paper>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose}
+          severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

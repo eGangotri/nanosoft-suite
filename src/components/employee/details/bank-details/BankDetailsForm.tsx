@@ -24,8 +24,8 @@ export default function BankDetailsForm({ initialData, onSubmit, isLoading, empl
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
-      <Typography variant="h6" gutterBottom>
-        {initialData && initialData?.id && initialData?.id > 0  ? 'Edit Bank Details' : 'Add Bank Details'}
+      <Typography variant="h4" gutterBottom>
+        {initialData && initialData?.id && initialData?.id > 0 ? 'Edit Bank Details' : 'Add Bank Details'}
       </Typography>
       <Controller
         name="bankName"
@@ -97,27 +97,27 @@ export default function BankDetailsForm({ initialData, onSubmit, isLoading, empl
           </FormControl>
         )}
       />
-    
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
-              {isLoading ? <CircularProgress size={24} /> :
-              ( initialData && initialData?.id && initialData?.id > 0  ? 'Update' : 'Add')} 
-            </Button>
-            <Button type="reset"
-              onClick={() => reset(initialData)} // Reset the form to initial values
-              fullWidth
-              variant="contained"
-              className="mr-2 pr-2">
-              Reset
-            </Button>
-            <Button type="button"
-              fullWidth
-              variant="contained"
-              className="mr-2 pr-2"
-              onClick={() => router.push(`/employee/employee/view-employee/${employeeId}`)}>
-              Cancel
-            </Button>
-          </div>
+        <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
+          {isLoading ? <CircularProgress size={24} /> :
+            (initialData && initialData?.id && initialData?.id > 0 ? 'Update' : 'Add')}
+        </Button>
+        <Button type="reset"
+          onClick={() => reset(initialData)} // Reset the form to initial values
+          fullWidth
+          variant="contained"
+          className="mr-2 pr-2">
+          Reset
+        </Button>
+        <Button type="button"
+          fullWidth
+          variant="contained"
+          className="mr-2 pr-2"
+          onClick={() => router.push(`/employee/employee/view-employee/${employeeId}`)}>
+          Cancel
+        </Button>
+      </div>
     </Box>
   )
 }

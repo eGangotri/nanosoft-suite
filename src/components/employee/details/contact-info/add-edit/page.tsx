@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Typography, Container, Paper } from '@mui/material';
+import { Typography, Container, Paper, Snackbar, Alert } from '@mui/material';
 import { EmergencyContactPageProps, EmployeeEmergencyContactFormData } from '../constants';
 import { EmployeeEmergencyContactForm } from '../employeeContactForm';
 import { useRouter } from 'next/navigation';
@@ -10,6 +10,9 @@ export default function EmergencyContactPage({ employeeId, initialData }: Emerge
   const [editFlag, setEditFlag] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
 
   const handleSubmit = async (data: EmployeeEmergencyContactFormData) => {
     try {
@@ -25,15 +28,25 @@ export default function EmergencyContactPage({ employeeId, initialData }: Emerge
       });
       setIsLoading(false);
       if (response.ok) {
-        setSuccessMessage(editFlag ? 'Emergency contact updated successfully!' : 'Emergency contact added successfully!');
+        setSnackbarMessage(`emergency contact ${editFlag ? "updated" : "added"} successfully`)
+        setSnackbarSeverity('success')
+        setOpenSnackbar(true)
         router.push(`/employee/employee/view-employee/${employeeId}`)
       } else {
-        throw new Error('Failed to save emergency contact');
+        setSnackbarMessage(`Failed to ${editFlag ? "update" : "add"} emergency contact. Please try again.`)
+        setSnackbarSeverity('error')
+        setOpenSnackbar(true)
       }
     } catch (error) {
-      console.error('Error saving emergency contact:', error);
-      alert('Failed to save emergency contact. Please try again.');
+      console.error(`Error ${editFlag ? "updating" : "adding"} emergency contact.`, error);
+      setSnackbarMessage(`Failed to ${editFlag ? "update" : "add"} emergency contact. ${error}`)
+      setSnackbarSeverity('error')
+      setOpenSnackbar(true)
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   useEffect(() => {
@@ -61,6 +74,16 @@ export default function EmergencyContactPage({ employeeId, initialData }: Emerge
           employeeId={employeeId}
         />
       </Paper>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose}
+          severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
