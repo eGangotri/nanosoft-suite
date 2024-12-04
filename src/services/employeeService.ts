@@ -42,6 +42,19 @@ export const fetchBankDetails = async (employeeId: number) => {
     }
 }
 
+export const fetchContactInfoById = async (contactId: number) => {
+    console.log('Fetching ContactInfo by ID:', contactId)
+    try {
+        const response = await fetch(`/api/employee/details/contact-info/${contactId}/?id=${contactId}`)
+        const data: EmployeeEmergencyContact = await response.json()
+        console.log('fetchContactInfoById data:', JSON.stringify(data))
+        return data
+    }
+    catch (error) {
+        console.error('Error fetching ContactInfo:', error)
+        throw new Error('Failed to fetch ContactInfo')
+    }
+}
 
 export const fetchHrDetails = async (employeeId: number) => {
     console.log('getEmployeeHrDetails:', employeeId)

@@ -76,7 +76,7 @@ declare global {
     relationship: string;
     mobile: string;
     address: string;
-    employee: Employee;
+    employee?: Employee;
   }
 
   interface EmployeeBankDetails {

@@ -3,6 +3,8 @@ const convertEnumToValues = (enumObj: any) => {
   return Object.values(enumObj) as [string, ...string[]];
 }
 
+export const ADD_EDIT_ENUM = { "ADD": "Add", "EDIT": "Update" }
+
 export enum RELATIONSHIP_CATEGORIES {
   Spouse = "Spouse",
   Friend = "Friend",

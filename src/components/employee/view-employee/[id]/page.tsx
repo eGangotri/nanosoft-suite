@@ -33,6 +33,7 @@ import dayjs from 'dayjs';
 import { formatedEmployeeName, initCaps } from '../../EmployeeUtils';
 import { CITIZEN_CATEGORIES, getCitizenBgColor, isForeigner } from '@/utils/FormConsts';
 import { SectionBodyWithEditDelete } from './SectionBodyWithEditDelete';
+import Head from 'next/head';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -223,25 +224,25 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   )
   const { EmployeeEmergencyContact, EmployeeBankDetails: EmployeeBankDetails, EmployeeHrDetails, EmployeeLeaveBalance: EmployeeLeaveBalance, EmployeeWorkHistory: EmployeeWorkHistory, ...employee } = employeeData
 
-  const handleAddEdit = (detailType: string, id: number) => {
+  const handleAddEdit = (detailType: string, employeeId: number, detailId: number = 0) => {
     switch (detailType) {
       case DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS:
-        router.push(`/employee/employee/edit-employee?id=${id}`)
+        router.push(`/employee/employee/edit-employee?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.HR_DETAILS:
-        router.push(`/employee/details/hr-details/add-edit/${id}?id=${id}`)
+        router.push(`/employee/details/hr-details/add-edit/${employeeId}?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
-        router.push(`/employee/details/bank-details/add-edit/${id}?id=${id}`)
+        router.push(`/employee/details/bank-details/add-edit/${employeeId}?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS:
-        router.push(`/employee/details/contact-info/add-edit/${id}?id=${id}`)
+        router.push(`/employee/details/contact-info/add-edit/${employeeId}/${detailId}`)
         break;
       case DETAIL_TYPE_ENUM.LEAVE_BALANCES:
-        router.push(`/employee/details/leave-balances/add-edit/${id}?id=${id}`)
+        router.push(`/employee/details/leave-balances/add-edit/${employeeId}?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.WORK_HISTORY:
-        router.push(`/employee/details/work-history/add-edit/${id}?id=${id}`)
+        router.push(`/employee/details/work-history/add-edit/${employeeId}?id=${employeeId}`)
         break;
       default:
         break;
@@ -251,142 +252,146 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
 
 
   return (
-    <Box className={`max-w-6xl mx-auto p-6 ${backgroundColor}`}>
-      <Typography variant="h4" gutterBottom>
-        Employee Details for {employee?.firstName} {employee?.lastName} ({employee.citizenshipStatus})
-      </Typography>
+    <>
+      <Head>View-Employee</Head>
+      <Box className={`max-w-6xl mx-auto p-6 ${backgroundColor}`}>
+        <Typography variant="h4" gutterBottom>
+          Employee Details for {employee?.firstName} {employee?.lastName} ({employee.citizenshipStatus})
+        </Typography>
 
-      <Paper elevation={3} className="p-6 mb-6">
-        <SectionHeader title="Main Employee Information"
-          detailType={DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS}
-          employeeId={employee?.id} detailId={-1} />
-        <Grid container spacing={2} >
-          <Grid item xs={12} sm={6} >
-            <Typography><strong>Name:</strong> {`${formatedEmployeeName(employee)}`}</Typography>
-            <Typography><strong>Designation:</strong> {employee?.designation}</Typography>
-            <Typography><strong>Date of Birth:</strong> {formatStringAsDate(employee?.dateOfBirth)}</Typography>
-            <Typography><strong>Nationality:</strong> {employee?.nationality}</Typography>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Typography><strong>Email:</strong> {employee?.email}</Typography>
-            <Typography><strong>Mobile:</strong> {employee?.mobile}</Typography>
-            <Typography><strong>NRIC/FIN:</strong> {employee?.nricOrFinNo}</Typography>
-            <Typography><strong>Marital Status:</strong> {employee?.maritalStatus}</Typography>
-          </Grid>
-        </Grid>
-      </Paper>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose}
-          severity={snackbarSeverity}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-      <Paper elevation={3} className="p-6 mb-6">
-        <SectionHeader title="HR Details" detailType={DETAIL_TYPE_ENUM.HR_DETAILS}
-          employeeId={employee?.id}
-          detailId={EmployeeHrDetails?.id} />
-        {EmployeeHrDetails &&
-          <Grid container spacing={2} key={EmployeeHrDetails?.id}>
-            <Grid item xs={12} sm={6}>
-              <Typography><strong>Date of Joining:</strong> {EmployeeHrDetails?.dateOfJoining ? dayjs(EmployeeHrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
-              <Typography><strong>Salary:</strong> ${EmployeeHrDetails?.salary ? Number(EmployeeHrDetails.salary).toFixed(2) : ''}</Typography>
-              <Typography><strong>Bonus:</strong> ${EmployeeHrDetails?.bonus ? Number(EmployeeHrDetails.bonus).toFixed(2) : ''}</Typography>
-              {isForeigner(employee.employee) &&
-                (<Typography><strong>Pass Type:</strong> {EmployeeHrDetails?.passType}</Typography>)}
+        <Paper elevation={3} className="p-6 mb-6">
+          <SectionHeader title="Main Employee Information"
+            detailType={DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS}
+            employeeId={employee?.id} detailId={-1} />
+          <Grid container spacing={2} >
+            <Grid item xs={12} sm={6} >
+              <Typography><strong>Name:</strong> {`${formatedEmployeeName(employee)}`}</Typography>
+              <Typography><strong>Designation:</strong> {employee?.designation}</Typography>
+              <Typography><strong>Date of Birth:</strong> {formatStringAsDate(employee?.dateOfBirth)}</Typography>
+              <Typography><strong>Nationality:</strong> {employee?.nationality}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Passport Number:</strong> {EmployeeHrDetails?.passportNumber}</Typography>
-              <Typography><strong>Client:</strong>
-                {EmployeeHrDetails?.EmployeeHrDetailsClients?.length > 0 ? EmployeeHrDetails?.EmployeeHrDetailsClients?.map(ehdc => ehdc?.Client?.companyName)?.join(",") : "'N/A'"}
-              </Typography>
-              {isForeigner(employee.employee) &&
-                <Typography><strong>Pass Expiry Date:</strong> {EmployeeHrDetails?.passExpiryDate ? formatStringAsDate(EmployeeHrDetails?.passExpiryDate) : 'N/A'}</Typography>
-              }
+              <Typography><strong>Email:</strong> {employee?.email}</Typography>
+              <Typography><strong>Mobile:</strong> {employee?.mobile}</Typography>
+              <Typography><strong>NRIC/FIN:</strong> {employee?.nricOrFinNo}</Typography>
+              <Typography><strong>Marital Status:</strong> {employee?.maritalStatus}</Typography>
             </Grid>
           </Grid>
-        }
-      </Paper>
+        </Paper>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert onClose={handleSnackbarClose}
+            severity={snackbarSeverity}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+        <Paper elevation={3} className="p-6 mb-6">
+          <SectionHeader title="HR Details" detailType={DETAIL_TYPE_ENUM.HR_DETAILS}
+            employeeId={employee?.id}
+            detailId={EmployeeHrDetails?.id} />
+          {EmployeeHrDetails &&
+            <Grid container spacing={2} key={EmployeeHrDetails?.id}>
+              <Grid item xs={12} sm={6}>
+                <Typography><strong>Date of Joining:</strong> {EmployeeHrDetails?.dateOfJoining ? dayjs(EmployeeHrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
+                <Typography><strong>Salary:</strong> ${EmployeeHrDetails?.salary ? Number(EmployeeHrDetails.salary).toFixed(2) : ''}</Typography>
+                <Typography><strong>Bonus:</strong> ${EmployeeHrDetails?.bonus ? Number(EmployeeHrDetails.bonus).toFixed(2) : ''}</Typography>
+                {isForeigner(employee.employee) &&
+                  (<Typography><strong>Pass Type:</strong> {EmployeeHrDetails?.passType}</Typography>)}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography><strong>Passport Number:</strong> {EmployeeHrDetails?.passportNumber}</Typography>
+                <Typography><strong>Client:</strong>
+                  {EmployeeHrDetails?.EmployeeHrDetailsClients?.length > 0 ? EmployeeHrDetails?.EmployeeHrDetailsClients?.map(ehdc => ehdc?.Client?.companyName)?.join(",") : "'N/A'"}
+                </Typography>
+                {isForeigner(employee.employee) &&
+                  <Typography><strong>Pass Expiry Date:</strong> {EmployeeHrDetails?.passExpiryDate ? formatStringAsDate(EmployeeHrDetails?.passExpiryDate) : 'N/A'}</Typography>
+                }
+              </Grid>
+            </Grid>
+          }
+        </Paper>
 
-      <Paper elevation={3} className="p-6 mb-6">
-        <SectionHeader title="Bank Details"
-          detailType={DETAIL_TYPE_ENUM.BANK_DETAILS}
-          employeeId={employee?.id}
-          detailId={EmployeeBankDetails?.id || 0} />
-        <Typography><strong>Bank Name:</strong> {EmployeeBankDetails?.bankName}</Typography>
-        <Typography><strong>Account Holder:</strong> {EmployeeBankDetails?.employeeBankingName}</Typography>
-        <Typography><strong>Account Number:</strong> {EmployeeBankDetails?.accountNumber}</Typography>
-        <Typography><strong>Account Type:</strong> {EmployeeBankDetails?.accountType}</Typography>
-      </Paper>
+        <Paper elevation={3} className="p-6 mb-6">
+          <SectionHeader title="Bank Details"
+            detailType={DETAIL_TYPE_ENUM.BANK_DETAILS}
+            employeeId={employee?.id}
+            detailId={EmployeeBankDetails?.id || 0} />
+          <Typography><strong>Bank Name:</strong> {EmployeeBankDetails?.bankName}</Typography>
+          <Typography><strong>Account Holder:</strong> {EmployeeBankDetails?.employeeBankingName}</Typography>
+          <Typography><strong>Account Number:</strong> {EmployeeBankDetails?.accountNumber}</Typography>
+          <Typography><strong>Account Type:</strong> {EmployeeBankDetails?.accountType}</Typography>
+        </Paper>
 
-      <Paper elevation={3} className="p-6 mb-6">
-        <SectionHeader title="Emergency Contacts"
-          detailType={DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS}
-          employeeId={employee?.id}
-          detailId={0}
-        />
-        {EmployeeEmergencyContact?.map((entry: EmployeeEmergencyContact) => (
-          <SectionBodyWithEditDelete
-            key={entry?.id}
-            onEdit={() => handleAddEdit(DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS,entry?.id)}
-            onDelete={() => handleDelete(DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS, entry?.id)}
-          >
-            <p><strong>Name:</strong> {entry?.personName}</p>
-            <p><strong>Relationship:</strong> {entry?.relationship}</p>
-            <p><strong>Mobile:</strong> {entry?.mobile}</p>
-            <p><strong>Address:</strong> {entry?.address}</p>
-          </SectionBodyWithEditDelete>
-        ))}
+        <Paper elevation={3} className="p-6 mb-6">
+          <SectionHeader title="Emergency Contacts"
+            detailType={DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS}
+            employeeId={employee?.id}
+            detailId={0}
+          />
+          {EmployeeEmergencyContact?.map((entry: EmployeeEmergencyContact) => (
+            <SectionBodyWithEditDelete
+              key={entry?.id}
+              onEdit={() => handleAddEdit(DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS, entry?.employeeId, entry?.id)}
+              onDelete={() => handleDelete(DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS, entry?.id)}
+            >
+              <p><strong>Name:</strong> {entry?.personName}</p>
+              <p><strong>Relationship:</strong> {entry?.relationship}</p>
+              <p><strong>Mobile:</strong> {entry?.mobile}</p>
+              <p><strong>Address:</strong> {entry?.address}</p>
+            </SectionBodyWithEditDelete>
+          ))}
 
-      </Paper>
+        </Paper>
 
 
 
-      <Paper elevation={3} className="p-6 mb-6">
-        <SectionHeader title="Leave Balances"
-          detailType={DETAIL_TYPE_ENUM.LEAVE_BALANCES}
-          employeeId={employee?.id}
-          detailId={0} />
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Leave Type</TableCell>
-                <TableCell align="right">Balance</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {EmployeeLeaveBalance?.map((entry: EmployeeLeaveBalance) => (
-                <TableRow key={entry?.id}>
-                  <TableCell component="th" scope="row">
-                    {entry?.leaveType?.name}
-                  </TableCell>
-                  <TableCell align="right">{entry?.balance}</TableCell>
+        <Paper elevation={3} className="p-6 mb-6">
+          <SectionHeader title="Leave Balances"
+            detailType={DETAIL_TYPE_ENUM.LEAVE_BALANCES}
+            employeeId={employee?.id}
+            detailId={0} />
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Leave Type</TableCell>
+                  <TableCell align="right">Balance</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+              </TableHead>
+              <TableBody>
+                {EmployeeLeaveBalance?.map((entry: EmployeeLeaveBalance) => (
+                  <TableRow key={entry?.id}>
+                    <TableCell component="th" scope="row">
+                      {entry?.leaveType?.name}
+                    </TableCell>
+                    <TableCell align="right">{entry?.balance}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
 
-      <Paper elevation={3} className="p-6">
-        <SectionHeader title="Work History"
-          detailType={DETAIL_TYPE_ENUM.WORK_HISTORY}
-          employeeId={employee?.id}
-          detailId={0} />
-        {EmployeeWorkHistory?.map((entry: EmployeeWorkHistory) => (
-          <Box key={entry?.id} mb={2}>
-            <Typography variant="subtitle1">{entry?.jobTitle}</Typography>
-            <Typography><strong>Period:</strong> {formatStringAsDate(entry?.startDate)} - {entry?.endDate ? formatStringAsDate(entry?.endDate) : 'Present'}</Typography>
-            <Typography><strong>Department:</strong> {entry?.department || 'N/A'}</Typography>
-            <Typography><strong>Responsibilities:</strong> {entry?.responsibilities || 'N/A'}</Typography>
-            <Typography><strong>Technologies:</strong> {entry?.technologiesUsed || 'N/A'}</Typography>
-          </Box>
-        ))}
-      </Paper>
-    </Box>
+        <Paper elevation={3} className="p-6">
+          <SectionHeader title="Work History"
+            detailType={DETAIL_TYPE_ENUM.WORK_HISTORY}
+            employeeId={employee?.id}
+            detailId={0} />
+          {EmployeeWorkHistory?.map((entry: EmployeeWorkHistory) => (
+            <Box key={entry?.id} mb={2}>
+              <Typography variant="subtitle1">{entry?.jobTitle}</Typography>
+              <Typography><strong>Period:</strong> {formatStringAsDate(entry?.startDate)} - {entry?.endDate ? formatStringAsDate(entry?.endDate) : 'Present'}</Typography>
+              <Typography><strong>Department:</strong> {entry?.department || 'N/A'}</Typography>
+              <Typography><strong>Responsibilities:</strong> {entry?.responsibilities || 'N/A'}</Typography>
+              <Typography><strong>Technologies:</strong> {entry?.technologiesUsed || 'N/A'}</Typography>
+            </Box>
+          ))}
+        </Paper>
+      </Box>
+    </>
+
   )
 }

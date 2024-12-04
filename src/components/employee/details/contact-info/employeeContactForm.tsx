@@ -7,8 +7,7 @@ import { EMERGENCY_CONTACT_CATEGORIES_VALUES } from '@/utils/FormConsts';
 
 export const EmployeeEmergencyContactForm: React.FC<EmergencyContactPageProps> = ({
   initialData,
-  onSubmit,
-  employeeId,
+  onSubmit = () => {},
 }) => {
   const {
     control,
@@ -16,7 +15,7 @@ export const EmployeeEmergencyContactForm: React.FC<EmergencyContactPageProps> =
     formState: { errors },
   } = useForm<EmployeeEmergencyContactFormData>({
     resolver: zodResolver(employeeEmergencyContactSchema),
-    defaultValues: initialData || { employeeId },
+    defaultValues: initialData,
   });
 
   return (
@@ -82,7 +81,7 @@ export const EmployeeEmergencyContactForm: React.FC<EmergencyContactPageProps> =
         />
 
         <Button type="submit" variant="contained" color="primary">
-          {initialData ? 'Update' : 'Add'} Emergency Contact
+          {initialData && initialData?.id && initialData?.id > 0 ? 'Update' : 'Add'} Emergency Contact
         </Button>
       </Box>
     </form>

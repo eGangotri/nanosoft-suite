@@ -9,8 +9,8 @@ import EditHrDetails from '@/components/employee/details/hr/edit-hr-details/[id]
 import { EmployeeHrDetailsFormData } from '@/components/employee/details/hr/constants';
 import { extractEmployeePortion } from '@/components/employee/EmployeeUtils';
 import { createEmptyEmployee, createEmptyHRDetails } from '@/app/employee/employee/EmployeeUtil';
+import { ADD_EDIT_ENUM } from '@/utils/FormConsts';
 
-const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
 
 const AddHRDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);

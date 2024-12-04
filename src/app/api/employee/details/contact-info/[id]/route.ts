@@ -1,4 +1,3 @@
-import { employeeEmergencyContactSchema } from '@/components/employee/details/contact-info/constants';
 import nanosoftPrisma from '@/lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
@@ -12,10 +11,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    const contacts = await nanosoftPrisma.employeeEmergencyContact.findMany({
-      where: { employeeId: contactId },
+    const contacts = await nanosoftPrisma.employeeEmergencyContact.findUnique({
+      where: { id: contactId },
     });
-    if (contacts.length > 0) {
+    if (contacts) {
       NextResponse.json(contacts);
     } else {
       NextResponse.json({ error: 'Emergency contact not found' }, { status: 404 });
@@ -65,7 +64,7 @@ export async function DELETE(req: NextApiRequest, { params }: { params: { id: st
     await nanosoftPrisma.employeeEmergencyContact.delete({
       where: { id: contactId },
     });
-    NextResponse.json({"message": "Emergency contact deleted successfully"});
+    NextResponse.json({ "message": "Emergency contact deleted successfully" });
   } catch (error) {
     console.error('Error deleting emergency contact:', error);
     if (error instanceof Error && error.name === 'PrismaClientKnownRequestError' && (error as any).code === 'P2025') {

@@ -7,9 +7,6 @@ import BankDetailsForm from '../../BankDetailsForm'
 import { useRouter } from 'next/navigation'
 import { AddEditBankDetailsFormProps, BankDetailsFormData } from '../../schema'
 
-
-
-
 export default function EditBankDetails({ employeeId, initialData }: AddEditBankDetailsFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')

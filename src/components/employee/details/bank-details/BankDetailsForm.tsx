@@ -4,17 +4,11 @@ import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography, CircularProgress } from '@mui/material'
-import { BankDetailsFormData, bankDetailsSchema } from './schema'
+import { BankDetailsFormData, BankDetailsFormProps, bankDetailsSchema } from './schema'
 import { useRouter } from 'next/navigation'
 import { EmployeeFormData } from '../../constants'
 
 
-interface BankDetailsFormProps {
-  employeeId: number
-  initialData?: BankDetailsFormData
-  onSubmit: (data: BankDetailsFormData) => void
-  isEditing: boolean,
-}
 
 export default function BankDetailsForm({ initialData, onSubmit, isEditing, employeeId }: BankDetailsFormProps) {
   const [employeeName, setEmployeeName] = useState('')

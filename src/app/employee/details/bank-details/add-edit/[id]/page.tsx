@@ -7,8 +7,7 @@ import { fetchBankDetails } from '@/services/employeeService';
 import { BankDetailsFormData } from '@/components/employee/details/bank-details/schema';
 import AddBankDetails from '@/components/employee/details/bank-details/add-bank-details/page';
 import EditBankDetails from '@/components/employee/details/bank-details/edit-bank-details/[id]/page';
-
-const ADD_EDIT_ENUM = { "ADD": 1, "EDIT": 2 }
+import { ADD_EDIT_ENUM } from '@/utils/FormConsts';
 
 const AddBankDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);

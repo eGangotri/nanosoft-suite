@@ -23,7 +23,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     res.status(201).json(newContact);
   } catch (error) {
     console.error('Error creating emergency contact:', error);
-    if (error.name === 'ZodError') {
+    if (error instanceof Error && error.name === 'ZodError') {
       res.status(400).json({ message: 'Invalid input data', errors: (error as any).errors });
     } else {
       res.status(500).json({ message: 'Internal server error' });
