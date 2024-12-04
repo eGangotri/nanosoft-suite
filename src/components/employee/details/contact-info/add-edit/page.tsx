@@ -1,16 +1,15 @@
-import { use, useEffect, useState } from 'react';
-import { GetServerSideProps } from 'next';
+import { useEffect, useState } from 'react';
 import { Typography, Container, Paper } from '@mui/material';
-import { PrismaClient } from '@prisma/client';
 import { EmergencyContactPageProps, EmployeeEmergencyContactFormData } from '../constants';
 import { EmployeeEmergencyContactForm } from '../employeeContactForm';
-import { ADD_EDIT_ENUM } from '@/utils/FormConsts';
+import { useRouter } from 'next/navigation';
 
 
 export default function EmergencyContactPage({ employeeId, initialData }: EmergencyContactPageProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [editFlag, setEditFlag] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (data: EmployeeEmergencyContactFormData) => {
     try {
@@ -26,7 +25,8 @@ export default function EmergencyContactPage({ employeeId, initialData }: Emerge
       });
       setIsLoading(false);
       if (response.ok) {
-        setSuccessMessage(initialData ? 'Emergency contact updated successfully!' : 'Emergency contact added successfully!');
+        setSuccessMessage(editFlag ? 'Emergency contact updated successfully!' : 'Emergency contact added successfully!');
+        router.push(`/employee/employee/view-employee/${employeeId}`)
       } else {
         throw new Error('Failed to save emergency contact');
       }

@@ -1,21 +1,21 @@
 import nanosoftPrisma from "@/lib/prisma";
-import {  NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 
-export async function GET(req: Request, res: NextApiResponse) {
-  const { employeeId } = req.query;
+export async function GET(req: Request, { params }: { params: { employeeId: string } }) {
+  const employeeId = params.employeeId;
   const empId = Number(employeeId);
 
   if (isNaN(empId)) {
-    return res.status(400).json({ message: 'Invalid employee ID' });
+    return NextResponse.json({ error: 'Invalid employee ID' }, { status: 400 });
   }
 
   try {
     const contacts = await nanosoftPrisma.employeeEmergencyContact.findMany({
       where: { employeeId: empId },
     });
-    res.status(200).json(contacts);
+    return NextResponse.json(contacts);
   } catch (error) {
     console.error('Error fetching employee emergency contacts:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

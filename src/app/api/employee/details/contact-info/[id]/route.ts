@@ -34,11 +34,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 
   try {
-    console.log('Validated data:', JSON.stringify(req.body));
     const body = await req.json();
     console.log('Request body:', JSON.stringify(body));
-
-    const validatedData = employeeEmergencyContactSchema.parse(req.body);
+    const validatedData = employeeEmergencyContactSchema.parse(body);
     console.log('Validated data:', JSON.stringify(validatedData));
     const updatedContact = await nanosoftPrisma.employeeEmergencyContact.update({
       where: { id: contactId },
