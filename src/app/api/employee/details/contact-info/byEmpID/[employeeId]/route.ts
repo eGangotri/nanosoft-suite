@@ -1,6 +1,5 @@
 import { employeeEmergencyContactSchema } from '@/components/employee/details/contact-info/constants';
 import nanosoftPrisma from '@/lib/prisma';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request, { params }: { params: { employeeId: string } }) {

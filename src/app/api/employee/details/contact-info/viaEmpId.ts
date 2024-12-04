@@ -1,7 +1,7 @@
 import nanosoftPrisma from "@/lib/prisma";
-import { NextApiRequest, NextApiResponse } from "next";
+import {  NextApiResponse } from "next";
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: Request, res: NextApiResponse) {
   const { employeeId } = req.query;
   const empId = Number(employeeId);
 

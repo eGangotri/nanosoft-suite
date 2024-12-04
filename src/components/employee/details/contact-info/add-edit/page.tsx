@@ -10,16 +10,21 @@ import { ADD_EDIT_ENUM } from '@/utils/FormConsts';
 export default function EmergencyContactPage({ employeeId, initialData }: EmergencyContactPageProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [editFlag, setEditFlag] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (data: EmployeeEmergencyContactFormData) => {
     try {
-      const _url = `/app/employee/details/contact-info/${editFlag ? data?.id : ""}`;
+      const _url = `/api/employee/details/contact-info/${editFlag ? data?.id : ""}`;
+      console.log('JSON.stringify(data):', JSON.stringify(data));
+      setIsLoading(true);
       const response = await fetch(_url, {
         method: editFlag ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       });
-
+      setIsLoading(false);
       if (response.ok) {
         setSuccessMessage(initialData ? 'Emergency contact updated successfully!' : 'Emergency contact added successfully!');
       } else {
@@ -51,6 +56,7 @@ export default function EmergencyContactPage({ employeeId, initialData }: Emerge
         )}
         <EmployeeEmergencyContactForm
           initialData={initialData}
+          isLoading={isLoading}
           onSubmit={handleSubmit}
           employeeId={employeeId}
         />

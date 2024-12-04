@@ -4,6 +4,7 @@ export interface EmergencyContactPageProps {
   employeeId: number;
   initialData?: EmployeeEmergencyContactFormData;
   onSubmit?: (data: EmployeeEmergencyContactFormData) => void;
+  isLoading?: boolean;
 }
 
 
@@ -15,6 +16,5 @@ export const employeeEmergencyContactSchema = z.object({
   mobile: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid mobile number"),
   address: z.string().min(1, "Address is required"),
 });
-
-export type EmployeeEmergencyContactFormData = z.infer<typeof employeeEmergencyContactSchema>;
-//export type EmployeeEmergencyContactFormData = EmployeeEmergencyContact;
+//export type EmployeeEmergencyContactFormData = z.infer<typeof employeeEmergencyContactSchema>;
+export type EmployeeEmergencyContactFormData = EmployeeEmergencyContact;

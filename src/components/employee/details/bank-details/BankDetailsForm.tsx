@@ -116,8 +116,7 @@ export default function BankDetailsForm({ initialData, onSubmit, isEditing, empl
           </FormControl>
         )}
       />
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-      </Button>
+    
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
               {isLoading ? <CircularProgress size={24} /> :
