@@ -10,6 +10,7 @@ import EmergencyContactPage from '@/components/employee/details/contact-info/add
 
 const AddEditEmercencyContactInfo: React.FC = () => {
     const emptyContact: EmployeeEmergencyContactFormData = {
+        id:0,
         employeeId: 0,
         personName: "",
         relationship: RELATIONSHIP_CATEGORIES.Spouse,
@@ -29,8 +30,8 @@ const AddEditEmercencyContactInfo: React.FC = () => {
             try {
                 if (_id > 0) {
                     const data: EmployeeEmergencyContact = await fetchContactInfoById(_id) || {
-                        id: 0,
-                        ...emptyContact
+                        ...emptyContact,
+                        id: 0
                     };
                     if (data) {
                         setInitialData(data as EmployeeEmergencyContactFormData);

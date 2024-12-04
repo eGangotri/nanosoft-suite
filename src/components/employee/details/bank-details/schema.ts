@@ -13,6 +13,7 @@ export interface BankDetailsFormProps {
 }
 
 export const bankDetailsSchema = z.object({
+  id: z.number().int().optional(),
   employeeId: z.number().int().positive(),
   bankName: z.string().min(1, 'Bank name is required'),
   employeeBankingName: z.string().min(1, 'Employee banking name is required'),

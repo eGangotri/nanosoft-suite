@@ -12,13 +12,7 @@ import { ADD_EDIT_ENUM } from '@/utils/FormConsts';
 const AddBankDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employeeId, setEmployeeId] = useState(0);
-    const [initialData, setInitialData] = useState<BankDetailsFormData>({
-        employeeId: employeeId,
-        bankName: '',
-        employeeBankingName: '',
-        accountNumber: '',
-        accountType: 'Savings',
-    });
+    const [initialData, setInitialData] = useState<BankDetailsFormData>();
     const [loading, setLoading] = useState(true);
     const params = useParams();
     const id = params.id as string;
@@ -59,7 +53,7 @@ const AddBankDetailsPage: React.FC = () => {
     }
 
     if (!id) {
-        return <Typography variant="h2">Employee Not Found</Typography>;
+        return <Typography variant="h2">Bank Detail Not Found</Typography>;
     }
 
     return (

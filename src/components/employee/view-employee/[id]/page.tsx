@@ -233,7 +233,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         router.push(`/employee/details/hr-details/add-edit/${employeeId}?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
-        router.push(`/employee/details/bank-details/add-edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/details/bank-details/add-edit/${employeeId}/${detailId}`)
         break;
       case DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS:
         router.push(`/employee/details/contact-info/add-edit/${employeeId}/${detailId}`)
@@ -318,7 +318,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           <SectionHeader title="Bank Details"
             detailType={DETAIL_TYPE_ENUM.BANK_DETAILS}
             employeeId={employee?.id}
-            detailId={EmployeeBankDetails?.id || 0} />
+            detailId={EmployeeBankDetails?.id || 0} /> {EmployeeBankDetails?.id}
           <Typography><strong>Bank Name:</strong> {EmployeeBankDetails?.bankName}</Typography>
           <Typography><strong>Account Holder:</strong> {EmployeeBankDetails?.employeeBankingName}</Typography>
           <Typography><strong>Account Number:</strong> {EmployeeBankDetails?.accountNumber}</Typography>
