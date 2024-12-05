@@ -5,7 +5,7 @@ import { AddEditBankDetailsFormProps, BankDetailsFormData } from '../schema';
 import BankDetailsForm from '../BankDetailsForm';
 
 
-export default function AddEditBankDetailsPage({ employeeId, initialData }: AddEditBankDetailsFormProps) {
+export default function AddEditBankDetailsPage({ initialData }: AddEditBankDetailsFormProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
@@ -30,7 +30,7 @@ export default function AddEditBankDetailsPage({ employeeId, initialData }: AddE
         setSnackbarMessage(`Bank details ${editFlag ? "updated" : "added"} successfully`)
         setSnackbarSeverity('success')
         setOpenSnackbar(true)
-        router.push(`/employee/employee/view-employee/${employeeId}`)
+        router.push(`/employee/employee/view-employee/${initialData.employeeId}`)
       } else {
         setSnackbarMessage(`Failed to ${editFlag ? "updated" : "added"} bank details. Please try again.`)
         setSnackbarSeverity('error')
@@ -62,7 +62,6 @@ export default function AddEditBankDetailsPage({ employeeId, initialData }: AddE
           initialData={initialData}
           isLoading={isLoading}
           onSubmit={handleSubmit}
-          employeeId={employeeId}
         />
       </Paper>
       <Snackbar

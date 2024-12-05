@@ -19,35 +19,27 @@ const AddBankDetailsPage: React.FC = () => {
     const [initialData, setInitialData] = useState<BankDetailsFormData>(emptyData);
     const [loading, setLoading] = useState(true);
     const params = useParams();
-    const id = params.id as string;
     const employeeId = params.employeeId as string;
-    console.log(`id: ${id} employeeId: ${employeeId}`);
+    console.log(` employeeId: ${employeeId}`);
     useEffect(() => {
         const init = async (employeeId: number) => {
-            const _id = Number.isNaN(parseInt(id)) ? 0 : parseInt(id);
             try {
-                if (_id > 0) {
-                    const data = await fetchBankDetails(employeeId);
-                    console.log(`data: ${JSON.stringify(data)} ${data?.employeeId === employeeId}`);
-                    if (data && data.employeeId === employeeId) {
-                        setInitialData(data);
-                    }
-                    else {
-                        setInitialData({
-                            ...initialData,
-                            employeeId: employeeId,
-                            id: 0
-                        });
-                    }
-                } else {
-                    console.log("add");
-                    setInitialData({ ...initialData, employeeId: employeeId, id: 0 });
+                const data = await fetchBankDetails(employeeId);
+                console.log(`data: ${JSON.stringify(data)} ${data?.employeeId === employeeId}`);
+                if (data && data.employeeId === employeeId) {
+                    setInitialData(data);
+                }
+                else {
+                    setInitialData({
+                        ...initialData,
+                        id: 0
+                    });
                 }
                 setLoading(false);
 
             } catch (error) {
                 console.error('Error fetching bank details:', error);
-                setInitialData({ ...initialData, employeeId: employeeId, id: 0 });
+                setInitialData({ ...initialData, id: 0 });
                 setLoading(false);
             }
         };
@@ -57,18 +49,18 @@ const AddBankDetailsPage: React.FC = () => {
         } else {
             setLoading(false);
         }
-    }, [id]);
+    }, [employeeId]);
 
     if (loading) {
         return <CircularProgress />;
     }
 
-    if (!id) {
+    if (!employeeId) {
         return <Typography variant="h2">Bank Detail Not Found</Typography>;
     }
     return (
         <DashboardLayout>
-            <AddEditBankDetailsPage employeeId={initialData.employeeId}
+            <AddEditBankDetailsPage
                 initialData={initialData} />
         </DashboardLayout>
     );

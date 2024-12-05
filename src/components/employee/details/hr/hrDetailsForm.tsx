@@ -372,7 +372,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 {error && <FormHelperText>{error.message}</FormHelperText>}
               </FormControl>
             )}
-          />{_clientIds}
+          />
           <Controller
             name="remarks"
             control={control}

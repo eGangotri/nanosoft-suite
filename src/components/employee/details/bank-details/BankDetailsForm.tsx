@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { ACCT_TYPES_VALUES } from '@/utils/FormConsts'
 
 
-export default function BankDetailsForm({ initialData, onSubmit, isLoading, employeeId }: BankDetailsFormProps) {
+export default function BankDetailsForm({ initialData, onSubmit, isLoading }: BankDetailsFormProps) {
   const router = useRouter()
   const {
     control,
@@ -114,7 +114,7 @@ export default function BankDetailsForm({ initialData, onSubmit, isLoading, empl
           fullWidth
           variant="contained"
           className="mr-2 pr-2"
-          onClick={() => router.push(`/employee/employee/view-employee/${employeeId}`)}>
+          onClick={() => router.push(`/employee/employee/view-employee/${initialData?.employeeId}`)}>
           Cancel
         </Button>
       </div>

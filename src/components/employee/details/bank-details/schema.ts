@@ -1,12 +1,10 @@
 import { z } from 'zod'
 
 export interface AddEditBankDetailsFormProps {
-  employeeId: number
   initialData: BankDetailsFormData
 }
 
 export interface BankDetailsFormProps {
-  employeeId: number
   initialData?: BankDetailsFormData
   onSubmit: (data: BankDetailsFormData) => void
   isLoading?: boolean;
