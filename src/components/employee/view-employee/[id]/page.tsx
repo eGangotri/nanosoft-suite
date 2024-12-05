@@ -122,6 +122,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         executeDeletion(id, `/api/employee/details/contact-info/${id}`)
         break;
       case DETAIL_TYPE_ENUM.HR_DETAILS:
+        executeDeletion(id, `/api/employee/details/hr-details/${id}`)
         break;
       case DETAIL_TYPE_ENUM.LEAVE_BALANCES:
         break;
