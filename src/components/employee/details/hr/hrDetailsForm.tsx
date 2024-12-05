@@ -77,7 +77,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           </Box>
         )}
         <Typography variant="h6" gutterBottom className='pb-2'>
-          {initialData && initialData?.id && initialData?.id > 0 ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(initialData.employee)} ({initialData?.employee?.citizenshipStatus})
+          {initialData && initialData?.id && initialData?.id > 0 ? 'Edit' : 'Add'} HR Details for {formatedEmployeeName(initialData.employee)} ({initialData?.employee?.citizenshipStatus})
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{ }

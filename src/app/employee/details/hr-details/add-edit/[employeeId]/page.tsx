@@ -38,6 +38,7 @@ const AddHRDetailsPage: React.FC = () => {
                     console.log(`--clientIds: ${JSON.stringify(clientIds)}`);
                     setInitialData({
                         ...data.EmployeeHrDetails,
+                        employee: data.employee,
                         clientIds
                     });
                 }
