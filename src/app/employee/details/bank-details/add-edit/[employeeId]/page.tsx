@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { fetchBankDetails } from '@/services/employeeService';
+import { fetchBankDetailsByEmployeeId } from '@/services/employeeService';
 import { BankDetailsFormData } from '@/components/employee/details/bank-details/schema';
 import { ACCT_TYPES } from '@/utils/FormConsts';
 import AddEditBankDetailsPage from '@/components/employee/details/bank-details/add-edit/page';
@@ -24,7 +24,7 @@ const BankDetailsPage: React.FC = () => {
     useEffect(() => {
         const init = async (employeeId: number) => {
             try {
-                const data = await fetchBankDetails(employeeId);
+                const data = await fetchBankDetailsByEmployeeId(employeeId);
                 console.log(`data: ${JSON.stringify(data)} ${data?.employeeId === employeeId}`);
                 if (data && data.employeeId === employeeId) {
                     setInitialData(data);
@@ -32,6 +32,7 @@ const BankDetailsPage: React.FC = () => {
                 else {
                     setInitialData({
                         ...initialData,
+                        employeeId: employeeId,
                         id: 0
                     });
                 }
@@ -39,7 +40,9 @@ const BankDetailsPage: React.FC = () => {
 
             } catch (error) {
                 console.error('Error fetching bank details:', error);
-                setInitialData({ ...initialData, id: 0 });
+                setInitialData({
+                    ...initialData, id: 0, employeeId: employeeId,
+                });
                 setLoading(false);
             }
         };

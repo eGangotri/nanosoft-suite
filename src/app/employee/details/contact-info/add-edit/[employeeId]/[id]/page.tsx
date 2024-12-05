@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/_layout/dashboard-layout';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { fetchContactInfoById } from '@/services/employeeService';
+import { fetchContactInfoByContactId } from '@/services/employeeService';
 import { EmployeeEmergencyContactFormData } from '@/components/employee/details/contact-info/constants';
 import { RELATIONSHIP_CATEGORIES } from '@/utils/FormConsts';
 import EmergencyContactPage from '@/components/employee/details/contact-info/add-edit/page';
@@ -29,7 +29,7 @@ const AddEditEmercencyContactInfo: React.FC = () => {
             const _id = Number.isNaN(parseInt(id)) ? 0 : parseInt(id);
             try {
                 if (_id > 0) {
-                    const data: EmployeeEmergencyContact = await fetchContactInfoById(_id) || {
+                    const data: EmployeeEmergencyContact = await fetchContactInfoByContactId(_id) || {
                         ...emptyData,
                         id: 0
                     };

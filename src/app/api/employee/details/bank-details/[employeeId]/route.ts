@@ -2,13 +2,13 @@ import { NextResponse } from 'next/server'
 import nanosoftPrisma from '@/lib/prisma';
 import { bankDetailsSchema } from '@/components/employee/details/bank-details/schema';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const employeeId = parseInt(params.id)
+export async function GET(request: Request, { params }: { params: { employeeId: string } }) {
+  const employeeId = parseInt(params.employeeId)
 
   try {
-    console.log(`Bank detail:(${employeeId}) ${params.id}`, employeeId);
+    console.log(`Bank detail:(${employeeId}) ${params.employeeId}`, employeeId);
 
-    const bankDetail = await nanosoftPrisma.employeeBankDetails.findFirst({
+    const bankDetail = await nanosoftPrisma.employeeBankDetails.findUnique({
       where: { employeeId: employeeId }
     })
 

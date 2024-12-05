@@ -392,8 +392,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           />
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
-              {isLoading ? <CircularProgress size={24} /> : (initialData && initialData?.id && initialData?.id > 0 ? 'Update Hr Details' : 'Add Hr Details')}
-
+              {isLoading ? <CircularProgress size={24} /> : (initialData && initialData?.id && initialData?.id > 0 ? 'Update' : 'Add')}
             </Button>
             <Button type="reset"
               onClick={() => reset(initialData)} // Reset the form to initial values

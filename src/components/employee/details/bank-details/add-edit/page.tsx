@@ -16,7 +16,7 @@ export default function AddEditBankDetailsPage({ initialData }: AddEditBankDetai
   const handleSubmit = async (data: BankDetailsFormData) => {
     try {
       const _url = `/api/employee/details/bank-details/${editFlag ? data?.id : ""}`;
-      console.log('JSON.stringify(data):', JSON.stringify(data));
+      console.log(`JSON.stringify(data):(${_url}): ${JSON.stringify(data)}`);
       setIsLoading(true);
       const response = await fetch(_url, {
         method: editFlag ? 'PUT' : 'POST',

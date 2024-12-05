@@ -23,10 +23,10 @@ export const fetchClients = async ():
     }
 }
 
-export const fetchBankDetails = async (employeeId: number) => {
+export const fetchBankDetailsByEmployeeId = async (employeeId: number) => {
     console.log('Fetching data for ID:', employeeId)
     try {
-        const response = await fetch(`/api/employee/details/bank-details/${employeeId}/?id=${employeeId}`)
+        const response = await fetch(`/api/employee/details/bank-details/${employeeId}`)
         const data: BankDetailsFormData = await response.json()
 
         console.log('fetchBankDetails:Employee Bank Details: data:', JSON.stringify(data), data.employeeId === employeeId)
@@ -42,7 +42,7 @@ export const fetchBankDetails = async (employeeId: number) => {
     }
 }
 
-export const fetchContactInfoById = async (contactId: number) => {
+export const fetchContactInfoByContactId = async (contactId: number) => {
     console.log('Fetching ContactInfo by ID:', contactId)
     try {
         const response = await fetch(`/api/employee/details/contact-info/${contactId}/?id=${contactId}`)
@@ -56,7 +56,7 @@ export const fetchContactInfoById = async (contactId: number) => {
     }
 }
 
-export const fetchHrDetails = async (employeeId: number) => {
+export const fetchHrDetailsByEmployeeId = async (employeeId: number) => {
     console.log('getEmployeeHrDetails:', employeeId)
     try {
         const response = await fetch(`/api/employee/details/hr-details/${employeeId}/?id=${employeeId}`)
