@@ -12,6 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { formatedEmployeeName } from '../../EmployeeUtils';
 import {
   CITIZEN_CATEGORIES,
+  isForeigner,
   isMalaysianForeigner,
   isWepMandatory
   , VALID_PASS_TYPES_VALUES
@@ -76,7 +77,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           </Box>
         )}
         <Typography variant="h6" gutterBottom className='pb-2'>
-          {initialData && initialData?.id && initialData?.id > 0 ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(employee)} ({employee.citizenshipStatus})
+          {initialData && initialData?.id && initialData?.id > 0 ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(initialData.employee)} ({initialData?.employee?.citizenshipStatus})
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{ }
@@ -193,7 +194,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               )}
             />
           </div>
-          {initialData.employee.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner &&
+          {isForeigner(initialData.employee) &&
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Controller
@@ -303,7 +304,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 />
               </div>
             </>}
-          {(initialData.employee.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner && showWorkPermitNoField) &&
+          {(isForeigner(initialData.employee) && showWorkPermitNoField) &&
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Controller
@@ -405,7 +406,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               fullWidth
               variant="contained"
               className="mr-2 pr-2"
-              onClick={() => router.push(`/employee/employee/view-employee/${employee.id}`)}>
+              onClick={() => router.push(`/employee/employee/view-employee/${initialData?.employeeId}`)}>
               Cancel
             </Button>
           </div>

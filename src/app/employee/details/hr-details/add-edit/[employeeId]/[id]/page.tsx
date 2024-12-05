@@ -9,6 +9,7 @@ import { ADD_EDIT_ENUM, RELATIONSHIP_CATEGORIES } from '@/utils/FormConsts';
 import EmergencyContactPage from '@/components/employee/details/contact-info/add-edit/page';
 import { createEmptyEmployee, createEmptyHRDetails } from '@/app/employee/employee/EmployeeUtil';
 import { EmployeeHrDetailsFormData } from '@/components/employee/details/hr/constants';
+import AddEditHrDetailsPage from '@/components/employee/details/hr/add-edit/page';
 
 const AddHRDetailsPage: React.FC = () => {
     const emptyEmployee = createEmptyEmployee() as Employee
@@ -30,7 +31,6 @@ const AddHRDetailsPage: React.FC = () => {
 
     useEffect(() => {
         const init = async (employeeId: number) => {
-            const _id = Number.isNaN(parseInt(id)) ? 0 : parseInt(id);
             try {
                 const data: EmployeeData | null = await getEmployeeData(employeeId);
                 const _clients: Client[] = await fetchClients();
@@ -43,6 +43,8 @@ const AddHRDetailsPage: React.FC = () => {
                     console.log(`--clientIds: ${JSON.stringify(clientIds)}`);
                     setInitialData({
                         ...data.EmployeeHrDetails,
+                        employeeId: employeeId,
+                        employee: data.employee,
                         clientIds
                     });
                 }
@@ -79,9 +81,8 @@ const AddHRDetailsPage: React.FC = () => {
 
     return (
         <DashboardLayout>
-            {/* <EmergencyContactPage employeeId={initialData.employeeId}
-                initialData={initialData} /> */}
-            {JSON.stringify(initialData)}
+            {<AddEditHrDetailsPage allClients={allClientsInCompany}
+                initialData={initialData} />}
         </DashboardLayout>
     );
 };

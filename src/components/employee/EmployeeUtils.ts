@@ -36,9 +36,9 @@ export const initCaps = (str: string) => {
 
 export const divideNames = (employee: { firstName: string, middleName?: string | null, lastName: string }) => {
     return {
-        firstName: initCaps(employee.firstName),
-        middleName: initCaps(employee.middleName || ""),
-        lastName: initCaps(employee.lastName)
+        firstName: initCaps(employee?.firstName),
+        middleName: initCaps(employee?.middleName || ""),
+        lastName: initCaps(employee?.lastName)
     }
 }
 

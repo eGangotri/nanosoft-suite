@@ -6,7 +6,7 @@ import HrDetailsForm from '../hrDetailsForm';
 import { AddEditHrDetailFormProps } from '../constants';
 
 
-export default function AddEditHrDetailsPage({ initialData,allClients }: AddEditHrDetailFormProps) {
+export default function AddEditHrDetailsPage({ initialData, allClients }: AddEditHrDetailFormProps) {
     const [openSnackbar, setOpenSnackbar] = useState(false)
     const [snackbarMessage, setSnackbarMessage] = useState('')
     const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
@@ -48,10 +48,10 @@ export default function AddEditHrDetailsPage({ initialData,allClients }: AddEdit
     }, [initialData]);
 
     return (
-        <Container maxWidth="sm">
+        <Container>
             <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
                 <HrDetailsForm onSubmit={handleSubmit}
-                    isEditing={false}
+                    isLoading={isLoading}
                     allClients={allClients}
                     initialData={initialData} />
             </Paper>

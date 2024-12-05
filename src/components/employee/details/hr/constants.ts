@@ -12,7 +12,6 @@ export interface HrDetailsFormProps {
   onSubmit: (data: EmployeeHrDetailsFormData) => void;
   allClients?: Client[];
   isLoading: boolean,
-  employee: Employee,
 }
 
 
