@@ -236,9 +236,9 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
         router.push(`/employee/details/bank-details/add-edit/${employeeId}`)
         break;
-      // case DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS:
-      //   router.push(`/employee/details/contact-info/add-edit/${employeeId}/${detailId}`)
-      //   break;
+      case DETAIL_TYPE_ENUM.EMERGENCY_CONTACTS:
+        router.push(`/employee/details/contact-info/add-edit/${employeeId}/${detailId}`)
+        break;
       case DETAIL_TYPE_ENUM.LEAVE_BALANCES:
         router.push(`/employee/details/leave-balances/add-edit/${employeeId}?id=${employeeId}`)
         break;
