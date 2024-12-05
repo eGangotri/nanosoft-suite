@@ -24,8 +24,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   initialData,
   onSubmit,
   allClients,
-  isEditing,
-  employee,
+  isLoading,
 }) => {
   const {
     control,
@@ -39,13 +38,12 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
   });
   const allErrors = Object.values(errors).map(error => JSON.stringify(error)).filter(Boolean);
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
   const formValues = watch();
   console.log('Form Values:', formValues);
   console.log('Form Errors:', errors);
 
   const [showWorkPermitNoField, setShowWorkPermitNoField] = useState(isWepMandatory(initialData?.passType));
-  const nonPRMalaysian = isMalaysianForeigner(employee);
+  const nonPRMalaysian = isMalaysianForeigner(initialData.employee);
 
   const passTypeWatch = watch('passType');
   const _clientIds = watch('clientIds');
@@ -78,7 +76,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           </Box>
         )}
         <Typography variant="h6" gutterBottom className='pb-2'>
-          {isEditing ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(employee)} ({employee.citizenshipStatus})
+          {initialData && initialData?.id && initialData?.id > 0 ? 'Edit HR Details' : 'Add HR Details'} for {formatedEmployeeName(employee)} ({employee.citizenshipStatus})
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{ }
@@ -195,7 +193,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
               )}
             />
           </div>
-          {employee.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner &&
+          {initialData.employee.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner &&
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Controller
@@ -305,7 +303,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
                 />
               </div>
             </>}
-          {(employee.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner && showWorkPermitNoField) &&
+          {(initialData.employee.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner && showWorkPermitNoField) &&
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Controller
@@ -393,7 +391,7 @@ const HrDetailsForm: React.FC<HrDetailsFormProps> = ({
           />
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Button type="submit" fullWidth variant="contained" className="mr-2 pr-2">
-              {isLoading ? <CircularProgress size={24} /> : (isEditing ? 'Update Hr Details' : 'Add Hr Details')}
+              {isLoading ? <CircularProgress size={24} /> : (initialData && initialData?.id && initialData?.id > 0 ? 'Update Hr Details' : 'Add Hr Details')}
 
             </Button>
             <Button type="reset"

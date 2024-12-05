@@ -230,7 +230,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
         router.push(`/employee/employee/edit-employee?id=${employeeId}`)
         break;
       case DETAIL_TYPE_ENUM.HR_DETAILS:
-        router.push(`/employee/details/hr-details/add-edit/${employeeId}?id=${employeeId}`)
+        router.push(`/employee/details/hr-details/add-edit/${employeeId}/${detailId}`)
         break;
       case DETAIL_TYPE_ENUM.BANK_DETAILS:
         router.push(`/employee/details/bank-details/add-edit/${employeeId}/${detailId}`)

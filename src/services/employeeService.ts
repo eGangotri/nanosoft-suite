@@ -75,8 +75,11 @@ export const fetchHrDetails = async (employeeId: number) => {
     }
 }
 
-export const addHrDetails = async (employeeId: number, data: EmployeeHrDetails) => {
-    console.log('addHrDetails:', employeeId, JSON.stringify(data));
+export const addHrDetails = async (data: EmployeeHrDetails) => {
+    if (data?.id !== undefined) {
+        delete data?.id;
+    }
+    console.log('addHrDetails:', data.employeeId, JSON.stringify(data));
     const response = await fetch(`/api/employee/details/hr-details`, {
         method: 'POST',
         headers: {
@@ -87,10 +90,10 @@ export const addHrDetails = async (employeeId: number, data: EmployeeHrDetails) 
     if (!response.ok) {
         throw new Error('Failed to add hr details')
     }
-    return true;
+    return response;
 
 }
-export const editHrDetails = async (employeeId: number, data: EmployeeHrDetailsFormData) => {
+export const editHrDetails = async ( data: EmployeeHrDetailsFormData) => {
     const response = await fetch(`/api/employee/details/hr-details/${data.employeeId}`, {
         method: 'PUT',
         headers: {
@@ -101,5 +104,5 @@ export const editHrDetails = async (employeeId: number, data: EmployeeHrDetailsF
     if (!response.ok) {
         throw new Error('Failed to add bank details')
     }
-    return true
+    return response
 }

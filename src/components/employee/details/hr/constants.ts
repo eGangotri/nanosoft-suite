@@ -3,7 +3,6 @@ import { z } from 'zod';
 
 
 export interface AddEditHrDetailFormProps {
-  employee: Employee
   initialData: EmployeeHrDetailsFormData
   allClients: Client[]
 }
@@ -12,7 +11,7 @@ export interface HrDetailsFormProps {
   initialData: EmployeeHrDetailsFormData;
   onSubmit: (data: EmployeeHrDetailsFormData) => void;
   allClients?: Client[];
-  isEditing: boolean,
+  isLoading: boolean,
   employee: Employee,
 }
 
@@ -37,7 +36,8 @@ const requiredDateSchema = baseDateSchema.refine((date) => date !== null, {
 const nullableDateSchema = baseDateSchema.nullable();
 
 export const employeeHrDetailsSchema = z.object({
-  employeeId: z.number().int().positive(),
+  employeeId: z.number().int().optional(),
+  employee: z.object({}).optional(),
   dateOfJoining: requiredDateSchema,
   bonus: z.coerce.number().nonnegative(),
   salary: z.coerce.number().nonnegative(),

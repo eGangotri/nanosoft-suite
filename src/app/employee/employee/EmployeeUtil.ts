@@ -1,4 +1,4 @@
-import { CITIZEN_CATEGORIES } from "@/utils/FormConsts";
+import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, RACE_TYPE } from "@/utils/FormConsts";
 
 export const createEmptyEmployee = () => {
     const employeeHrDetails = createEmptyHRDetails();
@@ -8,15 +8,15 @@ export const createEmptyEmployee = () => {
         lastName: "",
         designation: "",
         dateOfBirth: new Date(),
-        nationality: "",
+        nationality: NATIONALITIES.India,
         email: "",
         mobile: "",
-        citizenshipStatus: CITIZEN_CATEGORIES.Foreigner, // Replace with a valid default value for CitizenCategory
-        gender: "",
-        race: "",
+        citizenshipStatus: CITIZEN_CATEGORIES.Foreigner, 
+        gender: GENDER_TYPE.Male,
+        race: RACE_TYPE.Indian,
         nricOrFinNo: "",
         expiryDate: null,
-        maritalStatus: "",
+        maritalStatus: MARITAL_CATEGORIES.Single, 
         active: true,
         deleted: false,
         middleName: null,

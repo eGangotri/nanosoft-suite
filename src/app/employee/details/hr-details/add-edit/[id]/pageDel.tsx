@@ -16,14 +16,8 @@ const AddHRDetailsPage: React.FC = () => {
     const [addEdit, setAddEdit] = useState(ADD_EDIT_ENUM.ADD);
     const [employee, setEmployee] = useState({} as Employee);
     const [clients, setClients] = useState<Client[]>([]);
-    const emptyEmployee = createEmptyEmployee() as Employee
-    const employeeHrDetails = createEmptyHRDetails();
-
-    const emptyData = {
-        ...employeeHrDetails,
-        clientIds: [], // Optional field, can be an empty array
-        EmployeeHrDetailsClients: [] // Initialize as an empty array
-    } 
+   
+     
     const [initialData, setInitialData] = useState<EmployeeHrDetailsFormData>(emptyData);
     const [loading, setLoading] = useState(true);
     const params = useParams();

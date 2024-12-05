@@ -9,7 +9,7 @@ import { RELATIONSHIP_CATEGORIES } from '@/utils/FormConsts';
 import EmergencyContactPage from '@/components/employee/details/contact-info/add-edit/page';
 
 const AddEditEmercencyContactInfo: React.FC = () => {
-    const emptyContact: EmployeeEmergencyContactFormData = {
+    const emptyData: EmployeeEmergencyContactFormData = {
         id:0,
         employeeId: 0,
         personName: "",
@@ -17,7 +17,7 @@ const AddEditEmercencyContactInfo: React.FC = () => {
         mobile: "",
         address: ""
     };
-    const [initialData, setInitialData] = useState<EmployeeEmergencyContactFormData>(emptyContact
+    const [initialData, setInitialData] = useState<EmployeeEmergencyContactFormData>(emptyData
     );
     const [loading, setLoading] = useState(true);
     const params = useParams();
@@ -30,7 +30,7 @@ const AddEditEmercencyContactInfo: React.FC = () => {
             try {
                 if (_id > 0) {
                     const data: EmployeeEmergencyContact = await fetchContactInfoById(_id) || {
-                        ...emptyContact,
+                        ...emptyData,
                         id: 0
                     };
                     if (data) {

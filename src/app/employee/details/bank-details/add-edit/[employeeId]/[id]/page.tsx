@@ -9,14 +9,14 @@ import { ACCT_TYPES } from '@/utils/FormConsts';
 import AddEditBankDetailsPage from '@/components/employee/details/bank-details/add-edit/page';
 
 const AddBankDetailsPage: React.FC = () => {
-    const emptyBankDetail: BankDetailsFormData = {
+    const emptyData: BankDetailsFormData = {
         employeeId: 0,
         bankName: '',
         employeeBankingName: '',
         accountNumber: '',
         accountType: ACCT_TYPES.Savings,
     };
-    const [initialData, setInitialData] = useState<BankDetailsFormData>(emptyBankDetail);
+    const [initialData, setInitialData] = useState<BankDetailsFormData>(emptyData);
     const [loading, setLoading] = useState(true);
     const params = useParams();
     const id = params.id as string;
