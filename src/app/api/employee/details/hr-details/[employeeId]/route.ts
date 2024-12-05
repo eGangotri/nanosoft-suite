@@ -5,9 +5,9 @@ import { employeeHrDetailsSchema } from '@/components/employee/details/hr/consta
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { employeeId: string } }
 ) {
-  const employeeId = parseInt(params.id);
+  const employeeId = parseInt(params.employeeId);
   try {
     if (employeeId === 0) {
       // For new entry, return empty data
@@ -36,8 +36,8 @@ export async function GET(
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const employeeId = parseInt(params.id)
+export async function PUT(request: Request, { params }: { params: { employeeId: string } }) {
+  const employeeId = parseInt(params.employeeId)
   const body = await request.json()
   const result = employeeHrDetailsSchema.safeParse(body)
 
@@ -86,8 +86,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const employeeId = parseInt(params.id);
+export async function DELETE(request: Request, { params }: { params: { employeeId: string } }) {
+  const employeeId = parseInt(params.employeeId);
   try {
     const deletedHrDetail = await nanosoftPrisma.employeeHrDetails.delete({
       where: { employeeId: employeeId },

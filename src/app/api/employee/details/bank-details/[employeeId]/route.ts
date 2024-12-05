@@ -23,8 +23,8 @@ export async function GET(request: Request, { params }: { params: { employeeId: 
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function PUT(request: Request, { params }: { params: { employeeId: string } }) {
+  const id = parseInt(params.employeeId)
   const body = await request.json()
   const result = bankDetailsSchema.safeParse(body)
 
@@ -54,15 +54,15 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const employeeId = parseInt(params.id)
+export async function DELETE(request: Request, { params }: { params: { employeeId: string } }) {
+  const employeeId = parseInt(params.employeeId)
 
   try {
-    const deletedBankDetail = await nanosoftPrisma.employeeBankDetails.deleteMany({
+    const deletedBankDetail = await nanosoftPrisma.employeeBankDetails.delete({
       where: { employeeId: employeeId },
     })
 
-    if (deletedBankDetail.count === 0) {
+    if (!deletedBankDetail) {
       return NextResponse.json({ error: 'Bank detail not found for this employee' }, { status: 404 })
     }
 
