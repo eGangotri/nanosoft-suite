@@ -47,6 +47,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
   try {
     const { clientIds, ...otherData } = result.data
+    delete otherData.employeeId
+    delete otherData.employee
     const updatedHRDetail = await nanosoftPrisma.employeeHrDetails.update({
       where: { employeeId: employeeId },
       data: {

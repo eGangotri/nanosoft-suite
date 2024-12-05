@@ -8,7 +8,7 @@ import { BankDetailsFormData } from '@/components/employee/details/bank-details/
 import { ACCT_TYPES } from '@/utils/FormConsts';
 import AddEditBankDetailsPage from '@/components/employee/details/bank-details/add-edit/page';
 
-const AddBankDetailsPage: React.FC = () => {
+const BankDetailsPage: React.FC = () => {
     const emptyData: BankDetailsFormData = {
         employeeId: 0,
         bankName: '',
@@ -66,4 +66,4 @@ const AddBankDetailsPage: React.FC = () => {
     );
 };
 
-export default AddBankDetailsPage;
+export default BankDetailsPage;

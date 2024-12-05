@@ -3,7 +3,7 @@ import { Typography, Container, Paper, Snackbar, Alert } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { addHrDetails, editHrDetails } from '@/services/employeeService';
 import HrDetailsForm from '../hrDetailsForm';
-import { AddEditHrDetailFormProps } from '../constants';
+import { AddEditHrDetailFormProps, EmployeeHrDetailsFormData } from '../constants';
 
 
 export default function AddEditHrDetailsPage({ initialData, allClients }: AddEditHrDetailFormProps) {
@@ -14,8 +14,9 @@ export default function AddEditHrDetailsPage({ initialData, allClients }: AddEdi
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
-    const handleSubmit = async (data: EmployeeHrDetails) => {
+    const handleSubmit = async (data: EmployeeHrDetailsFormData) => {
         try {
+            console.log('data:', JSON.stringify(data));
             const response = editFlag ? await editHrDetails(data) : await addHrDetails(data);
             setIsLoading(false);
             if (response.ok) {

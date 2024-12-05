@@ -40,6 +40,7 @@ declare global {
   interface EmployeeHrDetails {
     id: number;
     employeeId: number;
+    employee: Employee;
     dateOfJoining: Date;
     bonus: number;
     salary: number;
@@ -52,7 +53,6 @@ declare global {
     newApplyDate: Date | null;
     passCancelledDate: Date | null;
     remarks: string | null;
-    employee: Employee;
     workpermitNumber: string | null;
     malaysiaIC: string | null;
     clientIds?: number[]; // Transient field for form handling

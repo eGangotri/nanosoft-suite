@@ -7,6 +7,7 @@ import { fetchClients, getEmployeeData } from '@/services/employeeService';
 import { createEmptyHRDetails } from '@/app/employee/employee/EmployeeUtil';
 import { EmployeeHrDetailsFormData } from '@/components/employee/details/hr/constants';
 import AddEditHrDetailsPage from '@/components/employee/details/hr/add-edit/page';
+import { extractEmployeePortion } from '@/components/employee/EmployeeUtils';
 
 const AddHRDetailsPage: React.FC = () => {
     const employeeHrDetails = createEmptyHRDetails();
@@ -30,30 +31,39 @@ const AddHRDetailsPage: React.FC = () => {
                 const data: EmployeeData | null = await getEmployeeData(employeeId);
                 const _clients: Client[] = await fetchClients();
                 setAllClientsInCompany(_clients);
+                console.log(`--data: ${JSON.stringify(data?.id)}`);
+                if (data) {
+                    const hrDets = data.EmployeeHrDetails || emptyData;
+                    const employee = extractEmployeePortion(data);
+                    console.log(`--employee: ${JSON.stringify(employee)}`);
 
-                if (data && data?.EmployeeHrDetails?.employeeId === employeeId) {
-                    console.log("edit", data.EmployeeHrDetails.employeeId === employeeId);
-                    const hrDets = data.EmployeeHrDetails;
-                    const clientIds = hrDets.EmployeeHrDetailsClients?.map((c: { clientId: number }) => c?.clientId) || [];
-                    console.log(`--clientIds: ${JSON.stringify(clientIds)}`);
-                    setInitialData({
-                        ...data.EmployeeHrDetails,
-                        employee: data.employee,
-                        clientIds
-                    });
+                    hrDets.employee = employee;
+                    hrDets.employeeId = employeeId;
+                    console.log(`--hrDets: ${JSON.stringify(hrDets)}`);
+                    if (data?.EmployeeHrDetails && data?.EmployeeHrDetails?.employeeId === employeeId) {
+                        const clientIds = hrDets.EmployeeHrDetailsClients?.map((c: { clientId: number }) => c?.clientId) || [];
+                        console.log(`--clientIds: ${JSON.stringify(clientIds)}`);
+                        setInitialData({
+                            ...hrDets,
+                            clientIds
+                        });
+                    }
+                    else {
+                        console.log(`--hrDets: ${JSON.stringify(hrDets)}`);
+                        setInitialData({
+                            ...hrDets,
+                        });
+                    }
                 }
                 else {
-                    setInitialData({
-                        ...initialData,
-                        id: 0
-                    });
+                    console.log('Employee not found');
+                    throw new Error('Employee not found');
                 }
                 setLoading(false);
 
             } catch (error) {
                 setLoading(false);
-                console.error('Error fetching Hr Details:', error);
-                setInitialData({ ...initialData, employeeId: employeeId, id: 0 });
+                console.error('Error fetching employee data:', error);
             }
         };
 
@@ -74,8 +84,8 @@ const AddHRDetailsPage: React.FC = () => {
 
     return (
         <DashboardLayout>
-            {<AddEditHrDetailsPage allClients={allClientsInCompany}
-                initialData={initialData} />}
+            <AddEditHrDetailsPage allClients={allClientsInCompany}
+                initialData={initialData} />
         </DashboardLayout>
     );
 };

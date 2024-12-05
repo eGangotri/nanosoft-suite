@@ -319,7 +319,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           <SectionHeader title="Bank Details"
             detailType={DETAIL_TYPE_ENUM.BANK_DETAILS}
             employeeId={employee?.id}
-            detailId={EmployeeBankDetails?.id || 0} /> {EmployeeBankDetails?.id}
+            detailId={EmployeeBankDetails?.id || 0} />
           <Typography><strong>Bank Name:</strong> {EmployeeBankDetails?.bankName}</Typography>
           <Typography><strong>Account Holder:</strong> {EmployeeBankDetails?.employeeBankingName}</Typography>
           <Typography><strong>Account Number:</strong> {EmployeeBankDetails?.accountNumber}</Typography>

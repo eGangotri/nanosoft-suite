@@ -1,7 +1,13 @@
 import { CITIZEN_CATEGORIES, GENDER_TYPE, MARITAL_CATEGORIES, NATIONALITIES, RACE_TYPE } from "@/utils/FormConsts";
 
-export const createEmptyEmployee = () => {
+export const createEmptyEmployeeWithHrDetails = () => {
     const employeeHrDetails = createEmptyHRDetails();
+    const emptyEmployee = createEmptyEmployee();
+    emptyEmployee.EmployeeHrDetails = employeeHrDetails;
+    return emptyEmployee;
+}
+
+export const createEmptyEmployee = () => {
     return {
         id: 0,
         firstName: "",
@@ -34,14 +40,14 @@ export const createEmptyEmployee = () => {
         EmployeeLeaveBalance: [],
         EmployeeWorkHistory: [],
         EmployeeEmergencyContact: [],
-        EmployeeHrDetails:employeeHrDetails
+        EmployeeHrDetails:{} as EmployeeHrDetails
     }
 }
-
 export const createEmptyHRDetails = () => {
     return {
         id: 0,
         employeeId: 0,
+        employee: {} as Employee, // Replace with default/empty Employee object if available
         dateOfJoining: new Date(),
         bonus: 0,
         salary: 0,
