@@ -119,6 +119,7 @@ model Employee {
   localAddressLine1        String
   localAddressLine2        String
   localPostalCode          String                     @db.VarChar(6)
+  foreignAddressState      String?
   EmployeeBankDetails      EmployeeBankDetails?
   EmployeeEmergencyContact EmployeeEmergencyContact[]
   EmployeeHrDetails        EmployeeHrDetails?

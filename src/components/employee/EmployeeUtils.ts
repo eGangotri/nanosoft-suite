@@ -24,6 +24,7 @@ export const extractEmployeePortion = (json: EmployeeData): Employee => {
         foreignAddressLine1: json?.foreignAddressLine1 || "",
         foreignAddressLine2: json?.foreignAddressLine2 || "",
         foreignAddressCity: json?.foreignAddressCity || "",
+        foreignAddressState: json?.foreignAddressState || "",
         foreignAddressCountry: json?.foreignAddressCountry || "",
         foreignAddressPostalCode: json?.foreignAddressPostalCode || ""
 

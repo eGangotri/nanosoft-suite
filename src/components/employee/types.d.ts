@@ -27,6 +27,7 @@ declare global {
     foreignAddressLine1?: String;
     foreignAddressLine2?: String;
     foreignAddressCity?: String;
+    foreignAddressState?: String;
     foreignAddressCountry?: String;
     foreignAddressPostalCode?: String;
 

@@ -54,6 +54,7 @@ export const employeeSchema = z.object({
   foreignAddressLine1: z.string().optional(),
   foreignAddressLine2: z.string().optional(),
   foreignAddressCity: z.string().optional(),
+  foreignAddressState: z.string().optional(),
   foreignAddressCountry: z.string().optional(),
   foreignAddressPostalCode: z.string().optional(),
 }).superRefine((data, ctx) => {
@@ -79,6 +80,14 @@ export const employeeSchema = z.object({
         message: 'Foreign Address City is required when citizenship status is not Citizen',
       });
     }
+    if (!data.foreignAddressState) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressState'],
+        message: 'Foreign Address City is required when citizenship status is not Citizen',
+      });
+    }
+
     if (!data.foreignAddressCountry) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

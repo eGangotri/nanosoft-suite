@@ -27,6 +27,7 @@ export async function POST(request: Request) {
         foreignAddressLine1: body.foreignAddressLine1,
         foreignAddressLine2: body.foreignAddressLine2,
         foreignAddressCity: body.foreignAddressCity,
+        foreignAddressState: body.foreignAddressState,
         foreignAddressCountry: body.foreignAddressCountry,
         foreignAddressPostalCode: body.foreignAddressPostalCode
       },

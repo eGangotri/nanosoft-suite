@@ -34,6 +34,7 @@ export const createEmptyEmployee = () => {
         foreignAddressLine1: "",
         foreignAddressLine2: "",
         foreignAddressCity: "",
+        foreignAddressState: "",
         foreignAddressCountry: "",
         foreignAddressPostalCode: "",
         EmployeeBankDetails: null,
