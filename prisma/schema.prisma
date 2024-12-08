@@ -116,10 +116,12 @@ model Employee {
   gender                   String?
   race                     String?
   photo                    String?                    @db.VarChar(255)
-  localAddressLine1        String
-  localAddressLine2        String
+  localAddressLine1        String?
+  localAddressLine2        String?
   localPostalCode          String                     @db.VarChar(6)
   foreignAddressState      String?
+  localAddressLine3        String?
+  levelOrUnitNo            String?
   EmployeeBankDetails      EmployeeBankDetails?
   EmployeeEmergencyContact EmployeeEmergencyContact[]
   EmployeeHrDetails        EmployeeHrDetails?

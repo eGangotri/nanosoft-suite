@@ -263,7 +263,7 @@ export enum GENDER_TYPE {
 
 export enum ACCT_TYPES {
   Savings = "Savings",
-  Checking = "Checking"
+  Current = "Current"
 }
 export const NATIONALITY_VALUES = convertEnumToValues(NATIONALITIES);
 export const CITIZEN_CATEGORIES_VALUES = convertEnumToValues(CITIZEN_CATEGORIES);

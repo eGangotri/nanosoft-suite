@@ -22,6 +22,8 @@ declare global {
 
     localAddressLine1: String
     localAddressLine2: String
+    localAddressLine3: String,
+    levelOrUnitNo: String,
     localPostalCode: String
 
     foreignAddressLine1?: String;

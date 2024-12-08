@@ -47,8 +47,10 @@ export const employeeSchema = z.object({
   deleted: z.boolean().default(false).optional(),
   active: z.boolean().default(true).optional(),
 
-  localAddressLine1: z.string().min(1, 'Address Line 1 is required'),
-  localAddressLine2: z.string().min(1, 'Address Line 1 is required'),
+  localAddressLine1: z.string().optional(),
+  localAddressLine2: z.string().optional(),
+  localAddressLine3: z.string().optional(),
+  levelOrUnitNo: z.string().optional(),
   localPostalCode: z.string().regex(/^\d{5,9}$/, 'Invalid postal code'),
 
   foreignAddressLine1: z.string().optional(),

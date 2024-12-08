@@ -22,8 +22,10 @@ import {
   Card,
   CardContent,
   Divider,
-  Autocomplete
-} from '@mui/material'
+  Autocomplete,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -31,6 +33,7 @@ import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants
 import dayjs from 'dayjs';
 import { CITIZEN_CATEGORIES, CITIZEN_CATEGORIES_VALUES, GENDER_TYPE_VALUES, MARITAL_CATEGORIES_VALUES, NATIONALITY_VALUES, RACE_TYPE_VALUES } from '@/utils/FormConsts'
 import { useRouter } from 'next/navigation'
+import { lookupPostalCodeSG } from '@/utils/utils';
 
 const today = dayjs();
 
@@ -61,6 +64,11 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
   const [showForeignAddress, setShowForeignAddress] = useState(initialData?.citizenshipStatus !== CITIZEN_CATEGORIES.Citizen)
   const citizenshipStatus = watch('citizenshipStatus');
 
+  const [lookupAddress, setLookupAddress] = useState({
+    blkNo: "",
+    roadName: "",
+    building: ""
+  });
   React.useEffect(() => {
     setShowExpiryDate(citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)
     setShowForeignAddress(citizenshipStatus !== CITIZEN_CATEGORIES.Citizen)
@@ -155,24 +163,6 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               )}
             />
             <Controller
-              name="maritalStatus"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <FormControl fullWidth error={!!error}>
-                  <FormLabel>Marital Status</FormLabel>
-                  <Select {...field}>
-                    {MARITAL_CATEGORIES_VALUES.map((status: string) => (
-                      <MenuItem key={status} value={status}>{status}</MenuItem>
-                    ))}
-                  </Select>
-                  {error && <FormHelperText>{error.message}</FormHelperText>}
-                </FormControl>
-              )}
-            />
-
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Controller
               name="dateOfBirth"
               control={control}
               render={({ field, fieldState: { error } }) => (
@@ -189,6 +179,25 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                     },
                   }}
                 />
+              )}
+            />
+
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <Controller
+              name="maritalStatus"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl fullWidth error={!!error}>
+                  <FormLabel>Marital Status</FormLabel>
+                  <Select {...field}>
+                    {MARITAL_CATEGORIES_VALUES.map((status: string) => (
+                      <MenuItem key={status} value={status}>{status}</MenuItem>
+                    ))}
+                  </Select>
+                  {error && <FormHelperText>{error.message}</FormHelperText>}
+                </FormControl>
               )}
             />
             <Controller
@@ -337,34 +346,76 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className='flex flex-col gap-3'>
                   <Typography variant="subtitle1" className="mb-4">Local Address</Typography>
+                  <Typography variant="subtitle1" className="mb-4">{lookupAddress.blkNo}</Typography>
+                  <Typography variant="subtitle1" className="mb-4">{lookupAddress.building}</Typography>
+                  <Typography variant="subtitle1" className="mb-4">{lookupAddress.roadName}</Typography>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <Controller
+                      name="localAddressLine1"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          label={"Block No." + JSON.stringify(lookupAddress)}
+                          variant="outlined"
+                          className="w-28"
+                          value={lookupAddress.blkNo}
+                          disabled
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="localAddressLine2"
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          label="Building Name"
+                          variant="outlined"
+                          fullWidth
+                          value={lookupAddress.building}
+                          disabled
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                  </div>
+                  Level/Unit No.
                   <Controller
-                    name="localAddressLine1"
+                    name="localAddressLine3"
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
-                        label="Block No./ Building Name"
+                        label="Road Name"
                         variant="outlined"
                         fullWidth
+                        value={lookupAddress.building}
+                        disabled
                         error={!!error}
                         helperText={error?.message}
                       />
                     )}
                   />
                   <Controller
-                    name="localAddressLine2"
+                    name="levelOrUnitNo"
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
                         label="Level/Unit No."
                         variant="outlined"
-                        fullWidth
+                        className='w-10'
                         error={!!error}
                         helperText={error?.message}
                       />
                     )}
                   />
+
                   <Controller
                     name="localPostalCode"
                     control={control}
@@ -373,9 +424,25 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                         {...field}
                         label="Postal Code"
                         variant="outlined"
-                        fullWidth
+                        className='w-28'
                         error={!!error}
                         helperText={error?.message}
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <SearchIcon
+                                color="action"
+                                className="mr-1 cursor-pointer hover:text-primary-main"
+                                onClick={async () => {
+                                  // Add your search logic here
+                                  const lookupAdd = await lookupPostalCodeSG(field.value);
+                                  setLookupAddress(lookupAdd);
+                                  console.log(`Search icon clicked for postal code: ${field.value} - ${JSON.stringify(lookupAdd)}`);
+                                }}
+                              />
+                            ),
+                          },
+                        }}
                       />
                     )}
                   />
