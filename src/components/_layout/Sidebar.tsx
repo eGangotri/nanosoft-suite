@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import Link from 'next/link'
-import { menuItems } from './menu-items' // You'll need to create this file with the menu structure
+import { getMenuItemsForRole, menuItems } from './menu-items' // You'll need to create this file with the menu structure
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -21,11 +21,11 @@ export default function Sidebar({ sidebarOpen, isMobile, session, pathname }: Si
   }
 
   const isAdminOrSuperAdmin = session?.user?.role === 'ADMIN' || session?.user?.role === 'SUPERADMIN'
-
+  const menusItemsPerRole = getMenuItemsForRole(session?.user?.role)
   const drawer = (
     <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'} overflow-hidden`}>
       <List>
-        {menuItems.map((item) => (
+        {menusItemsPerRole.map((item) => (
           <React.Fragment key={item.text}>
             <ListItemButton
               component={item.route ? Link : 'div'}

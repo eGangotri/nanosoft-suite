@@ -1,22 +1,21 @@
 import React from 'react';
-import Grid from '@mui/material/Grid';
 import EmployeeOverview from './EmployeeOverview';
 import TaskSummary from './TaskSummary';
 import Announcements from './Announcements';
 
 const DashboardContent: React.FC = () => {
   return (
-    <Grid container spacing={3} className="mt-2">
-      <Grid item xs={12} md={4}>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
+      <div className="col-span-1">
         <EmployeeOverview />
-      </Grid>
-      <Grid item xs={12} md={4}>
+      </div>
+      <div className="col-span-1">
         <TaskSummary />
-      </Grid>
-      <Grid item xs={12} md={4}>
+      </div>
+      <div className="col-span-1">
         <Announcements />
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };
 

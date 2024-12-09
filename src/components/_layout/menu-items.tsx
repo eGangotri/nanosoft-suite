@@ -26,12 +26,13 @@ export interface MenuItem {
 }
 
 export const menuItems: MenuItem[] = [
-  { text: 'Dashboard', 
-    icon: <DashboardIcon />, 
-    route: '/' 
-},
+  {
+    text: 'Dashboard',
+    icon: <DashboardIcon />,
+    route: '/'
+  },
   { text: 'Employee-Data', icon: <PeopleIcon />, route: '/employee/employee' },
-  { text: 'Leave-Mgmt', icon: <PeopleIcon />, route: '/leaves-type/' },
+  { text: 'Leave-Types-Mgmt', icon: <PeopleIcon />, route: '/leaves-type/' },
   {
     text: 'Products',
     icon: <ProductsIcon />,
@@ -53,9 +54,25 @@ export const menuItems: MenuItem[] = [
   { text: 'Settings', icon: <SettingsIcon />, route: '/settings' },
 ]
 
+export const menuItemsForEmployee: MenuItem[] = [
+  {
+    text: 'Dashboard',
+    icon: <DashboardIcon />,
+    route: '/'
+  },
+  { text: 'Apply-Leave', icon: <PeopleIcon />, route: '/leaves/' },
+
+]
+
 export const getMenuItemsForRole = (role: string): MenuItem[] => {
   if (role === 'ADMIN' || role === 'SUPERADMIN') {
     return menuItems
+  }
+  if (role === 'EMPLOYEE') {
+    return menuItemsForEmployee
+  }
+  if (role === 'MANAGER') {
+    return menuItems.filter(item => item.text === 'Leave-Mgmt')
   }
   // For other roles, remove the Settings menu item
   return menuItems.filter(item => item.text !== 'Settings')
