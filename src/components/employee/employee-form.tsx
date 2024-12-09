@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -69,6 +69,24 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
     roadName: "",
     building: ""
   });
+
+  const localPostalCode = watch('localPostalCode');
+
+  useEffect(() => {
+    if (lookupAddress.blkNo) {
+      setValue('localAddressLine1', lookupAddress.blkNo);
+      setValue('localAddressLine2', lookupAddress.building);
+      setValue('localAddressLine3', lookupAddress.roadName);
+    }
+  }, [lookupAddress, setValue]);
+
+  const handlePostalCodeLookup = async () => {
+    if (localPostalCode) {
+      const lookupAdd = await lookupPostalCodeSG(localPostalCode);
+      setLookupAddress(lookupAdd);
+    }
+  };
+
   React.useEffect(() => {
     setShowExpiryDate(citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)
     setShowForeignAddress(citizenshipStatus !== CITIZEN_CATEGORIES.Citizen)
@@ -346,11 +364,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className='flex flex-col gap-3'>
                   <Typography variant="subtitle1" className="mb-4">Local Address</Typography>
-                  <Typography variant="subtitle1" className="mb-4">{lookupAddress.blkNo}</Typography>
-                  <Typography variant="subtitle1" className="mb-4">{lookupAddress.building}</Typography>
-                  <Typography variant="subtitle1" className="mb-4">{lookupAddress.roadName}</Typography>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
                     <Controller
                       name="localAddressLine1"
                       control={control}
@@ -360,7 +374,6 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                           label={"Block No." + JSON.stringify(lookupAddress)}
                           variant="outlined"
                           className="w-28"
-                          value={lookupAddress.blkNo}
                           disabled
                           error={!!error}
                           helperText={error?.message}
@@ -376,7 +389,6 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                           label="Building Name"
                           variant="outlined"
                           fullWidth
-                          value={lookupAddress.building}
                           disabled
                           error={!!error}
                           helperText={error?.message}
@@ -384,7 +396,6 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                       )}
                     />
                   </div>
-                  Level/Unit No.
                   <Controller
                     name="localAddressLine3"
                     control={control}
@@ -394,7 +405,6 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                         label="Road Name"
                         variant="outlined"
                         fullWidth
-                        value={lookupAddress.building}
                         disabled
                         error={!!error}
                         helperText={error?.message}
@@ -409,7 +419,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                         {...field}
                         label="Level/Unit No."
                         variant="outlined"
-                        className='w-10'
+                        className='w-28'
                         error={!!error}
                         helperText={error?.message}
                       />
@@ -433,12 +443,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                               <SearchIcon
                                 color="action"
                                 className="mr-1 cursor-pointer hover:text-primary-main"
-                                onClick={async () => {
-                                  // Add your search logic here
-                                  const lookupAdd = await lookupPostalCodeSG(field.value);
-                                  setLookupAddress(lookupAdd);
-                                  console.log(`Search icon clicked for postal code: ${field.value} - ${JSON.stringify(lookupAdd)}`);
-                                }}
+                                onClick={handlePostalCodeLookup}
+                                onKeyDown={(e) => e.key === 'Enter' && handlePostalCodeLookup()}
                               />
                             ),
                           },

@@ -65,7 +65,52 @@ export const employeeSchema = z.object({
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['foreignAddressLine1'],
-        message: 'Foreign Address Line 1 is required when active is true',
+        message: 'Foreign Address Line 1 is required when active is not Citizen',
+      });
+    }
+    if (!data.foreignAddressLine2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressLine2'],
+        message: 'Foreign Address Line 2 is required when citizenship status is not Citizen',
+      });
+    }
+    if (!data.foreignAddressCity) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressCity'],
+        message: 'Foreign Address City is required when citizenship status is not Citizen',
+      });
+    }
+    if (!data.foreignAddressState) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressState'],
+        message: 'Foreign Address City is required when citizenship status is not Citizen',
+      });
+    }
+
+    if (!data.foreignAddressCountry) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressCountry'],
+        message: 'Foreign Address Country is required when citizenship status is not Citizen',
+      });
+    }
+    if (!data.foreignAddressPostalCode) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressPostalCode'],
+        message: 'Foreign Address Postal Code is required when citizenship status is not Citizen',
+      });
+    }
+  }
+  if (data.citizenshipStatus !== CITIZEN_CATEGORIES.Foreigner) {
+    if (!data.foreignAddressLine1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['foreignAddressLine1'],
+        message: 'Foreign Address Line 1 is required when citizenship status is not Citizen',
       });
     }
     if (!data.foreignAddressLine2) {
