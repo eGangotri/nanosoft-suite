@@ -1,7 +1,6 @@
+import nanosoftPrisma from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
 
 // GET: Fetch all leaves or a specific leave
   export async function GET(
@@ -13,7 +12,7 @@ const prisma = new PrismaClient();
     try {
       if (employeeId && employeeId > 0) {
         // Fetch a specific leave
-        const leaves = await prisma.leave.findMany({
+        const leaves = await nanosoftPrisma.Leave.findMany({
           where: { employeeId: employeeId },
         });
         if (!leaves || leaves.length === 0) {
@@ -22,7 +21,7 @@ const prisma = new PrismaClient();
         return NextResponse.json(leaves);
       } else {
         // Fetch all leaves
-        const leaves = await prisma.leave.findMany();
+        const leaves = await nanosoftPrisma.Leave.findMany();
         return NextResponse.json(leaves);
       }
     } catch (error) {
@@ -36,7 +35,7 @@ const prisma = new PrismaClient();
     try {
       const { employeeId, startDate, endDate, leaveTypeId, status } = await request.json();
 
-      const newLeave = await prisma.leave.create({
+      const newLeave = await nanosoftPrisma.Leave.create({
         data: {
           employeeId,
           startDate: new Date(startDate),
@@ -58,7 +57,7 @@ const prisma = new PrismaClient();
     try {
       const { id, employeeId, startDate, endDate, leaveTypeId, status } = await request.json();
 
-      const updatedLeave = await prisma.leave.update({
+      const updatedLeave = await nanosoftPrisma.Leave.update({
         where: { id: parseInt(id) },
         data: {
           employeeId,
@@ -89,7 +88,7 @@ const prisma = new PrismaClient();
     }
 
     try {
-      await prisma.leave.delete({
+      await nanosoftPrisma.Leave.delete({
         where: { id: parseInt(id) },
       });
 

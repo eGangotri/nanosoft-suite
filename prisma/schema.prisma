@@ -124,7 +124,7 @@ model Employee {
   EmployeeHrDetails        EmployeeHrDetails?
   EmployeeLeaveBalance     EmployeeLeaveBalance[]
   EmployeeWorkHistory      EmployeeWorkHistory[]
-  leave                    leave[]
+  Leave                    Leave[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -203,7 +203,7 @@ model LeaveType {
   defaultDays          Int
   leaveCode            String?                @db.VarChar(5)
   EmployeeLeaveBalance EmployeeLeaveBalance[]
-  leave                leave[]
+  Leave                Leave[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -220,7 +220,7 @@ model EmployeeHrDetailsClients {
   @@index([employeeHrId], map: "idx_employee_hr_details_clients_employee_hr_id")
 }
 
-model leave {
+model Leave {
   id          Int       @id @default(autoincrement())
   employeeId  Int
   startDate   DateTime  @db.Timestamp(6)
