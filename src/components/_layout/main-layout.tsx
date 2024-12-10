@@ -22,10 +22,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter()
   const pathname = usePathname()
 
-  const [_isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
-  const [_loggedUser, setLoggedUser] = useRecoilState(loggedUser);
-  const [_loggedUserRole, setLoggedUserRole] = useRecoilState(loggedUserRole);
-
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
@@ -39,9 +35,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const handleSignOut = async () => {
     setIsSigningOut(true)
     await signOut({ callbackUrl: '/login' })
-    setIsLoggedIn(false);
-    setLoggedUser("");
-    setLoggedUserRole("");
   }
 
   if (status === 'loading') {

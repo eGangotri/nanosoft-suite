@@ -17,7 +17,7 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <>
-        <Typography>{_isLoggedIn}-{_loggedUser}-{_loggedUserRole}</Typography>
+        <Typography>{_isLoggedIn?"YES":"No"}-{_loggedUser}-{_loggedUserRole}</Typography>
         {_isLoggedIn ?
           (isAdminOrSuperAdmin(_loggedUserRole) ? <AdminDashboard /> : <EmployeeDashboard />)
           : <h1>Not Authorized</h1>}

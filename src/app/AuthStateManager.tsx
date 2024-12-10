@@ -15,7 +15,8 @@ export function AuthStateManager() {
     if (status === 'authenticated' && session) {
       setIsLoggedIn(true);
       setLoggedRole(session.user.role);
-      setLoggedUserName(session?.user?.name);
+      setLoggedUserName(session?.user?.id);
+      console.log("session.user.role", JSON.stringify(session.user));
     } else {
       setIsLoggedIn(false);
       setLoggedRole("");

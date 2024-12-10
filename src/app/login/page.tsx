@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import {useRecoilState} from 'recoil';
+import { useRecoilState } from 'recoil';
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -13,10 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [_isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
-  const [_loggedUser, setLoggedUser] = useRecoilState(loggedUser);
-  const [_loggedUserRole, setLoggedUserRole] = useRecoilState(loggedUserRole);
-  
+
   const router = useRouter()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,20 +30,10 @@ export default function Login() {
       if (result?.error) {
         setError('Invalid email or password')
         setIsLoading(false)
-        setIsLoggedIn(false);
-        setLoggedUser("");
-        setLoggedUserRole("");
       } else {
-        setIsLoggedIn(true);
-        console.log(`result ${JSON.stringify(result)}`)
-        setLoggedUser(result?.user);
-        // setLoggedUserRole(result?.user?.role);
         router.push('/')
       }
     } catch (err) {
-      setIsLoggedIn(false);
-      setLoggedUser("");
-      setLoggedUserRole("");
       setError(`An error occurred. Please try again.${err}`)
       setIsLoading(false)
     }

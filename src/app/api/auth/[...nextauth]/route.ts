@@ -91,8 +91,6 @@ const authOptions: AuthOptions = {
         session.user.id = token.sub as string;
         session.user.role = token.role as UserRole;
         session.user.isWithinGeoFence = token.isWithinGeoFence as boolean;
-        session.user.name = token.name as string;
-
       }
       return session as ExtendedSession;
     }
