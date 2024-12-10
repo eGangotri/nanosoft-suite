@@ -1,6 +1,6 @@
 'use client';
 
-import { fetchLeavesForEmployee } from '@/services/leaveService';
+import { fetchLeavesForEmployee, getLeaveTypeNameById } from '@/services/leaveService';
 import { Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
@@ -19,18 +19,23 @@ export default function RecentLeaveRequests() {
   }, []);
 
   const columns: GridColDef[] = [
-    { field: 'type', headerName: 'Type', width: 130 },
-    { 
-      field: 'startDate', 
-      headerName: 'Start Date', 
-      width: 130,
-      renderCell: (params:any) => new Date(params.value).toLocaleDateString()
+    {
+      field: 'leaveTypeId',
+      headerName: 'Type',
+      width: 190,
+      renderCell: (params: any) => <Typography>{getLeaveTypeNameById(params?.value)}</Typography>
     },
-    { 
-      field: 'endDate', 
-      headerName: 'End Date', 
+    {
+      field: 'startDate',
+      headerName: 'Start Date',
       width: 130,
-      renderCell: (params:any) => new Date(params.value).toLocaleDateString()
+      renderCell: (params: any) => new Date(params.value).toLocaleDateString()
+    },
+    {
+      field: 'endDate',
+      headerName: 'End Date',
+      width: 130,
+      renderCell: (params: any) => new Date(params.value).toLocaleDateString()
     },
     { field: 'status', headerName: 'Status', width: 130 },
   ];

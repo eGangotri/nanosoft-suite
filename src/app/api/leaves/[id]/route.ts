@@ -8,12 +8,18 @@ import { NextRequest, NextResponse } from 'next/server';
     { params }: { params: { employeeId: string } }
   ) {
     const employeeId = parseInt(params.employeeId);
-
+    console.log('employeeId:', employeeId);
     try {
       if (employeeId && employeeId > 0) {
         // Fetch a specific leave
         const leaves = await nanosoftPrisma.Leave.findMany({
-          where: { employeeId: employeeId },
+          where: { employeeId },
+          include: {
+            leaveType: true, // This includes the associated LeaveType
+          },
+          orderBy: {
+            startDate: 'desc', // Optional: Order by start date, most recent first
+          },
         });
         if (!leaves || leaves.length === 0) {
           return NextResponse.json({ message: 'Leave not found' }, { status: 404 });

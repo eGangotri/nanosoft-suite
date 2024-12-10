@@ -1,5 +1,7 @@
+'use client'
+
 import { Typography } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart } from '@mui/x-charts/BarChart';
 
 export default function LeaveUsageChart() {
   // In a real application, you'd fetch this data from your API
@@ -17,18 +19,17 @@ export default function LeaveUsageChart() {
       <Typography variant="h6" gutterBottom>
         Leave Usage Over Time
       </Typography>
-      {/* <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="annual" fill="#8884d8" />
-          <Bar dataKey="sick" fill="#82ca9d" />
-          <Bar dataKey="personal" fill="#ffc658" />
-        </BarChart>
-      </ResponsiveContainer> */}
+      <BarChart
+        xAxis={[{ scaleType: 'band', data: data.map(item => item.month) }]}
+        series={[
+          { dataKey: 'annual', label: 'Annual', color: '#8884d8' },
+          { dataKey: 'sick', label: 'Sick', color: '#82ca9d' },
+          { dataKey: 'personal', label: 'Personal', color: '#ffc658' },
+        ]}
+        dataset={data}
+        height={300}
+        width={500}
+      />
     </>
   );
 }

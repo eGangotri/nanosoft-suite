@@ -9,7 +9,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const body = await request.json()
     const validatedData = leaveTypeSchema.parse(body)
     
-    const updatedLeaveType = await nanosoftPrisma.leave_Type.update({
+    const updatedLeaveType = await nanosoftPrisma.LeaveType.update({
       where: { id: Number(params.id) },
       data: validatedData
     })
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await nanosoftPrisma.leave_Type.delete({
+    await nanosoftPrisma.LeaveType.delete({
       where: { id: Number(params.id) }
     })
     return new NextResponse(null, { status: 204 })
