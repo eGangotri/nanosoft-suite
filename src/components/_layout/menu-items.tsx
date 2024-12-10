@@ -29,7 +29,7 @@ export const menuItems: MenuItem[] = [
   {
     text: 'Dashboard',
     icon: <DashboardIcon />,
-    route: '/'
+    route: '/dashboard/admin-dashboard'
   },
   { text: 'Employee-Data', icon: <PeopleIcon />, route: '/employee/employee' },
   { text: 'Leave-Types-Mgmt', icon: <PeopleIcon />, route: '/leaves-type/' },
@@ -58,7 +58,7 @@ export const menuItemsForEmployee: MenuItem[] = [
   {
     text: 'Dashboard',
     icon: <DashboardIcon />,
-    route: '/'
+    route: '/dashboard/employee-dashboard'
   },
   { text: 'Apply-Leave', icon: <PeopleIcon />, route: '/leaves/' },
 

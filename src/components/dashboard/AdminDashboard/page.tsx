@@ -1,7 +1,7 @@
 import React from 'react';
+import TaskSummary from './TaskSummary';
+import Announcements from './Announcements';
 import EmployeeOverview from './EmployeeOverview';
-import TaskSummary from '../TaskSummary';
-import Announcements from '../Announcements';
 
 const AdminDashboard: React.FC = () => {
   return (

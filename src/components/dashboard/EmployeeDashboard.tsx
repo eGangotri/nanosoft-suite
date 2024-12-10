@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Grid, Box, Avatar, Button } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart } from '@mui/x-charts/PieChart';
 
 // Mock data - replace with actual data fetching logic
 const employeeData = {
@@ -46,32 +46,35 @@ export default function EmployeeDashboard() {
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={12} md={4}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>Leave Balance</Typography>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={employeeData.leaveBalance}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {employeeData.leaveBalance.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+              <Box sx={{ height: 200, width: '100%' }}>
+                <PieChart
+                  series={[
+                    {
+                      data: employeeData.leaveBalance,
+                      highlightScope: { faded: 'global', highlighted: 'item' },
+                      faded: { innerRadius: 30, additionalRadius: -30 },
+                    },
+                  ]}
+                  height={200}
+                  slotProps={{
+                    legend: {
+                      direction: 'column',
+                      position: { vertical: 'middle', horizontal: 'right' },
+                      padding: 0,
+                    },
+                  }}
+                />
+              </Box>
               <Box mt={2}>
                 {employeeData.leaveBalance.map((item, index) => (
-                  <Typography key={item.name} variant="body2">
+                  <Typography key={item.label} variant="body2">
                     <Box component="span" sx={{ color: COLORS[index], mr: 1 }}>■</Box>
-                    {item.name}: {item.value} days
+                    {item.label}: {item.value} days
                   </Typography>
                 ))}
               </Box>
@@ -94,8 +97,12 @@ export default function EmployeeDashboard() {
               <DataGrid
                 rows={employeeData.upcomingLeaves}
                 columns={leaveColumns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 5 },
+                  },
+                }}
+                pageSizeOptions={[5, 10]}
                 autoHeight
               />
             </CardContent>
