@@ -202,7 +202,7 @@ model EmployeeWorkHistory {
 model LeaveType {
   id                   Int                    @id(map: "Leave_Type_pkey") @default(autoincrement())
   name                 String                 @unique(map: "name_unique")
-  description          String?
+  color                String?
   defaultDays          Int
   leaveCode            String?                @db.VarChar(5)
   EmployeeLeaveBalance EmployeeLeaveBalance[]

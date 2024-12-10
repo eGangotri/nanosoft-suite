@@ -134,9 +134,9 @@ declare global {
   interface LeaveType {
     id: number;
     name: string;
-    description: string | null;
+    color?: String;
     defaultDays: number;
-    leaveCode: string | null;
+    leaveCode?: string;
     leaveBalances: LeaveBalance[];
     leaveRequests: LeaveRequest[];
     employeeLeaveBalances: EmployeeLeaveBalance[];

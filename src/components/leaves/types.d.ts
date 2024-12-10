@@ -1,7 +1,7 @@
 export interface LeaveType {
     id: number;
     name: string;
-    description?: string; // Optional, as it can be null
+    color?: string; // Optional, as it can be null
     defaultDays: number;
     leaveCode?: string; // Optional, as it can be null
   }

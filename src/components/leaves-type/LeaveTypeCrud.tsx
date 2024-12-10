@@ -30,7 +30,6 @@ import {
 
 const leaveTypeSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  description: z.string().nullable(),
   color: z.string().nullable(),
   defaultDays: z.number().min(0, 'Default days must be 0 or more').nullable(),
   leaveCode: z.string().min(1, 'Leave code is required'),
@@ -42,6 +41,7 @@ type LeaveTypeInput = z.infer<typeof leaveTypeSchema>
 
 type LeaveType = LeaveTypeInput & { id: number }
 
+const DEFAULT_COLOR = "#1bda64";
 export default function LeaveTypeCRUD() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([])
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
@@ -53,7 +53,7 @@ export default function LeaveTypeCRUD() {
     resolver: zodResolver(leaveTypeSchema),
     defaultValues: {
       name: '',
-      description: '',
+      color: '',
       defaultDays: 1,
       leaveCode: '',
     },
@@ -164,35 +164,62 @@ export default function LeaveTypeCRUD() {
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 150, editable: true },
-    { field: 'description', headerName: 'Description', width: 200, editable: true },
     {
-      field: 'description',
-      headerName: 'Color-D',
-      width: 120,
+      field: 'color',
+      headerName: 'Color',
+      width: 150,
       editable: true,
-      renderCell: (params) => (
-        <Box display="flex" alignItems="center">
-          <Box
-            sx={{
-              width: 20,
-              height: 20,
-              borderRadius: '50%',
-              //backgroundColor: params.value,
-              backgroundColor: '123FFA',
-              marginRight: 1,
+      renderCell: (params) => {
+        return (
+          <Box display="flex" alignItems="center">
+            <Box
+              sx={{
+                width: 16,
+                height: 16,
+                borderRadius: '50%',
+                backgroundColor: params.value,
+                marginRight: 1,
+              }}
+            />
+            {params.value}
+          </Box>
+        )
+      },
+      renderEditCell: (params) => {
+        return (
+          <TextField
+            value={params.value || DEFAULT_COLOR}
+            onChange={(e) => params.api.setEditCellValue({ ...params, value: e.target.value })}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <ColorLensIcon style={{ color: params.value || DEFAULT_COLOR }} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <input
+                      type="color"
+                      value={params.value || DEFAULT_COLOR}
+                      onChange={(e) => params.api.setEditCellValue({ ...params, value: e.target.value })}
+                      style={{ width: '24px', height: '24px', padding: 0, border: 'none' }}
+                    />
+                  </InputAdornment>
+                ),
+              },
             }}
           />
-          {params.value}
-        </Box>
-      ),
+        );
+      },
     },
-    { field: 'defaultDays', headerName: 'Default Days', type: 'number', width: 130, editable: true },
-    { field: 'leaveCode', headerName: 'Leave Code', width: 130, editable: true },
+    { field: 'defaultDays', headerName: 'Default Days', type: 'number', width: 120, editable: true },
+    { field: 'leaveCode', headerName: 'Leave Code', width: 120, editable: true },
     {
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
-      width: 100,
+      width: 120,
       cellClassName: 'actions',
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
@@ -242,29 +269,31 @@ export default function LeaveTypeCRUD() {
             <Controller
               name="color"
               control={control}
-              defaultValue="#000000"
+              defaultValue={DEFAULT_COLOR}
               render={({ field }) => (
                 <TextField
                   {...field}
                   label="Color"
                   error={!!errors.color}
                   helperText={errors.color?.message}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <ColorLensIcon style={{ color: field.value || "#123000" }} />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <input
-                          type="color"
-                          value={field.value || "#123000"}
-                          onChange={(e) => field.onChange(e.target.value)}
-                          style={{ width: '24px', height: '24px', padding: 0, border: 'none' }}
-                        />
-                      </InputAdornment>
-                    ),
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <ColorLensIcon style={{ color: field.value || DEFAULT_COLOR }} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <input
+                            type="color"
+                            value={field.value || DEFAULT_COLOR}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            style={{ width: '24px', height: '24px', padding: 0, border: 'none' }}
+                          />
+                        </InputAdornment>
+                      ),
+                    },
                   }}
                 />
               )}
@@ -300,7 +329,7 @@ export default function LeaveTypeCRUD() {
           </Box>
         </form>
 
-        <Box style={{ height: 400, width: '100%' }}>
+        <Box style={{ height: 400, width: '75%' }}>
           {isLoading ? (
             <Box className="flex justify-center items-center h-80vh">
               <CircularProgress size={24} />
