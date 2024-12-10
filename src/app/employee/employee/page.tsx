@@ -1,13 +1,13 @@
 'use client'
 import React from 'react';
 import EmployeeListPage from '@/components/employee/page';
-import DashboardLayout from '@/components/_layout/dashboard-layout';
+import MainLayout from '@/components/_layout/main-layout';
 
 const ListEmployee: React.FC = () => {
   return (
-    <DashboardLayout>
+    <MainLayout>
         <EmployeeListPage />
-    </DashboardLayout>
+    </MainLayout>
   );
 };
 

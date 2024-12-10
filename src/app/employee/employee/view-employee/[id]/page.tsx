@@ -1,6 +1,6 @@
 'use client'
 
-import DashboardLayout from '@/components/_layout/dashboard-layout';
+import MainLayout from '@/components/_layout/main-layout';
 import EmployeeView from '@/components/employee/view-employee/[id]/page';
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -36,10 +36,10 @@ export default function EmployeePage({ params }: { params: { id: string } }) {
     }, [params.id]);
 
     return (
-        <DashboardLayout>
+        <MainLayout>
             {loading && <CircularProgress />}
             <EmployeeView employeeData={employeeData} />
-        </DashboardLayout>
+        </MainLayout>
     )
 
 }

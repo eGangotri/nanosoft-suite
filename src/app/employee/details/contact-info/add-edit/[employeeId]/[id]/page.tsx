@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import DashboardLayout from '@/components/_layout/dashboard-layout';
+import MainLayout from '@/components/_layout/main-layout';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { fetchContactInfoByContactId } from '@/services/employeeService';
@@ -69,10 +69,10 @@ const AddEditEmercencyContactInfo: React.FC = () => {
     }
 
     return (
-        <DashboardLayout>
+        <MainLayout>
             <EmergencyContactPage employeeId={initialData.employeeId}
                 initialData={initialData} />
-        </DashboardLayout>
+        </MainLayout>
     );
 };
 

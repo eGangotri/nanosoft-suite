@@ -1,10 +1,10 @@
-import DashboardLayout from '@/components/_layout/dashboard-layout'
+import MainLayout from '@/components/_layout/main-layout'
 import ProductList from '@/components/products/ProductList'
 
 export default function ProductsPage() {
   return (
-    <DashboardLayout>
+    <MainLayout>
       <ProductList />
-    </DashboardLayout>
+    </MainLayout>
   )
 }

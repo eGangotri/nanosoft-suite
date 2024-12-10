@@ -1,13 +1,13 @@
 'use client'
 import React from 'react';
-import DashboardLayout from '@/components/_layout/dashboard-layout';
+import MainLayout from '@/components/_layout/main-layout';
 import LeaveTypeCRUD from '@/components/leaves-type/LeaveTypeCrud';
 
 const AddEmployee: React.FC = () => {
   return (
-    <DashboardLayout>
+    <MainLayout>
       <LeaveTypeCRUD />
-    </DashboardLayout>
+    </MainLayout>
   );
 };
 

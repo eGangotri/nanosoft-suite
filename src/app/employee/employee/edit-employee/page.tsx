@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { Skeleton } from '@mui/material';
-import DashboardLayout from '@/components/_layout/dashboard-layout';
+import MainLayout from '@/components/_layout/main-layout';
 
 export default function EditEmployee() {
     function Edit() {
@@ -14,9 +14,9 @@ export default function EditEmployee() {
             return <Typography variant="h2">Employee Not Found</Typography>
         }
         return (
-            <DashboardLayout>
+            <MainLayout>
                 <EditEmployeePage id={id} />
-            </DashboardLayout>
+            </MainLayout>
         )
     }
 

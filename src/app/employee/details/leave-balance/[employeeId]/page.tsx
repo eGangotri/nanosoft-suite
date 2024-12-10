@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import DashboardLayout from '@/components/_layout/dashboard-layout';
+import MainLayout from '@/components/_layout/main-layout';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { getEmployeeData } from '@/services/employeeService';
@@ -59,10 +59,10 @@ const LeaveBalanceByEmployeePage: React.FC = () => {
     }
 
     return (
-        <DashboardLayout>
+        <MainLayout>
             <EmployeeLeaveBalanceDisplay 
                 initialData={initialData} />
-        </DashboardLayout>
+        </MainLayout>
     );
 };
 

@@ -1,12 +1,12 @@
-import DashboardLayout from '@/components/_layout/dashboard-layout'
-import DashboardContent from '@/components/dashboard/DashboardContent'
+import MainLayout from '@/components/_layout/main-layout'
+import AdminDashboard from '@/components/dashboard/AdminDashboard/page'
 import '../styles/globals.css'
 
 
 export default function Home() {
   return (
-    <DashboardLayout>
-      <DashboardContent />
-    </DashboardLayout>
+    <MainLayout>
+      <AdminDashboard />
+    </MainLayout>
   )
 }

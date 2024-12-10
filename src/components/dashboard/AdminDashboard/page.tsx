@@ -1,9 +1,9 @@
 import React from 'react';
 import EmployeeOverview from './EmployeeOverview';
-import TaskSummary from './TaskSummary';
-import Announcements from './Announcements';
+import TaskSummary from '../TaskSummary';
+import Announcements from '../Announcements';
 
-const DashboardContent: React.FC = () => {
+const AdminDashboard: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
       <div className="col-span-1">
@@ -19,4 +19,4 @@ const DashboardContent: React.FC = () => {
   );
 };
 
-export default DashboardContent;
+export default AdminDashboard;

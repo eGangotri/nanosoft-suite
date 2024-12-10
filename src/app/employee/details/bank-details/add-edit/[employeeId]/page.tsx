@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import DashboardLayout from '@/components/_layout/dashboard-layout';
+import MainLayout from '@/components/_layout/main-layout';
 import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { fetchBankDetailsByEmployeeId } from '@/services/employeeService';
@@ -62,10 +62,10 @@ const BankDetailsPage: React.FC = () => {
         return <Typography variant="h2">Bank Detail Not Found</Typography>;
     }
     return (
-        <DashboardLayout>
+        <MainLayout>
             <AddEditBankDetailsPage
                 initialData={initialData} />
-        </DashboardLayout>
+        </MainLayout>
     );
 };
 

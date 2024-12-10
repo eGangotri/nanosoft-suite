@@ -1,12 +1,12 @@
 'use client'
 import React from 'react';
-import DashboardLayout from '../../components/_layout/dashboard-layout';
+import MainLayout from '../../components/_layout/main-layout';
 
 const SomePage: React.FC = () => {
   return (
-    <DashboardLayout>
+    <MainLayout>
         <h1>Some Page</h1>
-    </DashboardLayout>
+    </MainLayout>
   );
 };
 
