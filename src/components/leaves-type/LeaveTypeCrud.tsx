@@ -15,13 +15,14 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  InputAdornment,
 } from '@mui/material'
 import { Edit as EditIcon, Delete as DeleteIcon, Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material'
-import { 
-  DataGrid, 
-  GridColDef, 
-  GridRowModes, 
-  GridRowModesModel, 
+import {
+  DataGrid,
+  GridColDef,
+  GridRowModes,
+  GridRowModesModel,
   GridEventListener,
   GridRowId,
   GridValidRowModel,
@@ -30,9 +31,12 @@ import {
 const leaveTypeSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().nullable(),
-  default_days: z.number().min(0, 'Default days must be 0 or more').nullable(),
-  leave_code: z.string().min(1, 'Leave code is required'),
+  color: z.string().nullable(),
+  defaultDays: z.number().min(0, 'Default days must be 0 or more').nullable(),
+  leaveCode: z.string().min(1, 'Leave code is required'),
 })
+
+import { ColorLens as ColorLensIcon } from '@mui/icons-material'
 
 type LeaveTypeInput = z.infer<typeof leaveTypeSchema>
 
@@ -50,8 +54,8 @@ export default function LeaveTypeCRUD() {
     defaultValues: {
       name: '',
       description: '',
-      default_days: 1,
-      leave_code: '',
+      defaultDays: 1,
+      leaveCode: '',
     },
   })
 
@@ -161,8 +165,29 @@ export default function LeaveTypeCRUD() {
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 150, editable: true },
     { field: 'description', headerName: 'Description', width: 200, editable: true },
-    { field: 'default_days', headerName: 'Default Days', type: 'number', width: 130, editable: true },
-    { field: 'leave_code', headerName: 'Leave Code', width: 130, editable: true },
+    {
+      field: 'description',
+      headerName: 'Color-D',
+      width: 120,
+      editable: true,
+      renderCell: (params) => (
+        <Box display="flex" alignItems="center">
+          <Box
+            sx={{
+              width: 20,
+              height: 20,
+              borderRadius: '50%',
+              //backgroundColor: params.value,
+              backgroundColor: '123FFA',
+              marginRight: 1,
+            }}
+          />
+          {params.value}
+        </Box>
+      ),
+    },
+    { field: 'defaultDays', headerName: 'Default Days', type: 'number', width: 130, editable: true },
+    { field: 'leaveCode', headerName: 'Leave Code', width: 130, editable: true },
     {
       field: 'actions',
       type: 'actions',
@@ -215,40 +240,58 @@ export default function LeaveTypeCRUD() {
               )}
             />
             <Controller
-              name="description"
+              name="color"
               control={control}
+              defaultValue="#000000"
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Description"
-                  error={!!errors.description}
-                  helperText={errors.description?.message}
+                  label="Color"
+                  error={!!errors.color}
+                  helperText={errors.color?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <ColorLensIcon style={{ color: field.value || "#123000" }} />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <input
+                          type="color"
+                          value={field.value || "#123000"}
+                          onChange={(e) => field.onChange(e.target.value)}
+                          style={{ width: '24px', height: '24px', padding: 0, border: 'none' }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               )}
             />
             <Controller
-              name="default_days"
+              name="defaultDays"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
                   label="Default Days"
                   type="number"
-                  error={!!errors.default_days}
-                  helperText={errors.default_days?.message}
+                  error={!!errors.defaultDays}
+                  helperText={errors.defaultDays?.message}
                   required
                 />
               )}
             />
             <Controller
-              name="leave_code"
+              name="leaveCode"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
                   label="Leave Code"
-                  error={!!errors.leave_code}
-                  helperText={errors.leave_code?.message}
+                  error={!!errors.leaveCode}
+                  helperText={errors.leaveCode?.message}
                   required
                 />
               )}
