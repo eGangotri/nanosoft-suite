@@ -1,13 +1,47 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Card, Typography, Box } from '@mui/material';
+import { Card, Typography, Box, Tabs, Tab } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { LineChart, ChartsXAxis, ChartsYAxis } from '@mui/x-charts';
 
 interface ChartData {
     month: string;
     remainingDays: number;
+}
+
+interface EmployeeLeaveBalance {
+    id: number;
+    LeaveType: { name: string };
+    totalEntitlement: number;
+    usedDays: number;
+    remainingDays: number;
+}
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`leave-balance-tabpanel-${index}`}
+            aria-labelledby={`leave-balance-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    {children}
+                </Box>
+            )}
+        </div>
+    );
 }
 
 const columns: GridColDef[] = [
@@ -27,6 +61,7 @@ const columns: GridColDef[] = [
 export default function EmployeeLeaveBalanceDisplay({ initialData }: { initialData: EmployeeLeaveBalance[] }) {
     const [leaveBalances, setLeaveBalances] = useState<EmployeeLeaveBalance[]>([]);
     const [chartData, setChartData] = useState<ChartData[]>([]);
+    const [tabValue, setTabValue] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -58,43 +93,58 @@ export default function EmployeeLeaveBalanceDisplay({ initialData }: { initialDa
         }
     }, [initialData]);
 
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        setTabValue(newValue);
+    };
+
     return (
-        initialData && <>
-            <Box sx={{ height: 400, width: '100%', mb: 4 }}>
-                <DataGrid
-                    rows={leaveBalances}
-                    columns={columns}
-                    initialState={{
-                        pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
-                        },
-                    }}
-                    pageSizeOptions={[5, 10]}
-                />
-            </Box>
-
-            <Typography variant="h6" gutterBottom>
-                Leave Balance Over Time
-            </Typography>
-
-            <Box sx={{ height: 300, width: '100%' }}>
-                <LineChart
-                    xAxis={[{
-                        data: chartData.map(item => item.month),
-                        scaleType: 'band',
-                    }]}
-                    series={[
-                        {
-                            data: chartData.map(item => item.remainingDays),
-                            area: true,
-                        },
-                    ]}
-                    height={300}
-                >
-                    <ChartsXAxis label="Month" />
-                    <ChartsYAxis label="Remaining Days" />
-                </LineChart>
-            </Box>
-        </>
+        initialData && (
+            <Card>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={tabValue} onChange={handleTabChange} aria-label="leave balance tabs">
+                        <Tab label="Table View" id="leave-balance-tab-0" aria-controls="leave-balance-tabpanel-0" />
+                        <Tab label="Chart View" id="leave-balance-tab-1" aria-controls="leave-balance-tabpanel-1" />
+                    </Tabs>
+                </Box>
+                <TabPanel value={tabValue} index={0}>
+                    <Box sx={{ height: 400, width: '100%' }}>
+                        <DataGrid
+                            rows={leaveBalances}
+                            columns={columns}
+                            initialState={{
+                                pagination: {
+                                    paginationModel: { page: 0, pageSize: 5 },
+                                },
+                            }}
+                            pageSizeOptions={[5, 10]}
+                        />
+                    </Box>
+                </TabPanel>
+                <TabPanel value={tabValue} index={1}>
+                    <Typography variant="h6" gutterBottom>
+                        Leave Balance Over Time
+                    </Typography>
+                    <Box sx={{ height: 300, width: '100%' }}>
+                        <LineChart
+                            xAxis={[{
+                                data: chartData.map(item => item.month),
+                                scaleType: 'band',
+                            }]}
+                            series={[
+                                {
+                                    data: chartData.map(item => item.remainingDays),
+                                    area: true,
+                                },
+                            ]}
+                            height={300}
+                        >
+                            <ChartsXAxis label="Month" />
+                            <ChartsYAxis label="Remaining Days" />
+                        </LineChart>
+                    </Box>
+                </TabPanel>
+            </Card>
+        )
     );
 }
+

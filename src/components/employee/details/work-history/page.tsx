@@ -75,7 +75,7 @@ export default function EmployeeWorkHistoryListPage({ initialData }: { initialDa
 
             <Tabs value={activeTab} onChange={handleTabChange} aria-label="work history tabs">
                 <Tab label="List View" />
-                <Tab label="Grid View" />
+                <Tab label="Table View" />
             </Tabs>
 
 
