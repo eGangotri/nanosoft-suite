@@ -37,6 +37,7 @@ import Head from 'next/head';
 import LeaveBalance from '@/components/leaves/LeaveBalance';
 import EmployeeLeaveBalanceDisplay from '../../details/leave-balance/page';
 import LeaveBalanceByEmployeePage from '@/app/employee/details/leave-balance/[employeeId]/page';
+import EmployeeWorkHistoryListPage from '../../details/work-history/page';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -365,15 +366,8 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
             detailType={DETAIL_TYPE_ENUM.WORK_HISTORY}
             employeeId={employee?.id}
             detailId={0} />
-          {EmployeeWorkHistory?.map((entry: EmployeeWorkHistory) => (
-            <Box key={entry?.id} mb={2}>
-              <Typography variant="subtitle1">{entry?.jobTitle}</Typography>
-              <Typography><strong>Period:</strong> {formatStringAsDate(entry?.startDate)} - {entry?.endDate ? formatStringAsDate(entry?.endDate) : 'Present'}</Typography>
-              <Typography><strong>Department:</strong> {entry?.department || 'N/A'}</Typography>
-              <Typography><strong>Responsibilities:</strong> {entry?.responsibilities || 'N/A'}</Typography>
-              <Typography><strong>Technologies:</strong> {entry?.technologiesUsed || 'N/A'}</Typography>
-            </Box>
-          ))}
+
+          <EmployeeWorkHistoryListPage initialData={EmployeeWorkHistory} />
         </Paper>
       </Box>
     </>

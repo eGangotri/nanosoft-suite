@@ -75,6 +75,27 @@ export const fetchHrDetailsByEmployeeId = async (employeeId: number) => {
     }
 }
 
+
+export const fetchWorkHistoriesByEmployeeId = async (employeeId: number) => {
+    console.log('fetchWorkHistoriesByEmployeeId:', employeeId)
+    try {
+        const response = await fetch(`/api/employee/details/work-history/${employeeId}`)
+        const data = await response.json()
+
+        console.log('fetchWorkHistoriesByEmployeeId:data:', JSON.stringify(data), data.employeeId === employeeId)
+        if (data && data.length > 0) {
+            console.log(`data found for ID: ${employeeId}`);
+            return data
+        }
+        return null
+    }
+    catch (error) {
+        console.error('Error fetching hr details:', error)
+        throw new Error('Failed to fetch hr details')
+    }
+}
+
+
 export const addHrDetails = async (data: EmployeeHrDetails) => {
     if (data?.id !== undefined) {
         delete data?.id;
@@ -93,7 +114,7 @@ export const addHrDetails = async (data: EmployeeHrDetails) => {
     return response;
 
 }
-export const editHrDetails = async ( data: EmployeeHrDetailsFormData) => {
+export const editHrDetails = async (data: EmployeeHrDetailsFormData) => {
     const response = await fetch(`/api/employee/details/hr-details/${data.employeeId}`, {
         method: 'PUT',
         headers: {

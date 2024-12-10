@@ -95,13 +95,13 @@ declare global {
   interface EmployeeLeaveBalance {
     id: number;
     employeeId: number;
-    leaveTypeId: number;
     totalEntitlement: number;
     usedDays: number;
     remainingDays: number;
     employeeName?: string;
-    employee?: EMployee;
-    leaveTypeName: string;
+    employee?: Employee;
+    leaveTypeId: number;
+    LeaveType: LeaveType;
   }
 
   interface EmployeeWorkHistory {

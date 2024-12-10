@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Typography, Box } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { LineChart,  ChartsXAxis, ChartsYAxis } from '@mui/x-charts';
+import { LineChart, ChartsXAxis, ChartsYAxis } from '@mui/x-charts';
 
 interface ChartData {
     month: string;
@@ -11,7 +11,14 @@ interface ChartData {
 }
 
 const columns: GridColDef[] = [
-    { field: 'leaveTypeName', headerName: 'Leave Type', width: 150 },
+    {
+        field: 'LeaveType',
+        headerName: 'Leave Type',
+        width: 150,
+        renderCell: (params) => {
+            return params.row.LeaveType?.name
+        },
+    },
     { field: 'totalEntitlement', headerName: 'Total Entitlement', width: 150, type: 'number' },
     { field: 'usedDays', headerName: 'Used Days', width: 120, type: 'number' },
     { field: 'remainingDays', headerName: 'Remaining Days', width: 150, type: 'number' },
@@ -66,7 +73,7 @@ export default function EmployeeLeaveBalanceDisplay({ initialData }: { initialDa
                 />
             </Box>
 
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h6" gutterBottom>
                 Leave Balance Over Time
             </Typography>
 
