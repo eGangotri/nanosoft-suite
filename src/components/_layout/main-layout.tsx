@@ -10,6 +10,8 @@ import Sidebar from './sidebar'
 import MainContent from './main-content'
 import SignOutOverlay from './sign-out-overlay'
 import Footer from './footer'
+import { loggedInState, loggedUser, loggedUserRole } from '@/components/recoliConsts';
+import { useRecoilState } from 'recoil';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -19,6 +21,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const { data: session, status } = useSession()
   const router = useRouter()
   const pathname = usePathname()
+
+  const [_isLoggedIn, setIsLoggedIn] = useRecoilState(loggedInState);
+  const [_loggedUser, setLoggedUser] = useRecoilState(loggedUser);
+  const [_loggedUserRole, setLoggedUserRole] = useRecoilState(loggedUserRole);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -33,7 +39,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const handleSignOut = async () => {
     setIsSigningOut(true)
     await signOut({ callbackUrl: '/login' })
-    // Implement sign out logic here
+    setIsLoggedIn(false);
+    setLoggedUser("");
+    setLoggedUserRole("");
   }
 
   if (status === 'loading') {
@@ -46,15 +54,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <Box className="flex flex-col h-screen" role="banner">
-      <AppHeader 
-        sidebarOpen={sidebarOpen} 
-        toggleSidebar={toggleSidebar} 
-        session={session} 
+      <AppHeader
+        sidebarOpen={sidebarOpen}
+        toggleSidebar={toggleSidebar}
+        session={session}
         onSignOut={handleSignOut}
       />
       <Box className="flex-grow overflow-scroll">
-        <Sidebar 
-          sidebarOpen={sidebarOpen} 
+        <Sidebar
+          sidebarOpen={sidebarOpen}
           isMobile={isMobile}
           session={session}
           pathname={pathname}

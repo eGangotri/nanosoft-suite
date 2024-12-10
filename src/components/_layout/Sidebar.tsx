@@ -5,6 +5,7 @@ import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Collapse } fr
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import Link from 'next/link'
 import { getMenuItemsForRole, menuItems } from './menu-items' // You'll need to create this file with the menu structure
+import { NANOSOFT_ROLES } from '@/globalConstants'
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -20,7 +21,6 @@ export default function Sidebar({ sidebarOpen, isMobile, session, pathname }: Si
     setProductsOpen(!productsOpen)
   }
 
-  const isAdminOrSuperAdmin = session?.user?.role === 'ADMIN' || session?.user?.role === 'SUPERADMIN'
   const menusItemsPerRole = getMenuItemsForRole(session?.user?.role)
   const drawer = (
     <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-60' : 'w-16'} overflow-hidden`}>

@@ -5,3 +5,9 @@ export const GLOBAL_CONSTS = {
         return _prefix.length > 0 ? `${_prefix} - ${GLOBAL_CONSTS.title}` : GLOBAL_CONSTS.title;
     }
 }
+export const NANOSOFT_ROLES = {
+    ADMIN: 'ADMIN',
+    EMPLOYEE: 'EMPLOYEE',
+    SUPERVISOR: 'SUPERVISON',
+    SUPERADMIN: 'SUPERADMIN'
+}

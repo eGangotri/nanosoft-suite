@@ -17,6 +17,8 @@ import {
   BarChart as ReportsIcon,
   People as PeopleIcon
 } from '@mui/icons-material'
+import { NANOSOFT_ROLES } from '@/globalConstants'
+import { isAdminOrSuperAdmin } from '@/utils/utils'
 
 export interface MenuItem {
   text: string
@@ -65,13 +67,13 @@ export const menuItemsForEmployee: MenuItem[] = [
 ]
 
 export const getMenuItemsForRole = (role: string): MenuItem[] => {
-  if (role === 'ADMIN' || role === 'SUPERADMIN') {
+  if (isAdminOrSuperAdmin(role)) {
     return menuItems
   }
-  if (role === 'EMPLOYEE') {
+  if (role === NANOSOFT_ROLES.EMPLOYEE) {
     return menuItemsForEmployee
   }
-  if (role === 'MANAGER') {
+  if (role === NANOSOFT_ROLES.SUPERVISOR) {
     return menuItems.filter(item => item.text === 'Leave-Mgmt')
   }
   // For other roles, remove the Settings menu item

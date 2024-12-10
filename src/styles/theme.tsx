@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material/styles'
 
-const theme = createTheme({
+const nanosoftTheme = createTheme({
   // Customize your theme here
 })
 
-export default theme
+export default nanosoftTheme

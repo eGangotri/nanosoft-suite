@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Grid, Box, Avatar, Button } from '@mui/material';
+import { Card, CardContent, Typography, Box, Avatar, Button } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { PieChart } from '@mui/x-charts/PieChart';
 
@@ -9,9 +9,9 @@ const employeeData = {
   designation: "Software Engineer",
   email: "john.doe@example.com",
   leaveBalance: [
-    { name: "Annual", value: 10 },
-    { name: "Sick", value: 5 },
-    { name: "Unpaid", value: 0 },
+    { id: 0, value: 10, label: 'Annual' },
+    { id: 1, value: 5, label: 'Sick' },
+    { id: 2, value: 0, label: 'Unpaid' },
   ],
   upcomingLeaves: [
     { id: 1, type: "Annual", startDate: "2023-07-15", endDate: "2023-07-20", status: "Approved" },
@@ -30,9 +30,9 @@ const leaveColumns: GridColDef[] = [
 
 export default function EmployeeDashboard() {
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
+    <div className="flex-grow p-3">
+      <div className="flex flex-wrap -mx-3">
+        <div className="w-full md:w-1/3 px-3 mb-6">
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center" mb={2}>
@@ -45,9 +45,9 @@ export default function EmployeeDashboard() {
               <Typography variant="body2">{employeeData.email}</Typography>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
 
-        <Grid item xs={12} md={4}>
+        <div className="w-full md:w-1/3 px-3 mb-6">
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>Leave Balance</Typography>
@@ -80,8 +80,9 @@ export default function EmployeeDashboard() {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
+        </div>
+
+        <div className="w-full md:w-1/3 px-3 mb-6">
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>Quick Actions</Typography>
@@ -89,8 +90,9 @@ export default function EmployeeDashboard() {
               <Button variant="outlined" fullWidth>View Pay Slip</Button>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12}>
+        </div>
+
+        <div className="w-full px-3">
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>Upcoming Leaves</Typography>
@@ -107,9 +109,9 @@ export default function EmployeeDashboard() {
               />
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 }
 
