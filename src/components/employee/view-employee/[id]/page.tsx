@@ -34,6 +34,9 @@ import { formatedEmployeeName, initCaps } from '../../EmployeeUtils';
 import { CITIZEN_CATEGORIES, getCitizenBgColor, isForeigner } from '@/utils/FormConsts';
 import { SectionBodyWithEditDelete } from './SectionBodyWithEditDelete';
 import Head from 'next/head';
+import LeaveBalance from '@/components/leaves/LeaveBalance';
+import EmployeeLeaveBalanceDisplay from '../../details/leave-balance/page';
+import LeaveBalanceByEmployeePage from '@/app/employee/details/leave-balance/[employeeId]/page';
 
 interface EmployeeViewProps {
   employeeData: EmployeeData
@@ -354,26 +357,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
             detailType={DETAIL_TYPE_ENUM.LEAVE_BALANCES}
             employeeId={employee?.id}
             detailId={0} />
-          <TableContainer>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Leave Type</TableCell>
-                  <TableCell align="right">Balance</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {EmployeeLeaveBalance?.map((entry: EmployeeLeaveBalance) => (
-                  <TableRow key={entry?.id}>
-                    <TableCell component="th" scope="row">
-                      {entry?.leaveType?.name}
-                    </TableCell>
-                    <TableCell align="right">{entry?.balance}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <EmployeeLeaveBalanceDisplay initialData={EmployeeLeaveBalance} />
         </Paper>
 
         <Paper elevation={3} className="p-6">

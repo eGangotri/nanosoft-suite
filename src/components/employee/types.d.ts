@@ -96,9 +96,12 @@ declare global {
     id: number;
     employeeId: number;
     leaveTypeId: number;
-    balance: number;
-    employee: Employee;
-    leaveType: LeaveType;
+    totalEntitlement: number;
+    usedDays: number;
+    remainingDays: number;
+    employeeName?: string;
+    employee?: EMployee;
+    leaveTypeName: string;
   }
 
   interface EmployeeWorkHistory {

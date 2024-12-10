@@ -3,7 +3,7 @@ import { EmployeeHrDetailsFormData } from "@/components/employee/details/hr/cons
 
 export const getEmployeeData = async (employeeId: number):
     Promise<EmployeeData | null> => {
-    const response = await fetch(`/api/employee/${employeeId}/?id=${employeeId}`)
+    const response = await fetch(`/api/employee/${employeeId}`)
     if (!response.ok) {
         return null;
     } else {
