@@ -2,7 +2,7 @@ import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
-import { User_Role } from "@prisma/client"
+import { User_Role, UserRole } from "@prisma/client"
 import { Adapter } from "next-auth/adapters"
 import { JWT } from "next-auth/jwt"
 import { isWithinGeoFence } from "@/utils/geofence"
@@ -89,8 +89,10 @@ const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (session?.user) {
         session.user.id = token.sub as string;
-        session.user.role = token.role as User_Role;
+        session.user.role = token.role as UserRole;
         session.user.isWithinGeoFence = token.isWithinGeoFence as boolean;
+        session.user.name = token.name as string;
+
       }
       return session as ExtendedSession;
     }

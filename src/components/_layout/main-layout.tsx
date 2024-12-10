@@ -10,7 +10,7 @@ import Sidebar from './sidebar'
 import MainContent from './main-content'
 import SignOutOverlay from './sign-out-overlay'
 import Footer from './footer'
-import { loggedInState, loggedUser, loggedUserRole } from '@/components/recoliConsts';
+import { isLoggedInState, loggedUser, loggedUserRole } from '@/components/recoilConsts';
 import { useRecoilState } from 'recoil';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -22,7 +22,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter()
   const pathname = usePathname()
 
-  const [_isLoggedIn, setIsLoggedIn] = useRecoilState(loggedInState);
+  const [_isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [_loggedUser, setLoggedUser] = useRecoilState(loggedUser);
   const [_loggedUserRole, setLoggedUserRole] = useRecoilState(loggedUserRole);
 

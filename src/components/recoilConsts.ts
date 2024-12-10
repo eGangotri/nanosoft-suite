@@ -1,10 +1,10 @@
 'use client'
 
-import { atom, RecoilRoot } from 'recoil';
+import { atom } from 'recoil';
 import { NANOSOFT_ROLES } from '@/globalConstants'
 
-export const loggedInState = atom({
-    key: 'loggedInState',
+export const isLoggedInState = atom({
+    key: 'isLoggedInState',
     default: false,
   });
   

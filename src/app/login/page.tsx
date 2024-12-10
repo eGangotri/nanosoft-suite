@@ -6,14 +6,14 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TextField, Button, Typography, Container, Box, CircularProgress, Alert } from '@mui/material'
-import { loggedInState, loggedUser, loggedUserRole } from '@/components/recoliConsts';
+import { isLoggedInState, loggedUser, loggedUserRole } from '@/components/recoilConsts';
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [_isLoggedIn, setIsLoggedIn] = useRecoilState(loggedInState);
+  const [_isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [_loggedUser, setLoggedUser] = useRecoilState(loggedUser);
   const [_loggedUserRole, setLoggedUserRole] = useRecoilState(loggedUserRole);
   
@@ -39,7 +39,7 @@ export default function Login() {
       } else {
         setIsLoggedIn(true);
         console.log(`result ${JSON.stringify(result)}`)
-        // setLoggedUser(result?.user);
+        setLoggedUser(result?.user);
         // setLoggedUserRole(result?.user?.role);
         router.push('/')
       }
