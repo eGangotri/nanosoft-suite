@@ -8,18 +8,19 @@ datasource db {
 }
 
 model User {
-  id               String      @id @default(cuid())
+  id               String        @id @default(cuid())
   name             String?
-  email            String?     @unique
+  email            String?       @unique
   emailVerified    DateTime?
   image            String?
   password         String?
   resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
   Account          Account[]
   Session          Session[]
+  UserEmployee     UserEmployee?
   User_Role        User_Role[]
 }
 
@@ -125,6 +126,7 @@ model Employee {
   EmployeeLeaveBalance     EmployeeLeaveBalance[]
   EmployeeWorkHistory      EmployeeWorkHistory[]
   Leave                    Leave[]
+  UserEmployee             UserEmployee?
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -233,6 +235,18 @@ model Leave {
   createdAt   DateTime? @default(now()) @db.Timestamp(6)
   Employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   LeaveType   LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model UserEmployee {
+  id         Int      @id @default(autoincrement())
+  userId     String   @unique
+  employeeId Int      @unique
+  Employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([userId, employeeId])
+  @@index([employeeId], map: "idx_useremployee_employeeid")
+  @@index([userId], map: "idx_useremployee_userid")
 }
 
 enum UserRole {

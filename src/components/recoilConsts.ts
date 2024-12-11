@@ -12,6 +12,11 @@ export const isLoggedInState = atom({
     key: 'loggedUser',
     default: "",
   });
+   
+  export const loggedUserId = atom({
+    key: 'loggedUserId',
+    default: "",
+  });
   
   export const loggedUserRole = atom({
     key: 'loggedUserRole',

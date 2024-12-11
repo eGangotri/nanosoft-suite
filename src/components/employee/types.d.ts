@@ -38,6 +38,59 @@ declare global {
     EmployeeHrDetails: EmployeeHrDetails;
     EmployeeLeaveBalance: EmployeeLeaveBalance[];
     EmployeeWorkHistory: EmployeeWorkHistory[];
+    UserEmployee?:UserEmployee;
+  }
+
+  interface UserEmployee {
+    id: number;
+    userId: string;
+    employeeId: number;
+    Employee: Employee;
+    User: User;
+  }
+
+  interface Session {
+    id: string;
+    sessionToken: string;
+    userId: string;
+    expires: Date;
+    user: User;
+  }
+  interface VerificationToken {
+    identifier: string;
+    token: string;
+    expires: Date;
+  }
+
+  interface UserRole {
+    user_id: string;
+    role_id: number;
+    Role: Role;
+    User: User;
+  }
+
+  interface Role {
+    id: number;
+    name: string;
+    level: number;
+    UserRole: UserRole[];
+  }
+  
+    interface User {
+    id: string;
+    name?: string;
+    email?: string;
+    emailVerified?: Date;
+    image?: string;
+    password?: string;
+    resetToken?: string;
+    resetTokenExpiry?: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    Account: Account[];
+    Session: Session[];
+    UserEmployee?: UserEmployee;
+    UserRole: UserRole[];
   }
 
   interface EmployeeHrDetails {
