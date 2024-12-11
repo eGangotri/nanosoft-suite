@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSetRecoilState } from 'recoil';
-import { isLoggedInState, loggedUser, loggedUserId, loggedUserRole } from '@/components/recoilConsts';
+import { isLoggedInState, loggedUser, loggedUserEmployee, loggedUserEmployeeId, loggedUserId, loggedUserRole } from '@/components/recoilConsts';
+import { getEmployeeByUserId } from '@/services/UserService';
+import { createEmptyEmployee } from './employee/employee/EmployeeUtil';
 
 export function AuthStateManager() {
   const { data: session, status } = useSession();
@@ -11,21 +13,50 @@ export function AuthStateManager() {
   const setLoggedRole = useSetRecoilState(loggedUserRole);
   const setLoggedUserName = useSetRecoilState(loggedUser);
   const setLoggedUserId = useSetRecoilState(loggedUserId);
+  const setLoggedUserEmployeeId = useSetRecoilState(loggedUserEmployeeId);
+  const setLoggedUserEmployee = useSetRecoilState(loggedUserEmployee);
+
+  const emptyData = createEmptyEmployee();
+  const [employeeInSession, setEmployeeInSession] = useState<Employee>(emptyData);
+
+  const getEmployeeCorrespondingToUser = async () => {
+    if (session) {
+      if (employeeInSession && employeeInSession.id > 0) {
+        return employeeInSession;
+      }
+      else {
+        const data = await getEmployeeByUserId(session.user.id)
+        if (data && data?.id > 0) {
+          setEmployeeInSession(data as Employee);
+        }
+        return data;
+      }
+    }
+  }
 
   useEffect(() => {
-    if (status === 'authenticated' && session) {
-      setIsLoggedIn(true);
-      setLoggedRole(session.user.role);
-      setLoggedUserName(`${session?.user?.name}`);
-      setLoggedUserId(session?.user?.id);
-      console.log("session.user.role", JSON.stringify(session.user));
-    } else {
-      setIsLoggedIn(false);
-      setLoggedRole("");
-      setLoggedUserName("");
-      setLoggedUserId("");
-
+    const doCheck = async () => {
+      if (status === 'authenticated' && session) {
+        setIsLoggedIn(true);
+        setLoggedRole(`${session?.user?.role}`);
+        setLoggedUserName(`${session?.user?.name}`);
+        setLoggedUserId(session?.user?.id);
+        const _emp = await getEmployeeCorrespondingToUser();
+        setLoggedUserEmployee(_emp || emptyData);
+        setLoggedUserEmployeeId(`${_emp?.id}`);
+        console.log(`session.user.role", ${JSON.stringify(session.user)}
+        ${JSON.stringify(_emp)}
+        `);
+      } else {
+        setIsLoggedIn(false);
+        setLoggedRole("");
+        setLoggedUserName("");
+        setLoggedUserId("");
+        setEmployeeInSession(emptyData);
+        setLoggedUserEmployeeId("");
+      }
     }
+    doCheck()
   }, [session, status, setIsLoggedIn, setLoggedRole, setLoggedUserName]);
 
   return null;

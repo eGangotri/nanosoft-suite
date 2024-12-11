@@ -2,7 +2,7 @@ import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
-import { User_Role, UserRole } from "@prisma/client"
+import { UserRole } from "@prisma/client"
 import { Adapter } from "next-auth/adapters"
 import { JWT } from "next-auth/jwt"
 import { isWithinGeoFence } from "@/utils/geofence"
@@ -12,13 +12,13 @@ import nanosoftPrisma from "@/lib/prisma"
 interface ExtendedSession extends DefaultSession {
   user: {
     id: string;
-    role: User_Role;
+    role: UserRole;
     isWithinGeoFence: boolean;
   } & DefaultSession["user"]
 }
 
 interface ExtendedToken extends JWT {
-  role?: User_Role;
+  role?: UserRole;
   isWithinGeoFence?: boolean;
 }
 
@@ -41,7 +41,7 @@ const authOptions: AuthOptions = {
             email: credentials.email
           },
           include: {
-            User_Role: {
+            UserRole: {
               include: {
                 Role: true,
               },
@@ -66,7 +66,7 @@ const authOptions: AuthOptions = {
         const latitude = parseFloat(req?.headers?.['x-vercel-ip-latitude'] as string || '0')
         const longitude = parseFloat(req?.headers?.['x-vercel-ip-longitude'] as string || '0')
 
-        const userRole = user.User_Role[0]?.Role?.name || "Employee"; // Default to 'Employee' if no role is found
+        const userRole = user.UserRole[0]?.Role?.name || "Employee"; // Default to 'Employee' if no role is found
 
         return {
           id: user.id,

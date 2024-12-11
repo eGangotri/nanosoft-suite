@@ -1,6 +1,6 @@
-export const getEmployeeByUserId = async (employeeId: number):
+export const getEmployeeByUserId = async (userId: string):
     Promise<EmployeeData | null> => {
-    const response = await fetch(`/api/employee/${employeeId}`)
+    const response = await fetch(`/api/user-employee/${userId}`)
     if (!response.ok) {
         return null;
     } else {

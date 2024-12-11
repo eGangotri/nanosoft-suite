@@ -17,18 +17,20 @@ export const createEmptyEmployee = () => {
         nationality: NATIONALITIES.India,
         email: "",
         mobile: "",
-        citizenshipStatus: CITIZEN_CATEGORIES.Foreigner, 
+        citizenshipStatus: CITIZEN_CATEGORIES.Foreigner,
         gender: GENDER_TYPE.Male,
         race: RACE_TYPE.Indian,
         nricOrFinNo: "",
         expiryDate: null,
-        maritalStatus: MARITAL_CATEGORIES.Single, 
+        maritalStatus: MARITAL_CATEGORIES.Single,
         active: true,
         deleted: false,
         middleName: null,
 
         localAddressLine1: "",
         localAddressLine2: "",
+        localAddressLine3: "",
+        levelOrUnitNo: "",
         localPostalCode: "",
 
         foreignAddressLine1: "",
@@ -41,8 +43,8 @@ export const createEmptyEmployee = () => {
         EmployeeLeaveBalance: [],
         EmployeeWorkHistory: [],
         EmployeeEmergencyContact: [],
-        EmployeeHrDetails:{} as EmployeeHrDetails
-    }
+        EmployeeHrDetails: {} as EmployeeHrDetails
+    } as Employee;
 }
 export const createEmptyHRDetails = () => {
     return {

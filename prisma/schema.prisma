@@ -21,7 +21,7 @@ model User {
   Account          Account[]
   Session          Session[]
   UserEmployee     UserEmployee?
-  User_Role        User_Role[]
+  UserRole         UserRole[]
 }
 
 model Account {
@@ -59,19 +59,10 @@ model VerificationToken {
 }
 
 model Role {
-  id        Int         @id @default(autoincrement())
-  name      String      @unique
-  level     Int
-  User_Role User_Role[]
-}
-
-model User_Role {
-  user_id String
-  role_id Int
-  Role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  User    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([user_id, role_id])
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  level    Int
+  UserRole UserRole[]
 }
 
 model Client {
@@ -249,7 +240,16 @@ model UserEmployee {
   @@index([userId], map: "idx_useremployee_userid")
 }
 
-enum UserRole {
+model UserRole {
+  user_id String
+  role_id Int
+  Role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "User_Role_role_id_fkey")
+  User    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "User_Role_user_id_fkey")
+
+  @@id([user_id, role_id], map: "User_Role_pkey")
+}
+
+enum UserRoleType {
   EMPLOYEE
   MANAGER
   SUPERVISOR

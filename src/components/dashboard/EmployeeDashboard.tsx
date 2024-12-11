@@ -2,9 +2,10 @@ import React from 'react';
 import { Card, CardContent, Typography, Box, Avatar, Button } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { PieChart } from '@mui/x-charts/PieChart';
+import { formatedEmployeeNameWithMidInitials } from '../employee/EmployeeUtils';
 
 // Mock data - replace with actual data fetching logic
-const employeeData = {
+const _employeeData = {
   name: "John Doe",
   designation: "Software Engineer",
   email: "john.doe@example.com",
@@ -28,7 +29,7 @@ const leaveColumns: GridColDef[] = [
   { field: 'status', headerName: 'Status', width: 120 },
 ];
 
-export default function EmployeeDashboard() {
+export default function EmployeeDashboard({ employeeData }: { employeeData: Employee }) {
   return (
     <div className="flex-grow p-3">
       <div className="flex flex-wrap -mx-3">
@@ -36,9 +37,9 @@ export default function EmployeeDashboard() {
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center" mb={2}>
-                <Avatar sx={{ width: 60, height: 60, mr: 2 }}>{employeeData.name.charAt(0)}</Avatar>
+                <Avatar sx={{ width: 60, height: 60, mr: 2 }}>{formatedEmployeeNameWithMidInitials(employeeData)}</Avatar>
                 <Box>
-                  <Typography variant="h5">{employeeData.name}</Typography>
+                  <Typography variant="h5">{formatedEmployeeNameWithMidInitials(employeeData)}</Typography>
                   <Typography variant="body2" color="text.secondary">{employeeData.designation}</Typography>
                 </Box>
               </Box>
@@ -55,7 +56,7 @@ export default function EmployeeDashboard() {
                 <PieChart
                   series={[
                     {
-                      data: employeeData.leaveBalance,
+                      data: _employeeData.leaveBalance,
                       highlightScope: { faded: 'global', highlighted: 'item' },
                       faded: { innerRadius: 30, additionalRadius: -30 },
                     },
@@ -71,7 +72,7 @@ export default function EmployeeDashboard() {
                 />
               </Box>
               <Box mt={2}>
-                {employeeData.leaveBalance.map((item, index) => (
+                {_employeeData.leaveBalance.map((item, index) => (
                   <Typography key={item.label} variant="body2">
                     <Box component="span" sx={{ color: COLORS[index], mr: 1 }}>■</Box>
                     {item.label}: {item.value} days
@@ -97,7 +98,7 @@ export default function EmployeeDashboard() {
             <CardContent>
               <Typography variant="h6" gutterBottom>Upcoming Leaves</Typography>
               <DataGrid
-                rows={employeeData.upcomingLeaves}
+                rows={_employeeData.upcomingLeaves}
                 columns={leaveColumns}
                 initialState={{
                   pagination: {
