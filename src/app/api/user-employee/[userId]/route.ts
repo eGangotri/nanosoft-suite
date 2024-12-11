@@ -12,7 +12,9 @@ export async function GET(
     if (!userWithEmployee) {
       return NextResponse.json({ message: 'Employee not found' }, { status: 404 });
     }
-    return NextResponse.json(userWithEmployee);
+
+    const emp = userWithEmployee?.Employee;
+    return NextResponse.json(emp);
 
   } catch (error) {
     console.error('Error fetching Employee for User:', error);
@@ -22,8 +24,8 @@ export async function GET(
 
 
 export async function getUserWithEmployee(userId: string) {
-  return nanosoftPrisma.user.findUnique({
-    where: { id: userId },
-    include: { UserEmployee: { include: { Employee: true } } }
+  return nanosoftPrisma.userEmployee.findUnique({
+    where: { userId: userId },
+    include: { Employee: true }
   })
 }

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, Typography, Box, Avatar, Button } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { formatedEmployeeNameWithMidInitials } from '../employee/EmployeeUtils';
+import { createEmptyEmployee } from '@/app/employee/employee/EmployeeUtil';
+import { getEmployeeData } from '@/services/employeeService';
 
 // Mock data - replace with actual data fetching logic
 const _employeeData = {
@@ -29,7 +31,19 @@ const leaveColumns: GridColDef[] = [
   { field: 'status', headerName: 'Status', width: 120 },
 ];
 
-export default function EmployeeDashboard({ employeeData }: { employeeData: Employee }) {
+export default function EmployeeDashboard({ employeeId }: { employeeId: number }) {
+
+  const [employeeData, setEmployeeData] = React.useState(createEmptyEmployee());
+  useEffect(() => {
+    const fetchEmp = async () => {
+      const _data = await getEmployeeData(employeeId);
+      if (_data) {
+        setEmployeeData(_data);
+      }
+    }
+    fetchEmp();
+  }, [employeeId]);
+
   return (
     <div className="flex-grow p-3">
       <div className="flex flex-wrap -mx-3">

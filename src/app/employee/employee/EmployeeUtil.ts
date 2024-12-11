@@ -25,7 +25,7 @@ export const createEmptyEmployee = () => {
         maritalStatus: MARITAL_CATEGORIES.Single,
         active: true,
         deleted: false,
-        middleName: null,
+        middleName: "",
 
         localAddressLine1: "",
         localAddressLine2: "",
@@ -63,7 +63,6 @@ export const createEmptyHRDetails = () => {
         newApplyDate: null,
         passCancelledDate: null,
         remarks: null,
-        employee: {} as Employee, // Replace with default/empty Employee object if available
         workpermitNumber: null,
         malaysiaIC: null,
         clientIds: [], // Optional field, can be an empty array

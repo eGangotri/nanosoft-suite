@@ -1,12 +1,10 @@
 'use client'
 
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TextField, Button, Typography, Container, Box, CircularProgress, Alert } from '@mui/material'
-import { isLoggedInState, loggedUser, loggedUserRole } from '@/components/recoilConsts';
 
 export default function Login() {
   const [email, setEmail] = useState('')

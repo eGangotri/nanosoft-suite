@@ -43,7 +43,7 @@ export function AuthStateManager() {
         setLoggedUserId(session?.user?.id);
         const _emp = await getEmployeeCorrespondingToUser();
         setLoggedUserEmployee(_emp || emptyData);
-        setLoggedUserEmployeeId(`${_emp?.id}`);
+        setLoggedUserEmployeeId(_emp?.id || 0);
         console.log(`session.user.role", ${JSON.stringify(session.user)}
         ${JSON.stringify(_emp)}
         `);
@@ -53,7 +53,7 @@ export function AuthStateManager() {
         setLoggedUserName("");
         setLoggedUserId("");
         setEmployeeInSession(emptyData);
-        setLoggedUserEmployeeId("");
+        setLoggedUserEmployeeId(0);
       }
     }
     doCheck()

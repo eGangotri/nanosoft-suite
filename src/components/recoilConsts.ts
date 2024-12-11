@@ -23,12 +23,6 @@ export const isLoggedInState = atom({
     default: NANOSOFT_ROLES.EMPLOYEE,
   });
   
-  
-  export const loggedUserEmployeeId = atom({
-    key: 'loggedUserRole',
-    default: "",
-  });
-  
   export const loginToken = atom({
     key: 'loginToken',
     default: "",
@@ -38,3 +32,9 @@ export const isLoggedInState = atom({
     key: 'loggedUserEmployee',
     default: {} as Employee, 
   });
+  
+  export const loggedUserEmployeeId = atom({
+    key: 'loggedUserEmployeeId',
+    default: 0 as number,
+  });
+  

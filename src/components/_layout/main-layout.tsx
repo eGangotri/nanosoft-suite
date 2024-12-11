@@ -10,8 +10,6 @@ import Sidebar from './sidebar'
 import MainContent from './main-content'
 import SignOutOverlay from './sign-out-overlay'
 import Footer from './footer'
-import { isLoggedInState, loggedUser, loggedUserRole } from '@/components/recoilConsts';
-import { useRecoilState } from 'recoil';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
