@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent, Typography, Box, Avatar, Button } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { formatedEmployeeNameWithMidInitials } from '../employee/EmployeeUtils';
+import { employeeInitials, formatedEmployeeNameWithMidInitials } from '../employee/EmployeeUtils';
 import { createEmptyEmployee } from '@/app/employee/employee/EmployeeUtil';
 import { getEmployeeData } from '@/services/employeeService';
 
@@ -51,7 +51,7 @@ export default function EmployeeDashboard({ employeeId }: { employeeId: number }
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center" mb={2}>
-                <Avatar sx={{ width: 60, height: 60, mr: 2 }}>{formatedEmployeeNameWithMidInitials(employeeData)}</Avatar>
+                <Avatar sx={{ width: 60, height: 60, mr: 2 }}>{employeeInitials(employeeData)}</Avatar>
                 <Box>
                   <Typography variant="h5">{formatedEmployeeNameWithMidInitials(employeeData)}</Typography>
                   <Typography variant="body2" color="text.secondary">{employeeData.designation}</Typography>

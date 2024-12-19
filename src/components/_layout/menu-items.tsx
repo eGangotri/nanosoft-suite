@@ -60,7 +60,7 @@ export const menuItemsForEmployee: MenuItem[] = [
   {
     text: 'Dashboard',
     icon: <DashboardIcon />,
-    route: '/dashboard/employee-dashboard'
+    route: '/'
   },
   { text: 'Apply-Leave', icon: <PeopleIcon />, route: '/leaves/' },
 
