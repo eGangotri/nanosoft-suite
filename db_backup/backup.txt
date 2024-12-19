@@ -1,0 +1,3 @@
+pg_dump "postgresql://nanosoft-suite_owner:n3MZm7JwUIXq@ep-wild-dust-a8ayz2wt.eastus2.azure.neon.tech/nanosoft-suite?sslmode=require" > backup.sql
+
+psql "postgresql://postgres:root@localhost:5432/nanosoft_suite" -f backup.sql

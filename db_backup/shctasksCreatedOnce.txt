@@ -1,0 +1,5 @@
+# DO THIS ONE ONLY
+# AFTER COMMAND us entered followign msg will show:
+# SUCCESS: The scheduled task "DailyDBBackup" has successfully been created.
+
+schtasks /Create /TN "DailyDBBackup" /SC DAILY /ST 22:00 /TR "C:\ws\nanosoft-suite\db_backup\backup_db.bat"
