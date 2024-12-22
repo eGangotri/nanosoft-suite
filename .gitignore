@@ -15,7 +15,7 @@
 
 # production
 /build
-
+db_backup/nanosoft_suite*.sql
 # misc
 .DS_Store
 *.pem
