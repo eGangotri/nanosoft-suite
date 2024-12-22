@@ -8,8 +8,6 @@ import {
     Checkbox,
     FormControlLabel,
     Button,
-    Box,
-    Typography,
     FormControl,
     InputLabel,
     Select,
@@ -21,6 +19,9 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { ConfirmLetterData, confirmLetterSchema } from './confirmLetterSchema'
 import { submitConfirmLetterForm } from './actions'
 import dayjs from 'dayjs'
+import EmployeeConfirmationLetter from './confirmationLetter';
+import { pdf } from '@react-pdf/renderer'
+
 const today = dayjs();
 
 export default function GenConfirmLetterForm() {
@@ -42,221 +43,230 @@ export default function GenConfirmLetterForm() {
         const result = await submitConfirmLetterForm(data)
         if (result.success) {
             console.log('Form submitted successfully:', result.data)
-            // Handle success (e.g., show a success message, reset form, etc.)
+
+            const blob = await pdf(<EmployeeConfirmationLetter data={data} />).toBlob()
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = `${data.firstName}_${data.lastName}_confirmation_letter.pdf`
+            link.click()
+            URL.revokeObjectURL(url)
         } else {
             console.error('Form submission failed:', result.errors)
-            // Handle errors (e.g., show error messages)
         }
     }
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
-                <Typography variant="h4" gutterBottom>
-                    Employee Information
-                </Typography>
-
-                <Controller
-                    name="salutation"
-                    control={control}
-                    render={({ field }) => (
-                        <FormControl fullWidth margin="normal">
-                            <InputLabel id="salutation-label">Salutation</InputLabel>
-                            <Select
-                                {...field}
-                                labelId="salutation-label"
-                                label="Salutation"
-                                error={!!errors.salutation}
-                            >
-                                <MenuItem value="Mr">Mr</MenuItem>
-                                <MenuItem value="Mrs">Mrs</MenuItem>
-                                <MenuItem value="Ms">Ms</MenuItem>
-                                <MenuItem value="Dr">Dr</MenuItem>
-                                <MenuItem value="Prof">Prof</MenuItem>
-                            </Select>
-                        </FormControl>
-                    )}
-                />
-
-                <Controller
-                    name="firstName"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label="First Name"
-                            error={!!errors.firstName}
-                            helperText={errors.firstName?.message}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="lastName"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label="Last Name"
-                            error={!!errors.lastName}
-                            helperText={errors.lastName?.message}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="email"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label="Email"
-                            error={!!errors.email}
-                            helperText={errors.email?.message}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="isForeigner"
-                    control={control}
-                    render={({ field }) => (
-                        <FormControlLabel
-                            control={<Checkbox {...field} checked={field.value} />}
-                            label="Is Foreigner"
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="identificationNumber"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label={isForeigner ? "Passport Number" : "NRIC Number"}
-                            error={!!errors.identificationNumber}
-                            helperText={errors.identificationNumber?.message}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="position"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label="Position"
-                            error={!!errors.position}
-                            helperText={errors.position?.message}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="salary"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label="Salary"
-                            type="number"
-                            error={!!errors.salary}
-                            helperText={errors.salary?.message}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="joiningDate"
-                    control={control}
-                    render={({ field, fieldState: { error } }) => (
-                        <DatePicker
-                            value={field.value ? dayjs(field.value) : null} // Convert value to dayjs object
-                            onChange={(newValue) => field.onChange(newValue?.toISOString() || null)} // Convert dayjs back to ISO string
-                            maxDate={today} // Use dayjs for the maxDate
-                            label="Joining Date"
-                            slotProps={{
-                                textField: {
-                                    fullWidth: true,
-                                    error: !!error,
-                                    helperText: error?.message,
-                                },
-                            }}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="leaves"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label="Leaves"
-                            type="number"
-                            error={!!errors.leaves}
-                            helperText={errors.leaves?.message}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="noticePeriod"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label="Notice Period (in days)"
-                            type="number"
-                            error={!!errors.noticePeriod}
-                            helperText={errors.noticePeriod?.message}
-                        />
-                    )}
-                />
-
-                <Controller
-                    name="workingHours"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            margin="normal"
-                            fullWidth
-                            label="Working Hours (per day)"
-                            type="number"
-                            error={!!errors.workingHours}
-                            helperText={errors.workingHours?.message}
-                        />
-                    )}
-                />
-
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                >
-                    Submit
-                </Button>
-            </Box>
+            <div className="container mx-auto p-4">
+                <h1 className="text-2xl font-bold mb-6">Employee Information</h1>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <Controller
+                                name="salutation"
+                                control={control}
+                                render={({ field }) => (
+                                    <FormControl fullWidth>
+                                        <InputLabel id="salutation-label">Salutation</InputLabel>
+                                        <Select
+                                            {...field}
+                                            labelId="salutation-label"
+                                            label="Salutation"
+                                            error={!!errors.salutation}
+                                            className="w-full"
+                                        >
+                                            <MenuItem value="Mr">Mr</MenuItem>
+                                            <MenuItem value="Mrs">Mrs</MenuItem>
+                                            <MenuItem value="Ms">Ms</MenuItem>
+                                            <MenuItem value="Dr">Dr</MenuItem>
+                                            <MenuItem value="Prof">Prof</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="firstName"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="First Name"
+                                        error={!!errors.firstName}
+                                        helperText={errors.firstName?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="lastName"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Last Name"
+                                        error={!!errors.lastName}
+                                        helperText={errors.lastName?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="email"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Email"
+                                        error={!!errors.email}
+                                        helperText={errors.email?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="position"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Position"
+                                        error={!!errors.position}
+                                        helperText={errors.position?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="salary"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Salary"
+                                        type="number"
+                                        error={!!errors.salary}
+                                        helperText={errors.salary?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="leaves"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Leaves"
+                                        type="number"
+                                        error={!!errors.leaves}
+                                        helperText={errors.leaves?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="noticePeriod"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Notice Period (in days)"
+                                        type="number"
+                                        error={!!errors.noticePeriod}
+                                        helperText={errors.noticePeriod?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="workingHours"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Working Hours (per day)"
+                                        type="number"
+                                        error={!!errors.workingHours}
+                                        helperText={errors.workingHours?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div className="flex items-center">
+                            <Controller
+                                name="isForeigner"
+                                control={control}
+                                render={({ field }) => (
+                                    <FormControlLabel
+                                        control={<Checkbox {...field} checked={field.value} />}
+                                        label="Is Foreigner"
+                                    />
+                                )}
+                            />
+                            <Controller
+                                name="identificationNumber"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label={isForeigner ? "Passport Number" : "NRIC Number"}
+                                        error={!!errors.identificationNumber}
+                                        helperText={errors.identificationNumber?.message}
+                                        fullWidth
+                                    />
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <Controller
+                                name="joiningDate"
+                                control={control}
+                                render={({ field, fieldState: { error } }) => (
+                                    <DatePicker
+                                        value={field.value ? dayjs(field.value) : null}
+                                        onChange={(newValue) => field.onChange(newValue?.toISOString() || null)}
+                                        maxDate={today}
+                                        label="Joining Date"
+                                        slotProps={{
+                                            textField: {
+                                                fullWidth: true,
+                                                error: !!error,
+                                                helperText: error?.message,
+                                            },
+                                        }}
+                                    />
+                                )}
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                        >
+                            Submit
+                        </Button>
+                    </div>
+                </form>
+            </div>
         </LocalizationProvider>
     )
 }

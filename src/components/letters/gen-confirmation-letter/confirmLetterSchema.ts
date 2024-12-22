@@ -8,13 +8,13 @@ export const confirmLetterSchema = z.object({
   isForeigner: z.boolean(),
   identificationNumber: z.string().min(1, "This field is required"),
   position: z.string().min(1, "Position is required"),
-  salary: z.number().positive("Salary must be a positive number"),
+  salary: z.coerce.number().positive("Salary must be a positive number"),
   joiningDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Invalid date format",
   }),
-  leaves: z.number().int().nonnegative("Leaves must be a non-negative integer"),
-  noticePeriod: z.number().int().positive("Notice period must be a positive integer"),
-  workingHours: z.number().positive("Working hours must be a positive number"),
+  leaves: z.coerce.number().int().nonnegative("Leaves must be a non-negative integer"),
+  noticePeriod: z.coerce.number().int().positive("Notice period must be a positive integer"),
+  workingHours: z.coerce.number().positive("Working hours must be a positive number"),
 })
 
 export type ConfirmLetterData = z.infer<typeof confirmLetterSchema>
