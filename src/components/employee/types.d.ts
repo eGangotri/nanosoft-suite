@@ -19,6 +19,7 @@ declare global {
     active: boolean;
     deleted: boolean;
     middleName: string | null;
+    empId: string | null;
 
     localAddressLine1: String
     localAddressLine2: String

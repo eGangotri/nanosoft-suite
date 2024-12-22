@@ -6,8 +6,6 @@ import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getEmployeeData } from '@/services/employeeService';
 import { CircularProgress } from '@mui/material';
-import { create } from 'domain';
-import { createEmptyEmployee } from '../../EmployeeUtil';
 
 export default function EmployeePage({ params }: { params: { id: string } }) {
     const [employeeData, setEmployeeData] = useState<EmployeeData>({} as EmployeeData);

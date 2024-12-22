@@ -2,17 +2,9 @@
 
 import React, { useEffect, useState } from 'react'
 import {
-  Box,
   Typography,
   Paper,
-  Grid,
   IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   CircularProgress,
   Snackbar,
   Alert,
@@ -24,9 +16,7 @@ import {
   Delete as DeleteIcon,
   Block as DeactivateIcon,
   Restore as ActivateIcon,
-
-}
-  from '@mui/icons-material';
+} from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { capitalizeFirstLetter, formatStringAsDate } from '@/utils/StringUtils';
 import dayjs from 'dayjs';
@@ -34,9 +24,7 @@ import { formatedEmployeeName, initCaps } from '../../EmployeeUtils';
 import { CITIZEN_CATEGORIES, getCitizenBgColor, isForeigner } from '@/utils/FormConsts';
 import { SectionBodyWithEditDelete } from './SectionBodyWithEditDelete';
 import Head from 'next/head';
-import LeaveBalance from '@/components/leaves/LeaveBalance';
 import EmployeeLeaveBalanceDisplay from '../../details/leave-balance/page';
-import LeaveBalanceByEmployeePage from '@/app/employee/details/leave-balance/[employeeId]/page';
 import EmployeeWorkHistoryListPage from '../../details/work-history/page';
 
 interface EmployeeViewProps {
@@ -178,9 +166,9 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
     detailId: number
     className?: string
   }> = ({ title, detailType, employeeId, detailId, className }) => (
-    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} className={className}>
+    <div className={`flex justify-between items-center mb-4 ${className}`}>
       <Typography variant="h6">{title}</Typography>
-      <Box>
+      <div>
         <IconButton size="small" onClick={() => handleAddEdit(detailType, employeeId)}>
           {(detailId && (detailId !== 0)) ? <EditIcon className="h-4 w-4" /> : <AddIcon className="h-4 w-4" />}
         </IconButton>
@@ -191,7 +179,6 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
               <DeleteIcon className="h-4 w-4" />
             }
           </IconButton> : <></>}
-        {/*implies Employee*/}
         {(detailId == -1) &&
           <>
             <IconButton aria-label="delete" color="error"
@@ -221,11 +208,10 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
                 }
               </IconButton>
             }
-
           </>
         }
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
   const { EmployeeEmergencyContact, EmployeeBankDetails: EmployeeBankDetails, EmployeeHrDetails, EmployeeLeaveBalance: EmployeeLeaveBalance, EmployeeWorkHistory: EmployeeWorkHistory, ...employee } = employeeData
 
@@ -259,7 +245,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   return (
     <>
       <Head>View-Employee</Head>
-      <Box className={`max-w-6xl mx-auto p-6 ${backgroundColor}`}>
+      <div className={`max-w-6xl mx-auto p-6 ${backgroundColor}`}>
         <Typography variant="h4" gutterBottom>
           Employee Details for {employee?.firstName} {employee?.lastName} ({employee.citizenshipStatus})
         </Typography>
@@ -268,20 +254,21 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
           <SectionHeader title="Main Employee Information"
             detailType={DETAIL_TYPE_ENUM.EMPLOYEE_DETAILS}
             employeeId={employee?.id} detailId={-1} />
-          <Grid container spacing={2} >
-            <Grid item xs={12} sm={6} >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
               <Typography><strong>Name:</strong> {`${formatedEmployeeName(employee)}`}</Typography>
               <Typography><strong>Designation:</strong> {employee?.designation}</Typography>
               <Typography><strong>Date of Birth:</strong> {formatStringAsDate(employee?.dateOfBirth)}</Typography>
               <Typography><strong>Nationality:</strong> {employee?.nationality}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
+              <Typography><strong>Employee Id:</strong> {employee?.empId}</Typography>
+            </div>
+            <div>
               <Typography><strong>Email:</strong> {employee?.email}</Typography>
               <Typography><strong>Mobile:</strong> {employee?.mobile}</Typography>
               <Typography><strong>NRIC/FIN:</strong> {employee?.nricOrFinNo}</Typography>
               <Typography><strong>Marital Status:</strong> {employee?.maritalStatus}</Typography>
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </Paper>
         <Snackbar
           open={openSnackbar}
@@ -298,15 +285,15 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
             employeeId={employee?.id}
             detailId={EmployeeHrDetails?.id} />
           {EmployeeHrDetails &&
-            <Grid container spacing={2} key={EmployeeHrDetails?.id}>
-              <Grid item xs={12} sm={6}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" key={EmployeeHrDetails?.id}>
+              <div>
                 <Typography><strong>Date of Joining:</strong> {EmployeeHrDetails?.dateOfJoining ? dayjs(EmployeeHrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
                 <Typography><strong>Salary:</strong> ${EmployeeHrDetails?.salary ? Number(EmployeeHrDetails.salary).toFixed(2) : ''}</Typography>
                 <Typography><strong>Bonus:</strong> ${EmployeeHrDetails?.bonus ? Number(EmployeeHrDetails.bonus).toFixed(2) : ''}</Typography>
                 {isForeigner(employee.employee) &&
                   (<Typography><strong>Pass Type:</strong> {EmployeeHrDetails?.passType}</Typography>)}
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              </div>
+              <div>
                 <Typography><strong>Passport Number:</strong> {EmployeeHrDetails?.passportNumber}</Typography>
                 <Typography><strong>Client:</strong>
                   {EmployeeHrDetails?.EmployeeHrDetailsClients?.length > 0 ? EmployeeHrDetails?.EmployeeHrDetailsClients?.map(ehdc => ehdc?.Client?.companyName)?.join(",") : "'N/A'"}
@@ -314,8 +301,8 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
                 {isForeigner(employee.employee) &&
                   <Typography><strong>Pass Expiry Date:</strong> {EmployeeHrDetails?.passExpiryDate ? formatStringAsDate(EmployeeHrDetails?.passExpiryDate) : 'N/A'}</Typography>
                 }
-              </Grid>
-            </Grid>
+              </div>
+            </div>
           }
         </Paper>
 
@@ -348,10 +335,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
               <p><strong>Address:</strong> {entry?.address}</p>
             </SectionBodyWithEditDelete>
           ))}
-
         </Paper>
-
-
 
         <Paper elevation={3} className="p-6 mb-6">
           <SectionHeader title="Leave Balances"
@@ -366,11 +350,10 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
             detailType={DETAIL_TYPE_ENUM.WORK_HISTORY}
             employeeId={employee?.id}
             detailId={0} />
-
           <EmployeeWorkHistoryListPage initialData={EmployeeWorkHistory} />
         </Paper>
-      </Box>
+      </div>
     </>
-
   )
 }
+
