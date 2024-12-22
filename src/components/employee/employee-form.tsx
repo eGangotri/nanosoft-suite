@@ -60,8 +60,8 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
   })
 
 
-  const [showExpiryDate, setShowExpiryDate] = useState(initialData?.citizenshipStatus === "FOREIGNER" || false);
-  const [showForeignAddress, setShowForeignAddress] = useState(initialData?.citizenshipStatus !== CITIZEN_CATEGORIES.Citizen)
+  const [showExpiryDate, setShowExpiryDate] = useState(initialData?.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner || false);
+  const [showForeignAddress, setShowForeignAddress] = useState((initialData?.citizenshipStatus && (initialData?.citizenshipStatus === CITIZEN_CATEGORIES.PR || initialData?.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)) || false);
   const citizenshipStatus = watch('citizenshipStatus');
 
   const [lookupAddress, setLookupAddress] = useState({
@@ -89,11 +89,13 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
 
   React.useEffect(() => {
     setShowExpiryDate(citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)
-    setShowForeignAddress(citizenshipStatus !== CITIZEN_CATEGORIES.Citizen)
+    setShowForeignAddress((initialData?.citizenshipStatus && (initialData?.citizenshipStatus === CITIZEN_CATEGORIES.PR || initialData?.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)) || false);
+
   }, [citizenshipStatus]);
 
   const onSubmitForm = async (data: EmployeeFormData): Promise<void> => {
     try {
+      console.log("------", JSON.stringify(data));
       setIsLoading(true);
       console.log(`Submitting employee data: ${JSON.stringify(data.expiryDate)}`)
       await onSubmit(data)
@@ -453,7 +455,6 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                     )}
                   />
                 </div>
-
                 {showForeignAddress && (
                   <div className='flex flex-col gap-3'>
                     <Typography variant="subtitle1" className="mb-4">Foreign Address</Typography>
@@ -567,7 +568,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
               className="mr-2 pr-2"
             >
               {isLoading ? <CircularProgress size={24} /> : isEditMode ?
-                'Update Employee' : 'Add Employee'}
+                'Update Employee' : 'Add Employee'} {isLoading}
             </Button>
             <Button type="reset"
               onClick={() => reset(initialData)} // Reset the form to initial values

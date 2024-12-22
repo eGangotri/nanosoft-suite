@@ -16,6 +16,8 @@ import {
   Delete as DeleteIcon,
   Block as DeactivateIcon,
   Restore as ActivateIcon,
+  Visibility,
+  VisibilityOff,
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { capitalizeFirstLetter, formatStringAsDate } from '@/utils/StringUtils';
@@ -47,6 +49,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [isSalaryVisible, setIsSalaryVisible] = useState(false);
 
   useEffect(() => {
     setBackgroundColor(getCitizenBgColor(employeeData.citizenshipStatus, employeeData?.active))
@@ -157,6 +160,7 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
     // Your edit logic here
   };
 
+  const toggleSalaryVisibility = () => setIsSalaryVisible(!isSalaryVisible);
 
 
   const SectionHeader: React.FC<{
@@ -288,7 +292,15 @@ export default function EmployeeView({ employeeData }: EmployeeViewProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" key={EmployeeHrDetails?.id}>
               <div>
                 <Typography><strong>Date of Joining:</strong> {EmployeeHrDetails?.dateOfJoining ? dayjs(EmployeeHrDetails.dateOfJoining).format('YYYY-MM-DD') : ''}</Typography>
-                <Typography><strong>Salary:</strong> ${EmployeeHrDetails?.salary ? Number(EmployeeHrDetails.salary).toFixed(2) : ''}</Typography>
+                <Typography>
+                  <strong>Salary:</strong>{' '}
+                  {isSalaryVisible
+                    ? `$${EmployeeHrDetails?.salary ? Number(EmployeeHrDetails.salary).toFixed(2) : ''}`
+                    : '********'}
+                  <IconButton onClick={toggleSalaryVisibility} size="small">
+                    {isSalaryVisible ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                  </IconButton>
+                </Typography>
                 <Typography><strong>Bonus:</strong> ${EmployeeHrDetails?.bonus ? Number(EmployeeHrDetails.bonus).toFixed(2) : ''}</Typography>
                 {isForeigner(employee.employee) &&
                   (<Typography><strong>Pass Type:</strong> {EmployeeHrDetails?.passType}</Typography>)}

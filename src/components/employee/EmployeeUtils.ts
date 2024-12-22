@@ -61,9 +61,8 @@ export const formatedEmployeeNameWithMidInitials = (employee:
 }
 
 export const employeeInitials = (employee:
-    { firstName: string, middleName?: string | null, lastName: string }) => {
+    { firstName: string, lastName: string }) => {
     const initial1 = employee?.firstName?.charAt(0) ? `${employee?.firstName?.charAt(0)}.` : "";
     const initial2 = employee?.lastName?.charAt(0) ? `${employee?.lastName?.charAt(0)}.` : "";
-
     return `${initial1} ${initial2}`.toUpperCase();
 }

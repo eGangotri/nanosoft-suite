@@ -1,10 +1,12 @@
 import nanosoftPrisma from '@/lib/prisma';
+import { create } from 'domain';
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   console.log('Request body:', JSON.stringify(request.body));
   try {
     const body = await request.json()
+    const empId = createEmpId(body);
     const employee = await nanosoftPrisma.employee.create({
       data: {
         firstName: body.firstName,
@@ -19,7 +21,7 @@ export async function POST(request: Request) {
         nricOrFinNo: body.nricOrFinNo,
         expiryDate: body.expiryDate ? new Date(body.expiryDate) : null,
         maritalStatus: body.maritalStatus,
-
+        empId: empId,
         localAddressLine1: body.localAddressLine1,
         localAddressLine2: body.localAddressLine2,
         localPostalCode: body.localPostalCode,
@@ -44,3 +46,11 @@ export async function POST(request: Request) {
     )
   }
 }
+
+function createEmpId(employee:Employee): string {
+  const dob = new Date(employee.dateOfBirth);
+  const dobString = `${(dob.getMonth() + 1).toString().padStart(2, '0')}`;
+  return `${employee.firstName[0]}${employee.lastName[0]}-${employee.nationality[0]}-${dobString}-${employee.nricOrFinNo.slice(1,4)}`.toUpperCase();
+}
+
+
