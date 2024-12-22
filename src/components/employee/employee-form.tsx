@@ -379,6 +379,11 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                           disabled
                           error={!!error}
                           helperText={error?.message}
+                          slotProps={{
+                            inputLabel: {
+                              shrink: true,
+                            },
+                          }}
                         />
                       )}
                     />
@@ -394,6 +399,11 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                           disabled
                           error={!!error}
                           helperText={error?.message}
+                          slotProps={{
+                            inputLabel: {
+                              shrink: true,
+                            },
+                          }}
                         />
                       )}
                     />
@@ -410,6 +420,11 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                         disabled
                         error={!!error}
                         helperText={error?.message}
+                        slotProps={{
+                          inputLabel: {
+                            shrink: true,
+                          },
+                        }}
                       />
                     )}
                   />
@@ -440,6 +455,9 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                         error={!!error}
                         helperText={error?.message}
                         slotProps={{
+                          inputLabel: {
+                            shrink: true,
+                          },
                           input: {
                             endAdornment: (
                               <SearchIcon
