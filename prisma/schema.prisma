@@ -250,6 +250,22 @@ model UserRole {
   @@id([user_id, role_id], map: "User_Role_pkey")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model Tenant {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(255)
+  email       String   @db.VarChar(255)
+  password    String   @db.VarChar(255)
+  companyName String   @db.VarChar(255)
+  uenNo       String   @db.VarChar(255)
+  entityType  String   @db.VarChar(255)
+  industry    String   @db.VarChar(255)
+  contactNo   String   @db.VarChar(255)
+  domain      String   @unique @db.VarChar(255)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @db.Timestamptz(6)
+}
+
 enum UserRoleType {
   EMPLOYEE
   MANAGER
