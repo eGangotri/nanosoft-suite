@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller, useWatch, FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   TextField,
@@ -31,9 +31,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { EmployeeFormData, EmployeeFormProps, employeeSchema } from './constants'
 import dayjs from 'dayjs';
-import { CITIZEN_CATEGORIES, CITIZEN_CATEGORIES_VALUES, GENDER_TYPE_VALUES, MARITAL_CATEGORIES_VALUES, NATIONALITY_VALUES, RACE_TYPE_VALUES } from '@/utils/FormConsts'
+import { CITIZEN_CATEGORIES, CITIZEN_CATEGORIES_VALUES, GENDER_TYPE_VALUES, MARITAL_CATEGORIES_VALUES, NATIONALITIES, NATIONALITY_VALUES, RACE_TYPE_VALUES } from '@/utils/FormConsts'
 import { useRouter } from 'next/navigation'
 import { lookupPostalCodeSG } from '@/utils/utils';
+import ErrorPanel from './ErrorPanel';
 
 const today = dayjs();
 
@@ -58,19 +59,32 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
     resolver: zodResolver(employeeSchema),
     defaultValues: initialData
   })
+  const _citizenshipStatus = useWatch({
+    control,
+    name: 'citizenshipStatus',
+    defaultValue: initialData?.citizenshipStatus || CITIZEN_CATEGORIES.Citizen,
+  });
 
+  const _localPostalCode = useWatch({
+    control,
+    name: 'localPostalCode',
+    defaultValue: initialData?.citizenshipStatus || CITIZEN_CATEGORIES.Citizen,
+  });
+
+  const _nationality = useWatch({
+    control,
+    name: 'nationality',
+    defaultValue: initialData?.nationality,
+  });
 
   const [showExpiryDate, setShowExpiryDate] = useState(initialData?.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner || false);
   const [showForeignAddress, setShowForeignAddress] = useState((initialData?.citizenshipStatus && (initialData?.citizenshipStatus === CITIZEN_CATEGORIES.PR || initialData?.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)) || false);
-  const citizenshipStatus = watch('citizenshipStatus');
 
   const [lookupAddress, setLookupAddress] = useState({
     blkNo: "",
     roadName: "",
     building: ""
   });
-
-  const localPostalCode = watch('localPostalCode');
 
   useEffect(() => {
     if (lookupAddress.blkNo) {
@@ -81,20 +95,47 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
   }, [lookupAddress, setValue]);
 
   const handlePostalCodeLookup = async () => {
-    if (localPostalCode) {
-      const lookupAdd = await lookupPostalCodeSG(localPostalCode);
+    if (_localPostalCode) {
+      const lookupAdd = await lookupPostalCodeSG(_localPostalCode);
       setLookupAddress(lookupAdd);
     }
   };
 
-  React.useEffect(() => {
-    setShowExpiryDate(citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)
-    setShowForeignAddress((initialData?.citizenshipStatus && (initialData?.citizenshipStatus === CITIZEN_CATEGORIES.PR || initialData?.citizenshipStatus === CITIZEN_CATEGORIES.Foreigner)) || false);
+  useEffect(() => {
+    if (_citizenshipStatus) {
+      setShowExpiryDate(_citizenshipStatus === CITIZEN_CATEGORIES.Foreigner);
+      setShowForeignAddress(_citizenshipStatus === CITIZEN_CATEGORIES.PR || _citizenshipStatus === CITIZEN_CATEGORIES.Foreigner);
+    }
+  }, [_citizenshipStatus]);
 
-  }, [citizenshipStatus]);
 
-  const onSubmitForm = async (data: EmployeeFormData): Promise<void> => {
+  useEffect(() => {
+    if (_nationality === NATIONALITIES.Singapore) {
+      setValue('citizenshipStatus', CITIZEN_CATEGORIES.Citizen);
+    }
+  }, [_nationality, setValue]);
+
+  const [formErrors, setFormErrors] = useState<{ field: string; message: string | undefined }[]>([]);
+
+  const onSubmitForm = async (data: EmployeeFormData, formErrors: FieldErrors<EmployeeFormData>): Promise<void> => {
+    employeeSchema.parse(data);
+
+    setFormErrors([]); // Clear previous errors
+    if (Object.keys(formErrors).length > 0) {
+      const relevantErrors = Object.entries(formErrors).map(([field, error]) => ({
+        field,
+        message: error?.message,
+      }));
+      setFormErrors(relevantErrors);
+      console.log('Form errors:', formErrors);
+      //return;
+    }
+    else {
+      console.log(`No formErrors. Form data: ${JSON.stringify(data)}`);
+    }
     try {
+      employeeSchema.parse(data);
+
       console.log("------", JSON.stringify(data));
       setIsLoading(true);
       console.log(`Submitting employee data: ${JSON.stringify(data.expiryDate)}`)
@@ -108,8 +149,17 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
       setIsLoading(false);
       setSnackbar({ open: true, message: 'Error submitting employee data. Please try again.', severity: 'error' })
       console.error('onSubmitForm:Error submitting form:', error)
+      if (error instanceof Error) {
+        setFormErrors([{ field: 'general', message: error.message }]);
+      }
     }
   }
+
+  useEffect(() => {
+    if (formErrors.length > 0) {
+      console.log('Current form errors:', formErrors);
+    }
+  }, [formErrors]);
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false })
@@ -121,6 +171,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
         <Typography variant="h5" className="mb-6 text-center">
           {/* {isEditMode ? 'Edit Employee' : 'Add New Employee'} */}
         </Typography>
+        <ErrorPanel errors={formErrors} />
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
@@ -277,6 +328,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
           <Controller
             name="citizenshipStatus"
             control={control}
+            defaultValue={initialData?.citizenshipStatus || ""}
             render={({ field, fieldState: { error } }) => (
               <FormControl error={!!error} component="fieldset">
                 <FormLabel component="legend">Citizenship Status</FormLabel>
@@ -373,7 +425,7 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                       render={({ field, fieldState: { error } }) => (
                         <TextField
                           {...field}
-                          label={"Block No." + JSON.stringify(lookupAddress)}
+                          label={"Block No."}
                           variant="outlined"
                           className="w-28"
                           disabled
@@ -439,6 +491,11 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
                         className='w-28'
                         error={!!error}
                         helperText={error?.message}
+                        slotProps={{
+                          inputLabel: {
+                            shrink: true,
+                          },
+                        }}
                       />
                     )}
                   />
