@@ -117,17 +117,17 @@ export default function EmployeeForm({ initialData, onSubmit }: EmployeeFormProp
 
   const [formErrors, setFormErrors] = useState<{ field: string; message: string | undefined }[]>([]);
 
-  const onSubmitForm = async (data: EmployeeFormData, formErrors: FieldErrors<EmployeeFormData>): Promise<void> => {
+  const onSubmitForm = async (data: EmployeeFormData): Promise<void> => {
     employeeSchema.parse(data);
 
     setFormErrors([]); // Clear previous errors
-    if (Object.keys(formErrors).length > 0) {
-      const relevantErrors = Object.entries(formErrors).map(([field, error]) => ({
+    if (Object.keys(errors).length > 0) {
+      const relevantErrors = Object.entries(errors).map(([field, error]) => ({
         field,
         message: error?.message,
       }));
       setFormErrors(relevantErrors);
-      console.log('Form errors:', formErrors);
+      console.log('Form errors:', errors);
       //return;
     }
     else {

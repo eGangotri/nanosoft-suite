@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { tenantSchema, TenantFormData } from './schema';
 import {
@@ -15,7 +15,7 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 import { SimpleCaptcha } from './SimpleCatpcha';
 
 export default function TenantRegistrationForm() {
@@ -24,18 +24,27 @@ export default function TenantRegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null);
 
-  const { control, handleSubmit, formState: { errors } } = useForm<TenantFormData>({
-    resolver: zodResolver(tenantSchema),
+  const { control, setValue, handleSubmit, formState: { errors } } = useForm<TenantFormData>({
+    // resolver: zodResolver(tenantSchema),
     mode: 'onBlur',
   });
 
-  const onSubmit = async (data: TenantFormData) => {
+  const onSubmit = async (data: TenantFormData): Promise<void> => {
+    if (Object.keys(errors).length > 0) {
+      const relevantErrors = Object.entries(errors).map(([field, error]) => ({
+        field,
+        message: error?.message,
+      }));
+      console.log('Form errors:', relevantErrors);
+    } else {
+      console.log(`No formErrors. Form data: ${JSON.stringify(data)}`);
+    }
     console.log(`data: ${JSON.stringify(data)}`);
     tenantSchema.parse(data);
     if (isCaptchaValid) {
       setIsSubmitting(true);
       try {
-        const response = await fetch('/api/register', {
+        const response = await fetch('/api/tenant', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -207,7 +216,10 @@ export default function TenantRegistrationForm() {
           )}
         </div> */}
         <div className="col-span-1 mt-4">
-          <SimpleCaptcha onValidate={setIsCaptchaValid} />
+          <SimpleCaptcha onValidate={(isValid) => {
+            setIsCaptchaValid(isValid);
+            setValue('captcha', isValid ? 'valid' : 'invalid');
+          }} />
         </div>
         <div className="col-span-1  mt-4">
           <Controller

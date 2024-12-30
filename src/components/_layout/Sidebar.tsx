@@ -4,8 +4,7 @@ import React, { useState } from 'react'
 import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import Link from 'next/link'
-import { getMenuItemsForRole, menuItems } from './menu-items' // You'll need to create this file with the menu structure
-import { NANOSOFT_ROLES } from '@/globalConstants'
+import { getMenuItemsForRole } from './menu-items' // You'll need to create this file with the menu structure
 
 interface SidebarProps {
   sidebarOpen: boolean

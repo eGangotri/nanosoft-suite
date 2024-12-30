@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import nanosoftPrisma from '@/lib/prisma';
-import { tenantSchema } from '@/components/TenantRegistration/schema';
+import { tenantSchema } from '@/components/tenantRegistration/schema';
 
 const prisma = new PrismaClient();
 
@@ -35,4 +35,28 @@ export async function POST(req: Request) {
     await prisma.$disconnect();
   }
 }
+
+export async function GET() {
+  const tenants = await nanosoftPrisma.tenant.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      companyName: true,
+      uenNo: true,
+      entityType: true,
+      industry: true,
+      contactNo: true,
+      domain: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  })
+
+  return NextResponse.json(tenants)
+}
+
 

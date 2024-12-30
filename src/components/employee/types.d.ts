@@ -1,6 +1,21 @@
 import { LeaveBalance, LeaveRequest } from "@prisma/client";
 
 declare global {
+  export interface Tenant {
+    id: number
+    name: string
+    email: string
+    password: string
+    companyName: string
+    uenNo: string
+    entityType: string
+    industry: string
+    contactNo: string
+    domain: string
+    createdAt: string
+    updatedAt: string
+  }
+
   interface Employee {
     id: number;
     firstName: string;
@@ -39,7 +54,7 @@ declare global {
     EmployeeHrDetails: EmployeeHrDetails;
     EmployeeLeaveBalance: EmployeeLeaveBalance[];
     EmployeeWorkHistory: EmployeeWorkHistory[];
-    UserEmployee?:UserEmployee;
+    UserEmployee?: UserEmployee;
   }
 
   interface UserEmployee {
@@ -76,8 +91,8 @@ declare global {
     level: number;
     UserRole: UserRole[];
   }
-  
-    interface User {
+
+  interface User {
     id: string;
     name?: string;
     email?: string;

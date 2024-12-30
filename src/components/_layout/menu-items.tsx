@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   Dashboard as DashboardIcon,
+  Business as BusinessIcon,
   Settings as SettingsIcon,
   Apps as ProductsIcon,
   AttachMoney as PayrollIcon,
@@ -28,16 +29,21 @@ export interface MenuItem {
   subItems?: MenuItem[]
 }
 
-export const menuItems: MenuItem[] = [
+export const nanosoftMenuItems: MenuItem[] = [
   {
     text: 'Dashboard',
     icon: <DashboardIcon />,
-    route: '/dashboard/admin-dashboard'
+    route: '/'
   },
   { text: 'Employee-Data', icon: <PeopleIcon />, route: '/employee/employee' },
   { text: 'Leave-Types-Mgmt', icon: <PeopleIcon />, route: '/leaves-type/' },
   { text: 'Gen-Confirmation-Letter', icon: <FactCheckIcon />, route: '/letters/gen-confirmation-letter/' },
   { text: 'Gen-Offer-Letter', icon: <DescriptionIcon />, route: '/letters/get-offer-letter/' },
+  {
+    text: 'Tenant-Dashboard',
+    icon: <BusinessIcon />,
+    route: '/tenant/dashboard'
+  },
   {
     text: 'Products',
     icon: <ProductsIcon />,
@@ -71,14 +77,14 @@ export const menuItemsForEmployee: MenuItem[] = [
 
 export const getMenuItemsForRole = (role: string): MenuItem[] => {
   if (isAdminOrSuperAdmin(role)) {
-    return menuItems
+    return nanosoftMenuItems
   }
   if (role === NANOSOFT_ROLES.EMPLOYEE) {
     return menuItemsForEmployee
   }
   if (role === NANOSOFT_ROLES.SUPERVISOR) {
-    return menuItems.filter(item => item.text === 'Leave-Mgmt')
+    return nanosoftMenuItems.filter(item => item.text === 'Leave-Mgmt')
   }
   // For other roles, remove the Settings menu item
-  return menuItems.filter(item => item.text !== 'Settings')
+  return nanosoftMenuItems.filter(item => item.text !== 'Settings')
 }
