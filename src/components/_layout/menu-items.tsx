@@ -17,7 +17,9 @@ import {
   School as LMSIcon,
   BarChart as ReportsIcon,
   People as PeopleIcon,
-  FactCheck as FactCheckIcon, Description as DescriptionIcon
+  FactCheck as FactCheckIcon,
+   Description as DescriptionIcon,
+   Receipt as ReceiptIcon 
 } from '@mui/icons-material'
 import { NANOSOFT_ROLES } from '@/globalConstants'
 import { isAdminOrSuperAdmin } from '@/utils/utils'
@@ -72,6 +74,8 @@ export const menuItemsForEmployee: MenuItem[] = [
     route: '/'
   },
   { text: 'Apply-Leave', icon: <PeopleIcon />, route: '/leaves/' },
+  { text: 'Payslip', icon: <ReceiptIcon />, route: '/payslips/' },
+  
 
 ]
 
