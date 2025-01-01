@@ -5,7 +5,7 @@ import Loading from '@/components/leaves/Loading';
 import PayslipDashboard from '@/components/payslips/page';
 import React, { Suspense, useState } from 'react';
 
-export default function PayslipPate() {
+export default function PayslipPage() {
     return (
         <Suspense fallback={<Loading />}>
             <MainLayout>

@@ -12,12 +12,15 @@ import {
   TableRow, 
   Paper,
   Typography,
-  Box
+  Box,
+  IconButton,
+  Tooltip
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import DownloadIcon from '@mui/icons-material/Download';
 
 interface Payslip {
   id: number;
@@ -37,7 +40,6 @@ const PayslipDashboard: React.FC = () => {
   const [payslips, setPayslips] = useState<Payslip[]>([]);
 
   useEffect(() => {
-    // Fetch payslips when the component mounts or the selected date changes
     fetchPayslips();
   }, [selectedDate]);
 
@@ -64,9 +66,30 @@ const PayslipDashboard: React.FC = () => {
     return new Intl.NumberFormat('en-SG', { style: 'currency', currency: 'SGD' }).format(amount);
   };
 
+  const handleDownload = async (payslipId: number) => {
+    try {
+      const response = await fetch(`/api/payslips/${payslipId}/download`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `payslip-${payslipId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error('Failed to download payslip');
+      }
+    } catch (error) {
+      console.error('Error downloading payslip:', error);
+    }
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box sx={{ padding: 2 }}>
+      <Box sx={{ maxWidth: 800, margin: 'auto', padding: 2 }}>
         <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <ReceiptIcon fontSize="large" />
           Payslip Dashboard
@@ -96,6 +119,7 @@ const PayslipDashboard: React.FC = () => {
                   <TableCell align="right">CPF (Employer)</TableCell>
                   <TableCell align="right">Gross Salary</TableCell>
                   <TableCell align="right">Net Salary</TableCell>
+                  <TableCell align="center">Download</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -112,6 +136,13 @@ const PayslipDashboard: React.FC = () => {
                     <TableCell align="right">{formatCurrency(payslip.cpfEmployerContrib)}</TableCell>
                     <TableCell align="right">{formatCurrency(payslip.grossSalary)}</TableCell>
                     <TableCell align="right">{formatCurrency(payslip.netSalary)}</TableCell>
+                    <TableCell align="center">
+                      <Tooltip title="Download Payslip">
+                        <IconButton onClick={() => handleDownload(payslip.id)}>
+                          <DownloadIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -130,6 +130,8 @@ model Employee {
   EmployeeLeaveBalance     EmployeeLeaveBalance[]
   EmployeeWorkHistory      EmployeeWorkHistory[]
   Leave                    Leave[]
+  Payslip                  Payslip[]
+  TaxInformation           TaxInformation[]
   UserEmployee             UserEmployee?
 
   @@unique([email, tenantId])
@@ -318,6 +320,38 @@ model Tenant {
   User                     User[]
   UserEmployee             UserEmployee[]
   UserRole                 UserRole[]
+}
+
+model Payslip {
+  id                 Int      @id @default(autoincrement())
+  employeeId         Int
+  payPeriod          DateTime @db.Timestamp(6)
+  basicSalary        Float
+  overtime           Float
+  allowances         Json     @db.Json
+  deductions         Json     @db.Json
+  cpfEmployeeContrib Float
+  cpfEmployerContrib Float
+  grossSalary        Float
+  netSalary          Float
+  paidLeave          Int
+  unpaidLeave        Int
+  remarks            String?
+  createdAt          DateTime @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime @default(now()) @db.Timestamp(6)
+  Employee           Employee @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model TaxInformation {
+  id            Int      @id @default(autoincrement())
+  employeeId    Int
+  year          Int
+  totalEarnings Float
+  taxableIncome Float
+  taxPaid       Float
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @default(now()) @db.Timestamp(6)
+  Employee      Employee @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum UserRoleType {
