@@ -1,12 +1,12 @@
 'use client'
 
-import React from 'react'
-import EmployeeForm from '../employee-form'
-import { useRouter } from 'next/navigation'
-import { EmployeeFormData } from '../constants'
+import React from 'react';
+import EmployeeForm from '../employee-form';
+import { useRouter } from 'next/navigation';
+import { EmployeeFormData } from '../constants';
 
 export default function AddEmployeePage() {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSubmit = async (data: EmployeeFormData) => {
     try {

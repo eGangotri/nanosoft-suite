@@ -12,24 +12,65 @@ import {
 } from '@mui/icons-material'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Tenant } from '@/types/tenant'
 
+interface DashboardProps {
+  initialTenants: Tenant[]
+}
+
+export default function Dashboard({ initialTenants }: DashboardProps) {
+  const [tenants, setTenants] = useState<Tenant[]>(initialTenants)
+  const [searchTerm, setSearchTerm] = useState('')
+  const router = useRouter()
+
+  
+
+  const handleEdit = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation()
+    router.push(`/tenantRegistration/${id}`)
+  }
+
+  const handleDelete = async (e: React.MouseEvent, id: number) => {
+    e.stopPropagation()
+    if (window.confirm('Are you sure you want to delete this tenant?')) {
+      try {
+        const response = await fetch(`/api/tenant/${id}`, { method: 'DELETE' })
+        if (response.ok) {
+          setTenants(tenants.filter(tenant => tenant.id !== id))
+        } else {
+          console.error('Failed to delete tenant')
+        }
+      } catch (error) {
+        console.error('Error deleting tenant:', error)
+      }
+    }
+  }
+
+  const handleDeactivate = async (e: React.MouseEvent, id: number) => {
+    e.stopPropagation()
+    if (window.confirm('Are you sure you want to deactivate this tenant?')) {
+      try {
+        const response = await fetch(`/api/tenant/${id}/deactivate`, { method: 'PUT' })
+        if (response.ok) {
+          setTenants(tenants.map(tenant => 
+            tenant.id === id ? { ...tenant, active: false } : tenant
+          ))
+        } else {
+          console.error('Failed to deactivate tenant')
+        }
+      } catch (error) {
+        console.error('Error deactivating tenant:', error)
+      }
+    }
+  }
+
+  
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 70 },
   { field: 'name', headerName: 'Name', width: 150 },
   { field: 'email', headerName: 'Email', width: 200 },
   { field: 'companyName', headerName: 'Company Name', width: 200 },
   { field: 'uenNo', headerName: 'UEN No', width: 150 },
-  { field: 'entityType', headerName: 'Entity Type', width: 150 },
-  { field: 'industry', headerName: 'Industry', width: 150 },
   { field: 'contactNo', headerName: 'Contact No', width: 150 },
   { field: 'domain', headerName: 'Domain', width: 200 },
-  {
-    field: 'createdAt',
-    headerName: 'Created At',
-    width: 200,
-    valueGetter: (params: { value: string }) => new Date(params.value).toLocaleString(),
-  },
   {
     field: 'actions',
     headerName: 'Actions',
@@ -55,15 +96,6 @@ const columns: GridColDef[] = [
     ),
   },
 ]
-
-interface DashboardProps {
-  initialTenants: Tenant[]
-}
-
-export default function Dashboard({ initialTenants }: DashboardProps) {
-  const [tenants, setTenants] = useState<Tenant[]>(initialTenants)
-  const [searchTerm, setSearchTerm] = useState('')
-  const router = useRouter()
 
   const filteredTenants = tenants.filter(tenant =>
     tenant?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -101,45 +133,6 @@ export default function Dashboard({ initialTenants }: DashboardProps) {
     router.push(`/tenant/${params.id}`)
   }
 
-  const handleEdit = (e: React.MouseEvent, id: number) => {
-    e.stopPropagation()
-    router.push(`/tenant/edit/${id}`)
-  }
-
-  const handleDelete = async (e: React.MouseEvent, id: number) => {
-    e.stopPropagation()
-    if (window.confirm('Are you sure you want to delete this tenant?')) {
-      try {
-        const response = await fetch(`/api/tenant/${id}`, { method: 'DELETE' })
-        if (response.ok) {
-          setTenants(tenants.filter(tenant => tenant.id !== id))
-        } else {
-          console.error('Failed to delete tenant')
-        }
-      } catch (error) {
-        console.error('Error deleting tenant:', error)
-      }
-    }
-  }
-
-  const handleDeactivate = async (e: React.MouseEvent, id: number) => {
-    e.stopPropagation()
-    if (window.confirm('Are you sure you want to deactivate this tenant?')) {
-      try {
-        const response = await fetch(`/api/tenant/${id}/deactivate`, { method: 'PUT' })
-        if (response.ok) {
-          setTenants(tenants.map(tenant => 
-            tenant.id === id ? { ...tenant, active: false } : tenant
-          ))
-        } else {
-          console.error('Failed to deactivate tenant')
-        }
-      } catch (error) {
-        console.error('Error deactivating tenant:', error)
-      }
-    }
-  }
-
   return (
     <Box sx={{ height: 600, width: '100%' }}>
       <Box className="flex justify-between items-center my-6">
@@ -175,9 +168,7 @@ export default function Dashboard({ initialTenants }: DashboardProps) {
           },
         }}
         pageSizeOptions={[10, 25, 50]}
-        checkboxSelection
-        disableRowSelectionOnClick
-        onRowClick={handleRowClick}
+        onRowClick={()=>handleRowClick}
         sx={{
           '& .MuiDataGrid-row:hover': {
             cursor: 'pointer',

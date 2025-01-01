@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useState } from 'react';
-import { useForm, Controller, FieldErrors } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { tenantSchema, TenantFormData } from './schema';
 import {
   TextField,
   Button,
@@ -14,70 +13,56 @@ import {
   FormHelperText,
   Snackbar,
   Alert,
+  Box,
+  Typography,
 } from '@mui/material';
-// import ReCAPTCHA from "react-google-recaptcha";
+import { TenantFormData, tenantSchema } from './schema';
 import { SimpleCaptcha } from './SimpleCatpcha';
 
-export default function TenantRegistrationForm() {
-  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+interface TenantFormProps {
+  initialData?: TenantFormData;
+  onSubmit: (data: TenantFormData) => Promise<void>;
+  isEditMode: boolean;
+}
+
+export default function TenantForm({ initialData, onSubmit, isEditMode }: TenantFormProps) {
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<{ success: boolean; message: string } | null>(null);
 
   const { control, setValue, handleSubmit, formState: { errors } } = useForm<TenantFormData>({
-    // resolver: zodResolver(tenantSchema),
+    resolver: zodResolver(tenantSchema),
     mode: 'onBlur',
+    defaultValues: initialData || {},
   });
 
-  const onSubmit = async (data: TenantFormData): Promise<void> => {
-    if (Object.keys(errors).length > 0) {
-      const relevantErrors = Object.entries(errors).map(([field, error]) => ({
-        field,
-        message: error?.message,
-      }));
-      console.log('Form errors:', relevantErrors);
-    } else {
-      console.log(`No formErrors. Form data: ${JSON.stringify(data)}`);
-    }
-    console.log(`data: ${JSON.stringify(data)}`);
-    tenantSchema.parse(data);
-    if (isCaptchaValid) {
-      setIsSubmitting(true);
-      try {
-        const response = await fetch('/api/tenant', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          setSubmitResult({ success: true, message: 'Registration successful!' });
-        } else {
-          setSubmitResult({ success: false, message: result.error || 'Registration failed. Please try again.' });
-        }
-      } catch (error) {
-        setSubmitResult({ success: false, message: 'An error occurred. Please try again.' });
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else {
+  const handleFormSubmit = async (data: TenantFormData) => {
+    if (!isEditMode && !isCaptchaValid) {
       setSubmitResult({ success: false, message: 'Please complete the captcha.' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit(data);
+      setSubmitResult({ success: true, message: `Tenant ${isEditMode ? 'updated' : 'registered'} successfully!` });
+    } catch (error) {
+      setSubmitResult({ success: false, message: `An error occurred. Please try again.` });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6">Tenant Registration</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="col-span-1">
+    <Box sx={{ maxWidth: '800px', margin: 'auto', padding: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        {isEditMode ? 'Edit Tenant' : 'Tenant Registration'}
+      </Typography>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
           <Controller
             name="name"
             control={control}
-            defaultValue=""
             render={({ field }) => (
               <TextField
                 {...field}
@@ -88,12 +73,9 @@ export default function TenantRegistrationForm() {
               />
             )}
           />
-        </div>
-        <div className="col-span-1">
           <Controller
             name="email"
             control={control}
-            defaultValue=""
             render={({ field }) => (
               <TextField
                 {...field}
@@ -104,29 +86,25 @@ export default function TenantRegistrationForm() {
               />
             )}
           />
-        </div>
-        <div className="col-span-1">
-          <Controller
-            name="password"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Password"
-                type="password"
-                fullWidth
-                error={!!errors.password}
-                helperText={errors.password?.message}
-              />
-            )}
-          />
-        </div>
-        <div className="col-span-1">
+          {!isEditMode && (
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                />
+              )}
+            />
+          )}
           <Controller
             name="companyName"
             control={control}
-            defaultValue=""
             render={({ field }) => (
               <TextField
                 {...field}
@@ -137,28 +115,22 @@ export default function TenantRegistrationForm() {
               />
             )}
           />
-        </div>
-        <div className="col-span-1">
           <Controller
             name="uenNo"
             control={control}
-            defaultValue=""
             render={({ field }) => (
               <TextField
                 {...field}
-                label="UEN Number.Ex. T09000001B"
+                label="UEN Number (e.g., T09000001B)"
                 fullWidth
                 error={!!errors.uenNo}
                 helperText={errors.uenNo?.message}
               />
             )}
           />
-        </div>
-        <div className="col-span-1">
           <Controller
             name="entityType"
             control={control}
-            defaultValue="Pte Ltd"
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.entityType}>
                 <InputLabel>Entity Type</InputLabel>
@@ -171,12 +143,9 @@ export default function TenantRegistrationForm() {
               </FormControl>
             )}
           />
-        </div>
-        <div className="col-span-1">
           <Controller
             name="industry"
             control={control}
-            defaultValue=""
             render={({ field }) => (
               <TextField
                 {...field}
@@ -187,12 +156,9 @@ export default function TenantRegistrationForm() {
               />
             )}
           />
-        </div>
-        <div className="col-span-1">
           <Controller
             name="contactNo"
             control={control}
-            defaultValue=""
             render={({ field }) => (
               <TextField
                 {...field}
@@ -203,49 +169,40 @@ export default function TenantRegistrationForm() {
               />
             )}
           />
-        </div>
-        {/* <div className="col-span-1">
-          <ReCAPTCHA
-            sitekey="6LdZTKYqAAAAADDDaJRCMjS_SfrhqtIPQDnBkFPN"
-            onChange={(value: string) => {
-              setCaptchaValue(value);
-            }}
-          />
-          {errors.captcha && (
-            <p className="text-red-500 text-sm mt-1">{errors.captcha.message}</p>
-          )}
-        </div> */}
-        <div className="col-span-1 mt-4">
-          <SimpleCaptcha onValidate={(isValid) => {
-            setIsCaptchaValid(isValid);
-            setValue('captcha', isValid ? 'valid' : 'invalid');
-          }} />
-        </div>
-        <div className="col-span-1  mt-4">
           <Controller
             name="domain"
             control={control}
-            defaultValue=""
             render={({ field }) => (
               <TextField
                 {...field}
                 label="Domain"
+                fullWidth
                 error={!!errors.domain}
                 helperText={errors.domain?.message}
               />
             )}
           />
-        </div>
-        <div className="mt-4">
+        </Box>
+        {!isEditMode && (
+          <Box sx={{ marginTop: 2 }}>
+            <SimpleCaptcha
+              onValidate={(isValid) => {
+                setIsCaptchaValid(isValid);
+                setValue('captcha', isValid ? 'valid' : 'invalid');
+              }}
+            />
+          </Box>
+        )}
+        <Box sx={{ marginTop: 2 }}>
           <Button
             type="submit"
             variant="contained"
             color="primary"
-            disabled={!isCaptchaValid}
+            disabled={isSubmitting || (!isEditMode && !isCaptchaValid)}
           >
-            Register
+            {isEditMode ? 'Update' : 'Register'}
           </Button>
-        </div>
+        </Box>
       </form>
       <Snackbar
         open={!!submitResult}
@@ -261,7 +218,7 @@ export default function TenantRegistrationForm() {
           {submitResult?.message}
         </Alert>
       </Snackbar>
-    </div>
+    </Box>
   );
 }
 

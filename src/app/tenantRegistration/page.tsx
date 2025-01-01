@@ -1,6 +1,6 @@
-import TenantRegistrationForm from "@/components/tenantRegistration/TenantRegistrationForm";
+import AddTenantPage from "@/components/tenant/add/page";
 
 export default function RegisterPage() {
-  return <TenantRegistrationForm />;
+  return <AddTenantPage />;
 }
 
