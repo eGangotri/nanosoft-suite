@@ -38,6 +38,10 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const tenants = await nanosoftPrisma.tenant.findMany({
+    where: {
+      active: true,
+      deleted: false,
+    },
     orderBy: {
       createdAt: 'desc',
     },

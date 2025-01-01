@@ -1,14 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { Typography, Box, TextField, Button } from '@mui/material'
-import {
-  Add as AddIcon
-}
-  from '@mui/icons-material';
-
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { Typography, Box, TextField, Button, IconButton, Tooltip } from '@mui/material'
+import { 
+  Add as AddIcon, 
+  Business as BusinessIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Block as BlockIcon
+} from '@mui/icons-material'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Tenant } from '@/types/tenant'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -26,6 +30,30 @@ const columns: GridColDef[] = [
     width: 200,
     valueGetter: (params: { value: string }) => new Date(params.value).toLocaleString(),
   },
+  {
+    field: 'actions',
+    headerName: 'Actions',
+    width: 150,
+    renderCell: (params: GridRenderCellParams) => (
+      <Box>
+        <Tooltip title="Edit">
+          <IconButton onClick={(e) => handleEdit(e, params.row.id)}>
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete">
+          <IconButton onClick={(e) => handleDelete(e, params.row.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Deactivate">
+          <IconButton onClick={(e) => handleDeactivate(e, params.row.id)}>
+            <BlockIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    ),
+  },
 ]
 
 interface DashboardProps {
@@ -34,15 +62,16 @@ interface DashboardProps {
 
 export default function Dashboard({ initialTenants }: DashboardProps) {
   const [tenants, setTenants] = useState<Tenant[]>(initialTenants)
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('')
+  const router = useRouter()
 
-  let fileteredTenants = tenants.filter(tenants =>
-    tenants?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tenants?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tenants?.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tenants?.uenNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tenants?.contactNo?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredTenants = tenants.filter(tenant =>
+    tenant?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tenant?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tenant?.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tenant?.uenNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tenant?.contactNo?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   useEffect(() => {
     const eventSource = new EventSource('/api/tenant/stream')
@@ -68,10 +97,54 @@ export default function Dashboard({ initialTenants }: DashboardProps) {
     }
   }, [])
 
+  const handleRowClick = (params: GridRenderCellParams) => {
+    router.push(`/tenant/${params.id}`)
+  }
+
+  const handleEdit = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation()
+    router.push(`/tenant/edit/${id}`)
+  }
+
+  const handleDelete = async (e: React.MouseEvent, id: number) => {
+    e.stopPropagation()
+    if (window.confirm('Are you sure you want to delete this tenant?')) {
+      try {
+        const response = await fetch(`/api/tenant/${id}`, { method: 'DELETE' })
+        if (response.ok) {
+          setTenants(tenants.filter(tenant => tenant.id !== id))
+        } else {
+          console.error('Failed to delete tenant')
+        }
+      } catch (error) {
+        console.error('Error deleting tenant:', error)
+      }
+    }
+  }
+
+  const handleDeactivate = async (e: React.MouseEvent, id: number) => {
+    e.stopPropagation()
+    if (window.confirm('Are you sure you want to deactivate this tenant?')) {
+      try {
+        const response = await fetch(`/api/tenant/${id}/deactivate`, { method: 'PUT' })
+        if (response.ok) {
+          setTenants(tenants.map(tenant => 
+            tenant.id === id ? { ...tenant, active: false } : tenant
+          ))
+        } else {
+          console.error('Failed to deactivate tenant')
+        }
+      } catch (error) {
+        console.error('Error deactivating tenant:', error)
+      }
+    }
+  }
+
   return (
     <Box sx={{ height: 600, width: '100%' }}>
       <Box className="flex justify-between items-center my-6">
-        <Typography variant="h4" component="h1">
+        <Typography variant="h4" component="h1" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <BusinessIcon fontSize="large" />
           Tenant Dashboard
         </Typography>
       </Box>
@@ -82,15 +155,19 @@ export default function Dashboard({ initialTenants }: DashboardProps) {
           size="small"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ width: '300px' }}
         />
-        <Button variant="contained" startIcon={<AddIcon />}>
-          <Link href="/tenantRegistration" passHref>
-            Add New Tenant
-          </Link>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          component={Link}
+          href="/tenantRegistration"
+        >
+          Add New Tenant
         </Button>
       </Box>
       <DataGrid
-        rows={fileteredTenants}
+        rows={filteredTenants}
         columns={columns}
         initialState={{
           pagination: {
@@ -100,6 +177,13 @@ export default function Dashboard({ initialTenants }: DashboardProps) {
         pageSizeOptions={[10, 25, 50]}
         checkboxSelection
         disableRowSelectionOnClick
+        onRowClick={handleRowClick}
+        sx={{
+          '& .MuiDataGrid-row:hover': {
+            cursor: 'pointer',
+            backgroundColor: 'action.hover',
+          },
+        }}
       />
     </Box>
   )

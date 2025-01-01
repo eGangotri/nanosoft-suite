@@ -14,6 +14,8 @@ declare global {
     domain: string
     createdAt: string
     updatedAt: string
+    active: boolean;
+    deleted: boolean;
   }
 
   interface Employee {

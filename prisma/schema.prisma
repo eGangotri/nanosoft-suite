@@ -18,10 +18,15 @@ model User {
   resetTokenExpiry DateTime?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
+  tenantId         Int
   Account          Account[]
   Session          Session[]
+  Tenant           Tenant        @relation(fields: [tenantId], references: [id])
   UserEmployee     UserEmployee?
   UserRole         UserRole[]
+
+  @@unique([email, tenantId])
+  @@index([tenantId])
 }
 
 model Account {
@@ -77,7 +82,12 @@ model Client {
   nextFollowUp             DateTime?                  @db.Date
   status                   String?                    @db.VarChar(20)
   notes                    String?
+  tenantId                 Int
+  Tenant                   Tenant                     @relation(fields: [tenantId], references: [id])
   EmployeeHrDetailsClients EmployeeHrDetailsClients[]
+
+  @@unique([companyName, tenantId])
+  @@index([tenantId])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -112,6 +122,8 @@ model Employee {
   localAddressLine3        String?
   levelOrUnitNo            String?
   empId                    String?
+  tenantId                 Int
+  Tenant                   Tenant                     @relation(fields: [tenantId], references: [id])
   EmployeeBankDetails      EmployeeBankDetails?
   EmployeeEmergencyContact EmployeeEmergencyContact[]
   EmployeeHrDetails        EmployeeHrDetails?
@@ -119,6 +131,10 @@ model Employee {
   EmployeeWorkHistory      EmployeeWorkHistory[]
   Leave                    Leave[]
   UserEmployee             UserEmployee?
+
+  @@unique([email, tenantId])
+  @@unique([nricOrFinNo, tenantId])
+  @@index([tenantId])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -129,6 +145,8 @@ model EmployeeBankDetails {
   employeeBankingName String   @db.VarChar(255)
   accountNumber       String   @db.VarChar(50)
   accountType         String   @db.VarChar(10)
+  tenantId            Int
+  Tenant              Tenant   @relation(fields: [tenantId], references: [id])
   Employee            Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "employee_bank_details_employee_id_fkey")
 }
 
@@ -140,6 +158,8 @@ model EmployeeEmergencyContact {
   relationship String   @db.VarChar(10)
   mobile       String   @db.VarChar(15)
   address      String
+  tenantId     Int
+  Tenant       Tenant   @relation(fields: [tenantId], references: [id])
   Employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "employee_emergency_contact_employee_id_fkey")
 }
 
@@ -161,6 +181,8 @@ model EmployeeHrDetails {
   salary                   Decimal                    @default(0) @db.Decimal(10, 2)
   workpermitNumber         String?                    @db.VarChar(10)
   malaysiaIC               String?                    @db.VarChar(12)
+  tenantId                 Int
+  Tenant                   Tenant                     @relation(fields: [tenantId], references: [id])
   Employee                 Employee                   @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "employee_hr_details_employee_id_fkey")
   EmployeeHrDetailsClients EmployeeHrDetailsClients[]
 }
@@ -173,6 +195,8 @@ model EmployeeLeaveBalance {
   totalEntitlement Int
   usedDays         Int?      @default(0)
   remainingDays    Int?      @default(dbgenerated("(\"totalEntitlement\" - \"usedDays\")"))
+  tenantId         Int
+  Tenant           Tenant    @relation(fields: [tenantId], references: [id])
   Employee         Employee  @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "employee_leave_balances_employee_id_fkey")
   LeaveType        LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "employee_leave_balances_leave_type_id_fkey")
 
@@ -189,6 +213,8 @@ model EmployeeWorkHistory {
   department       String?   @db.VarChar(255)
   responsibilities String?
   technologiesUsed String?
+  tenantId         Int
+  Tenant           Tenant    @relation(fields: [tenantId], references: [id])
   Employee         Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "employee_work_history_employee_id_fkey")
 }
 
@@ -199,8 +225,13 @@ model LeaveType {
   color                String?
   defaultDays          Int
   leaveCode            String?                @db.VarChar(5)
+  tenantId             Int
   EmployeeLeaveBalance EmployeeLeaveBalance[]
   Leave                Leave[]
+  Tenant               Tenant                 @relation(fields: [tenantId], references: [id])
+
+  @@unique([name, tenantId])
+  @@index([tenantId])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -225,15 +256,22 @@ model Leave {
   leaveTypeId Int
   status      String    @db.VarChar(255)
   createdAt   DateTime? @default(now()) @db.Timestamp(6)
+  tenantId    Int
   Employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   LeaveType   LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Tenant      Tenant    @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId], map: "Leave_tenantId_idx1")
 }
 
 model UserEmployee {
   id         Int      @id @default(autoincrement())
   userId     String   @unique
   employeeId Int      @unique
+  tenantId   Int
   Employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  Tenant     Tenant   @relation(fields: [tenantId], references: [id])
   User       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([userId, employeeId])
@@ -242,28 +280,44 @@ model UserEmployee {
 }
 
 model UserRole {
-  user_id String
-  role_id Int
-  Role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "User_Role_role_id_fkey")
-  User    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "User_Role_user_id_fkey")
+  user_id  String
+  role_id  Int
+  tenantId Int
+  Tenant   Tenant @relation(fields: [tenantId], references: [id])
+  Role     Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "User_Role_role_id_fkey")
+  User     User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "User_Role_user_id_fkey")
 
   @@id([user_id, role_id], map: "User_Role_pkey")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model Tenant {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(255)
-  email       String   @db.VarChar(255)
-  password    String   @db.VarChar(255)
-  companyName String   @db.VarChar(255)
-  uenNo       String   @db.VarChar(255)
-  entityType  String   @db.VarChar(255)
-  industry    String   @db.VarChar(255)
-  contactNo   String   @db.VarChar(255)
-  domain      String   @unique @db.VarChar(255)
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @db.Timestamptz(6)
+  id                       Int                        @id @default(autoincrement())
+  name                     String                     @db.VarChar(255)
+  email                    String                     @db.VarChar(255)
+  password                 String                     @db.VarChar(255)
+  companyName              String                     @db.VarChar(255)
+  uenNo                    String                     @db.VarChar(255)
+  entityType               String                     @db.VarChar(255)
+  industry                 String                     @db.VarChar(255)
+  contactNo                String                     @db.VarChar(255)
+  domain                   String                     @unique @db.VarChar(255)
+  createdAt                DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt                DateTime                   @db.Timestamptz(6)
+  active                   Boolean                    @default(true)
+  deleted                  Boolean                    @default(false)
+  Client                   Client[]
+  Employee                 Employee[]
+  EmployeeBankDetails      EmployeeBankDetails[]
+  EmployeeEmergencyContact EmployeeEmergencyContact[]
+  EmployeeHrDetails        EmployeeHrDetails[]
+  EmployeeLeaveBalance     EmployeeLeaveBalance[]
+  EmployeeWorkHistory      EmployeeWorkHistory[]
+  Leave                    Leave[]
+  LeaveType                LeaveType[]
+  User                     User[]
+  UserEmployee             UserEmployee[]
+  UserRole                 UserRole[]
 }
 
 enum UserRoleType {
