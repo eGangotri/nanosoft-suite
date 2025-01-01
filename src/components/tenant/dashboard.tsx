@@ -134,7 +134,7 @@ const columns: GridColDef[] = [
   }
 
   return (
-    <Box sx={{ height: 600, width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       <Box className="flex justify-between items-center my-6">
         <Typography variant="h4" component="h1" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <BusinessIcon fontSize="large" />
