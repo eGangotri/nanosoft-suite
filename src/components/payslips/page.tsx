@@ -11,7 +11,6 @@ import {
 import { 
   DataGrid, 
   GridColDef, 
-  GridValueGetterParams,
   GridRenderCellParams
 } from '@mui/x-data-grid';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -65,11 +64,22 @@ const PayslipDashboard: React.FC = () => {
       const response = await fetch(`/api/payslips/${payslipId}/download`);
       if (response.ok) {
         const blob = await response.blob();
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let filename = `payslip-${payslipId}.pdf`;
+        
+        if (contentDisposition) {
+          const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+          console.log('Filename match:', filenameMatch);
+          if (filenameMatch && filenameMatch[1]) {
+            filename = filenameMatch[1];
+          }
+        }
+
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = `payslip-${payslipId}.pdf`;
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -81,22 +91,21 @@ const PayslipDashboard: React.FC = () => {
       console.error('Error downloading payslip:', error);
     }
   };
-
   const columns: GridColDef[] = [
     { 
       field: 'payPeriod', 
       headerName: 'Pay Period', 
-      width: 200,
+      width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <Typography>
-          {new Date(params.row.payPeriod).toLocaleDateString('en-SG', { year: 'numeric', month: 'long' })}
+          {new Date(params.row.payPeriod).toLocaleDateString('en-SG', { year: 'numeric', month: 'short' })}
         </Typography>
       )
     },
     { 
       field: 'basicSalary', 
       headerName: 'Basic Salary', 
-      width: 130, 
+      width: 100, 
       renderCell: (params: GridRenderCellParams) => (
         <Typography>{formatCurrency(params.row.basicSalary)}</Typography>
       )
@@ -104,7 +113,7 @@ const PayslipDashboard: React.FC = () => {
     {
       field: 'overtime',
       headerName: 'Overtime',
-      width: 130,
+      width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <Typography>{formatCurrency(params.row.overtime)}</Typography>
       )
@@ -112,7 +121,7 @@ const PayslipDashboard: React.FC = () => {
     { 
       field: 'allowances', 
       headerName: 'Allowances', 
-      width: 130, 
+      width: 100, 
       renderCell: (params: GridRenderCellParams) => (
         <Typography>
           {formatCurrency(Object.values(params.row.allowances as Record<string, number>).reduce((a, b) => a + b, 0))}
@@ -122,7 +131,7 @@ const PayslipDashboard: React.FC = () => {
     { 
       field: 'deductions', 
       headerName: 'Deductions', 
-      width: 130, 
+      width: 100, 
       renderCell: (params: GridRenderCellParams) => (
         <Typography>
           {formatCurrency(Object.values(params.row.deductions as Record<string, number>).reduce((a, b) => a + b, 0))}
@@ -148,7 +157,7 @@ const PayslipDashboard: React.FC = () => {
     {
       field: 'grossSalary',
       headerName: 'Gross Salary',
-      width: 130,
+      width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <Typography>{formatCurrency(params.row.grossSalary)}</Typography>
       )
@@ -156,7 +165,7 @@ const PayslipDashboard: React.FC = () => {
     {
       field: 'netSalary',
       headerName: 'Net Salary',
-      width: 130,
+      width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <Typography>{formatCurrency(params.row.netSalary)}</Typography>
       )

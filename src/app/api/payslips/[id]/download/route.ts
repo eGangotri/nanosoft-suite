@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import jsPDF from 'jspdf';
-import { formatedEmployeeNameWithMidInitials } from '@/components/employee/EmployeeUtils';
+import { formatedEmployeeName } from '@/components/employee/EmployeeUtils';
 
 export async function GET(
   request: Request,
@@ -19,8 +19,9 @@ export async function GET(
       return NextResponse.json({ error: 'Payslip not found' }, { status: 404 });
     }
 
-    const empName = formatedEmployeeNameWithMidInitials(payslip.Employee)
+    const empName = formatedEmployeeName(payslip.Employee);
     const payPeriod = new Date(payslip.payPeriod).toLocaleDateString('en-SG', { year: 'numeric', month: 'long' });
+
     // Create a new PDF document
     const doc = new jsPDF();
 
@@ -45,12 +46,13 @@ export async function GET(
     // Generate the PDF as a Uint8Array
     const pdfData = doc.output('arraybuffer');
 
+    const pdfFileName = `payslip-${empName.trim().replace(/[^a-z0-9\s\.]/gi, '-')}-${payPeriod.trim().replace(/[^a-z0-9\s\.]/gi, '-')}.pdf`;
     // Return the PDF as a downloadable file
     return new NextResponse(pdfData, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="payslip-${empName}-${payPeriod}.pdf"`,
+        'Content-Disposition': `attachment; filename=${pdfFileName}`,
       },
     });
 
