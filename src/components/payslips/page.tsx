@@ -68,6 +68,7 @@ const PayslipDashboard: React.FC = () => {
 
   const handleDownload = async (payslipId: number) => {
     try {
+      console.log('Downloading payslip:', payslipId);
       const response = await fetch(`/api/payslips/${payslipId}/download`);
       if (response.ok) {
         const blob = await response.blob();
@@ -79,6 +80,7 @@ const PayslipDashboard: React.FC = () => {
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
       } else {
         console.error('Failed to download payslip');
       }
@@ -89,7 +91,7 @@ const PayslipDashboard: React.FC = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box sx={{ maxWidth: 800, margin: 'auto', padding: 2 }}>
+      <Box sx={{  padding: 2 }}>
         <Typography variant="h4" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <ReceiptIcon fontSize="large" />
           Payslip Dashboard
