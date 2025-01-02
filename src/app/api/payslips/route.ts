@@ -3,28 +3,34 @@ import prisma from '@/lib/prisma';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const year = parseInt(searchParams.get('year') || '');
-  const month = parseInt(searchParams.get('month') || '');
-
-  if (isNaN(year) || isNaN(month)) {
-    return NextResponse.json({ error: 'Invalid year or month' }, { status: 400 });
-  }
-
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
+  const year = searchParams.get('year');
+  const month = searchParams.get('month');
 
   try {
-    const payslips = await prisma.payslip.findMany({
-      where: {
-        payPeriod: {
-          gte: startDate,
-          lte: endDate,
+    let payslips;
+
+    if (year && month) {
+      const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+      const endDate = new Date(parseInt(year), parseInt(month), 0);
+
+      payslips = await prisma.payslip.findMany({
+        where: {
+          payPeriod: {
+            gte: startDate,
+            lte: endDate,
+          },
         },
-      },
-      orderBy: {
-        payPeriod: 'desc',
-      },
-    });
+        orderBy: {
+          payPeriod: 'desc',
+        },
+      });
+    } else {
+      payslips = await prisma.payslip.findMany({
+        orderBy: {
+          payPeriod: 'desc',
+        },
+      });
+    }
 
     return NextResponse.json(payslips);
   } catch (error) {
