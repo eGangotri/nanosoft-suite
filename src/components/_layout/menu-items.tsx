@@ -75,6 +75,7 @@ export const menuItemsForEmployee: MenuItem[] = [
   },
   { text: 'Apply-Leave', icon: <PeopleIcon />, route: '/leaves/' },
   { text: 'Payslip', icon: <ReceiptIcon />, route: '/payslips/' },
+  { text: 'Loans', icon: <ReceiptIcon />, route: '/loans/manage' },
   
 
 ]

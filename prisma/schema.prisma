@@ -130,6 +130,7 @@ model Employee {
   EmployeeLeaveBalance     EmployeeLeaveBalance[]
   EmployeeWorkHistory      EmployeeWorkHistory[]
   Leave                    Leave[]
+  LoanApplication          LoanApplication[]
   Payslip                  Payslip[]
   TaxInformation           TaxInformation[]
   UserEmployee             UserEmployee?
@@ -317,6 +318,7 @@ model Tenant {
   EmployeeWorkHistory      EmployeeWorkHistory[]
   Leave                    Leave[]
   LeaveType                LeaveType[]
+  LoanApplication          LoanApplication[]
   User                     User[]
   UserEmployee             UserEmployee[]
   UserRole                 UserRole[]
@@ -354,10 +356,32 @@ model TaxInformation {
   Employee      Employee @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
+model LoanApplication {
+  id         Int        @id @default(autoincrement())
+  employeeId Int
+  amount     Float
+  reason     String
+  status     LoanStatus @default(PENDING)
+  appliedAt  DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime   @default(now()) @db.Timestamp(6)
+  approvedBy String?
+  tenantId   Int
+  month      Decimal    @db.Decimal
+  year       Decimal    @db.Decimal
+  Employee   Employee   @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "loanapplication_employeeid_fkey")
+  Tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "loanapplication_tenantid_fkey")
+}
+
 enum UserRoleType {
   EMPLOYEE
   MANAGER
   SUPERVISOR
   ADMIN
   SUPERADMIN
+}
+
+enum LoanStatus {
+  PENDING
+  APPROVED
+  DECLINED
 }
