@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import { Button, Typography, Box } from '@mui/material'
 import { useRouter } from 'next/navigation'
-
+import Link from 'next/link'
+import {
+    Add as AddIcon
+}
+    from '@mui/icons-material'
 interface LoanApplication {
     id: number
     employeeId: number
@@ -59,7 +63,8 @@ export default function LoanApplicationList() {
 
     const columns: GridColDef[] = [
         { field: 'employeeName', headerName: 'Employee', width: 120 },
-        { field: 'amount', headerName: 'Amount', width: 150, 
+        {
+            field: 'amount', headerName: 'Amount', width: 150,
             renderCell: (params: GridRenderCellParams) => {
                 return (<Typography>{params.row.amount.toFixed(2)}</Typography>);
             }
@@ -120,6 +125,13 @@ export default function LoanApplicationList() {
             <Typography variant="h4" gutterBottom>
                 Loan Applications
             </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2 }}>
+                <Button variant="contained" startIcon={<AddIcon />}>
+                    <Link href="/loans/apply" passHref>
+                        Apply for New Loan
+                    </Link>
+                </Button>
+            </Box>
             <DataGrid
                 rows={applications}
                 columns={columns}
