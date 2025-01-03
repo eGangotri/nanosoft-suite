@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const validatedData = loanApplicationSchema.parse(body)
 
     const user = await prisma.user.findUnique({
-      where: { Email: session.user.email },
+      where: { email: `${session.user.email}` },
       include: { UserEmployee: true },
     })
 

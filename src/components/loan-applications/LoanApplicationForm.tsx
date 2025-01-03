@@ -25,7 +25,7 @@ export default function LoanApplicationForm({ id }: LoanApplicationFormProps) {
   })
   const router = useRouter()
 
-  const { control, handleSubmit, formState: { errors }, reset } = useForm<LoanApplicationFormData>({
+  const { control,watch, setValue, handleSubmit, formState: { errors }, reset } = useForm<LoanApplicationFormData>({
     resolver: zodResolver(loanApplicationSchema),
     defaultValues: { amount: 0, reason: '', month: new Date().getMonth() + 1, year: new Date().getFullYear() },
   })
@@ -124,22 +124,27 @@ export default function LoanApplicationForm({ id }: LoanApplicationFormProps) {
               />
             )}
           />
-          <Controller
+            <Controller
             name="month"
             control={control}
             render={({ field }) => (
               <DatePicker
                 label="Loan Month"
                 views={['month', 'year']}
-                openTo="month"
-                value={new Date(field.value, control._getWatch('year') - 1)}
+                value={new Date(watch('year'), field.value - 1)}
                 onChange={(newValue) => {
                   if (newValue) {
-                    field.onChange(newValue.getMonth() + 1)
-                    control.setValue('year', newValue.getFullYear())
+                    field.onChange(newValue.getMonth() + 1);
+                    setValue('year', newValue.getFullYear());
                   }
                 }}
-                renderInput={(params) => <TextField {...params} error={!!errors.month} helperText={errors.month?.message} />}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: !!errors.month,
+                    helperText: errors.month?.message,
+                  },
+                }}
               />
             )}
           />

@@ -48,33 +48,33 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-// export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-//   const session = await getServerSession()
-//   if (!session || !session.user) {
-//     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-//   }
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  const session = await getServerSession()
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
-//   const { status } = await req.json()
+  const { status } = await req.json()
 
-//   try {
-//     const user = await prisma.user.findUnique({
-//       where: { Email: session.user.email },
-//       include: { UserRole: true },
-//     })
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: `${session.user.email}` },
+      include: { UserRole: true },
+    })
 
-//     if (!user || !user.UserRole.some(role => ['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(role.Role.name))) {
-//       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-//     }
+    // if (!user || !user.UserRole.some(role => ['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(role.Role.name))) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    // }
 
-//     const updatedApplication = await prisma.loanApplication.update({
-//       where: { id: parseInt(params.id) },
-//       data: { status, approvedBy: user.id },
-//     })
+    const updatedApplication = await prisma.loanApplication.update({
+      where: { id: parseInt(params.id) },
+      data: { status, approvedBy: user?.id },
+    })
 
-//     return NextResponse.json(updatedApplication)
-//   } catch (error) {
-//     console.error('Failed to update loan application:', error)
-//     return NextResponse.json({ error: 'Failed to update loan application' }, { status: 500 })
-//   }
-// }
+    return NextResponse.json(updatedApplication)
+  } catch (error) {
+    console.error('Failed to update loan application:', error)
+    return NextResponse.json({ error: 'Failed to update loan application' }, { status: 500 })
+  }
+}
 
