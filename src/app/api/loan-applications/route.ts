@@ -45,16 +45,16 @@ export async function GET(req: Request) {
 
   try {
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: { UserRole: true },
+      where: { email: `${session.user.email}` },
+      include: { UserRole: true, UserEmployee: true },
     })
 
-    if (!user || !user.UserRole.some(role => ['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(role.Role.name))) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-    }
+    // if (!user || !user.UserRole.some(role => ['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(role.Role.name))) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    // }
 
     const loanApplications = await prisma.loanApplication.findMany({
-      where: { tenantId: user.tenantId },
+      where: { tenantId: user?.tenantId, employeeId: user?.UserEmployee?.employeeId },
       include: { Employee: true },
     })
 

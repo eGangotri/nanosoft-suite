@@ -14,6 +14,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       where: { id: parseInt(params.id) },
     })
 
+    console.log('loanApplication:', JSON.stringify(loanApplication));
     if (!loanApplication) {
       return NextResponse.json({ error: 'Loan application not found' }, { status: 404 })
     }

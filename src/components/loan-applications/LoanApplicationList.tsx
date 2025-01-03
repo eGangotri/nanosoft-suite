@@ -58,13 +58,13 @@ export default function LoanApplicationList() {
     }
 
     const columns: GridColDef[] = [
-        { field: 'employeeName', headerName: 'Employee', width: 200 },
+        { field: 'employeeName', headerName: 'Employee', width: 120 },
         { field: 'amount', headerName: 'Amount', width: 150, 
             renderCell: (params: GridRenderCellParams) => {
-                return (<Typography>{params.row.toFixed(2)}</Typography>);
+                return (<Typography>{params.row.amount.toFixed(2)}</Typography>);
             }
         },
-        { field: 'reason', headerName: 'Reason', width: 300 },
+        { field: 'reason', headerName: 'Reason', width: 200 },
         { field: 'status', headerName: 'Status', width: 120 },
         {
             field: 'loanPeriod',
@@ -79,16 +79,16 @@ export default function LoanApplicationList() {
         {
             field: 'actions',
             headerName: 'Actions',
-            width: 200,
+            width: 250,
             renderCell: (params: GridRenderCellParams) => (
-                <Box>
+                <Box className="flex gap-2 p-2">
                     <Button
                         variant="contained"
                         color="primary"
                         size="small"
                         onClick={() => router.push(`/loans/edit/${params.row.id}`)}
                     >
-                        Edit
+                        Edit {params.row.id}
                     </Button>
                     {params.row.status === 'PENDING' && (
                         <>

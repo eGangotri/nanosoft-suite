@@ -1,23 +1,44 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { TextField, Button, Box } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { useRouter } from 'next/navigation'
 import { LoanApplicationFormData, loanApplicationSchema } from './LoanApplicationSchema'
 
-interface LoanApplicationFormProps {
-  initialData: LoanApplicationFormData
-  onSubmit: (data: LoanApplicationFormData) => void
-  isLoading: boolean
-}
+export default function LoanApplicationForm() {
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
-export default function LoanApplicationForm({ initialData, onSubmit, isLoading }: LoanApplicationFormProps) {
   const { control, handleSubmit, formState: { errors } } = useForm<LoanApplicationFormData>({
     resolver: zodResolver(loanApplicationSchema),
-    defaultValues: initialData || { amount: 0, reason: '', month: new Date().getMonth() + 1, year: new Date().getFullYear() },
+    defaultValues: { amount: 0, reason: '', month: new Date().getMonth() + 1, year: new Date().getFullYear() },
   })
+
+  const onSubmit = async (data: LoanApplicationFormData) => {
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/loan-applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (response.ok) {
+        router.push('/loans/manage')
+      } else {
+        throw new Error('Failed to submit loan application')
+      }
+    } catch (error) {
+      console.error('Error submitting loan application:', error)
+      // You might want to add some error handling here, e.g., showing an error message to the user
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -66,7 +87,7 @@ export default function LoanApplicationForm({ initialData, onSubmit, isLoading }
                     field.onChange(newValue.getFullYear())
                   }
                 }}
-                renderInput={(params:any) => <TextField {...params} error={!!errors.month} helperText={errors.month?.message} />}
+                renderInput={(params) => <TextField {...params} error={!!errors.month} helperText={errors.month?.message} />}
               />
             )}
           />

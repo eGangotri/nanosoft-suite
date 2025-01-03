@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material'
 import { NANOSOFT_ROLES } from '@/globalConstants'
 import { isAdminOrSuperAdmin } from '@/utils/utils'
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 
 export interface MenuItem {
   text: string
@@ -75,9 +76,16 @@ export const menuItemsForEmployee: MenuItem[] = [
   },
   { text: 'Apply-Leave', icon: <PeopleIcon />, route: '/leaves/' },
   { text: 'Payslip', icon: <ReceiptIcon />, route: '/payslips/' },
-  { text: 'Loans', icon: <ReceiptIcon />, route: '/loans/manage' },
-  
-
+  ,
+  {
+    text: 'Loans',
+    icon: <AccountBalanceIcon />,
+    subItems: [
+      { text: 'Loans Mgmt', icon: <AccountBalanceIcon />, route: '/loans/manage' },
+      { text: 'Loans List', icon: <LMSIcon />, route: '/products/lms' },
+      { text: 'Reports and Analytics', icon: <ReportsIcon />, route: '/products/reports' },
+    ]
+  },
 ]
 
 export const getMenuItemsForRole = (role: string): MenuItem[] => {
