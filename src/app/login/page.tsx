@@ -80,15 +80,28 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            disabled={isLoading}
-          >
-            {isLoading ? <CircularProgress size={24} /> : 'Sign In'}
-          </Button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
+            >
+              {isLoading ? <CircularProgress size={24} /> : 'Sign In'}
+            </Button>
+            <Button
+              type="reset"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
+              onClick={() => {setEmail(''); setPassword('')}}
+            >
+              Reset
+            </Button>
+          </div>
           <Box sx={{ mt: 2 }}>
             <Link href="/register">
               {"Don't have an account? Sign Up"}
