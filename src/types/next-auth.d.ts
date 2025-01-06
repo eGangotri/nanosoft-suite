@@ -9,21 +9,24 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string
-      role: UserRole
+      role: string
       isWithinGeoFence: boolean
+      roleId: number
 
     } & DefaultSession["user"]
   }
 
   interface User {
-    role: UserRole
+    role: string
     isWithinGeoFence: boolean
+    roleId: number
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
-    role?: UserRole
+    role?: string
     isWithinGeoFence?: boolean
+    roleId?: number
   }
 }

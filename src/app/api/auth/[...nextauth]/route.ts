@@ -7,18 +7,22 @@ import { Adapter } from "next-auth/adapters"
 import { JWT } from "next-auth/jwt"
 import { isWithinGeoFence } from "@/utils/geofence"
 import nanosoftPrisma from "@/lib/prisma"
+import { getEmployeeByUserId } from "@/services/UserService"
+import { NANOSOFT_ROLES } from "@/globalConstants"
 
 
 interface ExtendedSession extends DefaultSession {
   user: {
     id: string;
-    role: UserRole;
+    role: string;
+    roleId?: number;
     isWithinGeoFence: boolean;
   } & DefaultSession["user"]
 }
 
 interface ExtendedToken extends JWT {
-  role?: UserRole;
+  role?: string;
+  roleId?: number;
   isWithinGeoFence?: boolean;
 }
 
@@ -62,19 +66,32 @@ const authOptions: AuthOptions = {
           return null
         }
 
+
         // Get the user's location from the request headers
         const latitude = parseFloat(req?.headers?.['x-vercel-ip-latitude'] as string || '0')
         const longitude = parseFloat(req?.headers?.['x-vercel-ip-longitude'] as string || '0')
 
-        const userRole = user.UserRole[0]?.Role?.name || "Employee"; // Default to 'Employee' if no role is found
+        const roleName = user.UserRole[0]?.Role?.name || "ERROR"; // Default to 'Employee' if no role is found
+        const roleId = user.UserRole[0]?.Role?.id || 0;
 
-        return {
+
+        const authValues = {
           id: user.id,
           email: user.email,
           name: user.name,
           isWithinGeoFence: isWithinGeoFence(latitude, longitude),
-          role: userRole
+          role: roleName,
+          roleId: roleId,
         }
+
+        
+        // if([NANOSOFT_ROLES.EMPLOYEE,NANOSOFT_ROLES.SUPERVISOR,NANOSOFT_ROLES.MGR_TIER_ONE,NANOSOFT_ROLES.MGR_TIER_TWO].includes(roleName)) {
+        //   const _emp = await getEmployeeByUserId(user.id);
+        
+        // }
+
+        console.log(`authValues: ${JSON.stringify(authValues)}`)
+        return authValues
       }
     })
   ],
@@ -83,14 +100,16 @@ const authOptions: AuthOptions = {
       if (user) {
         token.role = user.role;
         token.isWithinGeoFence = user.isWithinGeoFence;
+        token.roleId = user.roleId;
       }
       return token as ExtendedToken;
     },
     async session({ session, token }) {
       if (session?.user) {
         session.user.id = token.sub as string;
-        session.user.role = token.role as UserRole;
         session.user.isWithinGeoFence = token.isWithinGeoFence as boolean;
+        session.user.role = token.role as string;
+        session.user.roleId = token.roleId as number;
       }
       return session as ExtendedSession;
     }
