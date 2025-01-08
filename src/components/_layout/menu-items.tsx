@@ -18,9 +18,11 @@ import {
   BarChart as ReportsIcon,
   People as PeopleIcon,
   FactCheck as FactCheckIcon,
-   Description as DescriptionIcon,
-   Receipt as ReceiptIcon 
+  Description as DescriptionIcon,
+  Receipt as ReceiptIcon
 } from '@mui/icons-material'
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+
 import { NANOSOFT_ROLES } from '@/globalConstants'
 import { isAdminOrSuperAdmin } from '@/utils/utils'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -46,6 +48,15 @@ export const nanosoftMenuItems: MenuItem[] = [
     text: 'Tenant-Dashboard',
     icon: <BusinessIcon />,
     route: '/tenant/dashboard'
+  },
+  {
+    text: 'Loans',
+    icon: <AccountBalanceIcon />,
+    subItems: [
+      { text: 'Loans Mgmt', icon: <AccountBalanceIcon />, route: '/loans/manage' },
+      { text: 'Loans List', icon: <LMSIcon />, route: '/products/lms' },
+      { text: 'Reports and Analytics', icon: <ReportsIcon />, route: '/products/reports' },
+    ]
   },
   {
     text: 'Products',
@@ -76,16 +87,21 @@ export const menuItemsForEmployee: MenuItem[] = [
   },
   { text: 'Apply-Leave', icon: <PeopleIcon />, route: '/leaves/' },
   { text: 'Payslip', icon: <ReceiptIcon />, route: '/payslips/' },
-  ,
   {
     text: 'Loans',
     icon: <AccountBalanceIcon />,
     subItems: [
       { text: 'Loans Mgmt', icon: <AccountBalanceIcon />, route: '/loans/manage' },
       { text: 'Loans List', icon: <LMSIcon />, route: '/products/lms' },
-      { text: 'Reports and Analytics', icon: <ReportsIcon />, route: '/products/reports' },
+      { text: 'Reports and Analytics', icon: <ReportsIcon />, route: '/products/reports' }
     ]
   },
+   {
+    text: 'Claims',
+    icon: <ReceiptLongIcon />,
+    route: '/claims'
+  }
+
 ]
 
 export const getMenuItemsForRole = (role: string): MenuItem[] => {

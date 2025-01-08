@@ -11,15 +11,16 @@ declare module "next-auth" {
       id: string
       role: string
       isWithinGeoFence: boolean
-      roleId: number
-
+      roleId?: number
+      tenantId?: number;
     } & DefaultSession["user"]
   }
 
   interface User {
     role: string
     isWithinGeoFence: boolean
-    roleId: number
+    roleId?: number
+    tenantId?: number;
   }
 }
 
@@ -28,5 +29,6 @@ declare module "next-auth/jwt" {
     role?: string
     isWithinGeoFence?: boolean
     roleId?: number
+    tenantId?: number;
   }
 }

@@ -19,3 +19,4 @@ export const getUserByEmployeeId = async (employeeId: number):
         return data
     }
 }
+

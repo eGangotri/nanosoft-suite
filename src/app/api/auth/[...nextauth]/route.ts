@@ -17,6 +17,7 @@ interface ExtendedSession extends DefaultSession {
     role: string;
     roleId?: number;
     isWithinGeoFence: boolean;
+    tenantId?: number;
   } & DefaultSession["user"]
 }
 
@@ -24,6 +25,7 @@ interface ExtendedToken extends JWT {
   role?: string;
   roleId?: number;
   isWithinGeoFence?: boolean;
+  tenantId?: number;
 }
 
 const authOptions: AuthOptions = {
@@ -74,22 +76,16 @@ const authOptions: AuthOptions = {
         const roleName = user.UserRole[0]?.Role?.name || "ERROR"; // Default to 'Employee' if no role is found
         const roleId = user.UserRole[0]?.Role?.id || 0;
 
-
+        const tenantId = user.tenantId;
         const authValues = {
           id: user.id,
           email: user.email,
           name: user.name,
           isWithinGeoFence: isWithinGeoFence(latitude, longitude),
           role: roleName,
-          roleId: roleId,
+          roleId,
+          tenantId
         }
-
-        
-        // if([NANOSOFT_ROLES.EMPLOYEE,NANOSOFT_ROLES.SUPERVISOR,NANOSOFT_ROLES.MGR_TIER_ONE,NANOSOFT_ROLES.MGR_TIER_TWO].includes(roleName)) {
-        //   const _emp = await getEmployeeByUserId(user.id);
-        
-        // }
-
         console.log(`authValues: ${JSON.stringify(authValues)}`)
         return authValues
       }
@@ -101,6 +97,7 @@ const authOptions: AuthOptions = {
         token.role = user.role;
         token.isWithinGeoFence = user.isWithinGeoFence;
         token.roleId = user.roleId;
+        token.tenantId = user.tenantId;
       }
       return token as ExtendedToken;
     },
@@ -110,6 +107,7 @@ const authOptions: AuthOptions = {
         session.user.isWithinGeoFence = token.isWithinGeoFence as boolean;
         session.user.role = token.role as string;
         session.user.roleId = token.roleId as number;
+        session.user.tenantId = token.tenantId as number;
       }
       return session as ExtendedSession;
     }

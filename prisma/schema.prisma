@@ -123,6 +123,7 @@ model Employee {
   levelOrUnitNo            String?
   empId                    String?
   tenantId                 Int
+  Claim                    Claim[]
   Tenant                   Tenant                     @relation(fields: [tenantId], references: [id])
   EmployeeBankDetails      EmployeeBankDetails?
   EmployeeEmergencyContact EmployeeEmergencyContact[]
@@ -309,6 +310,7 @@ model Tenant {
   updatedAt                DateTime                   @db.Timestamptz(6)
   active                   Boolean                    @default(true)
   deleted                  Boolean                    @default(false)
+  Claim                    Claim[]
   Client                   Client[]
   Employee                 Employee[]
   EmployeeBankDetails      EmployeeBankDetails[]
@@ -372,6 +374,23 @@ model LoanApplication {
   Tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "loanapplication_tenantid_fkey")
 }
 
+model Claim {
+  id          Int         @id @default(autoincrement())
+  employeeId  Int
+  amount      Decimal     @db.Decimal(10, 2)
+  description String
+  date        DateTime    @db.Timestamp(6)
+  status      ClaimStatus @default(PENDING)
+  createdAt   DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @db.Timestamp(6)
+  tenantId    Int
+  Employee    Employee    @relation(fields: [employeeId], references: [id])
+  Tenant      Tenant      @relation(fields: [tenantId], references: [id])
+
+  @@index([employeeId])
+  @@index([tenantId])
+}
+
 enum UserRoleType {
   EMPLOYEE
   MANAGER
@@ -384,4 +403,10 @@ enum LoanStatus {
   PENDING
   APPROVED
   DECLINED
+}
+
+enum ClaimStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
