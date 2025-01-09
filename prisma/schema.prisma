@@ -377,15 +377,16 @@ model LoanApplication {
 model Claim {
   id          Int         @id @default(autoincrement())
   employeeId  Int
-  amount      Decimal     @db.Decimal(10, 2)
   description String
-  date        DateTime    @db.Timestamp(6)
+  amount      Decimal     @db.Decimal(10, 2)
   status      ClaimStatus @default(PENDING)
+  cycleMonth  Int
+  cycleYear   Int
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime    @db.Timestamp(6)
+  updatedAt   DateTime    @default(now()) @db.Timestamp(6)
   tenantId    Int
-  Employee    Employee    @relation(fields: [employeeId], references: [id])
-  Tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  Employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([employeeId])
   @@index([tenantId])

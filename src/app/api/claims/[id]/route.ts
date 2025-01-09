@@ -1,57 +1,47 @@
+import { claimSchema } from '@/components/claims/ClaimForm';
 import nanosoftPrisma from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 
+// GET: Fetch all leaves or a specific leave
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const claim = await nanosoftPrisma.claim.findUnique({
-      where: { id: Number(params.id) },
+    // Fetch a specific leave
+    const claims = await nanosoftPrisma.claim.findUnique({
+      where: { id: parseInt(params.id) },
     });
-    if (claim) {
-      return NextResponse.json(claim);
-    } else {
+    if (!claims) {
       return NextResponse.json({ message: 'Claim not found' }, { status: 404 });
     }
+    return NextResponse.json(claims);
   } catch (error) {
-    return NextResponse.json({ message: 'Error fetching claim' }, { status: 500 });
+    console.error('Error fetching claim(s):', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// PUT: Update an existing leave
+export async function PUT(request: NextRequest,
+  { params }: { params: { id: string } }) {
   try {
-    const { employeeId, amount, description, date } = await request.json();
+    const body = await request.json()
+    const validatedData = claimSchema.parse(body)
+
     const updatedClaim = await nanosoftPrisma.claim.update({
-      where: { id: Number(params.id) },
-      data: {
-        employeeId,
-        amount,
-        description,
-        date: new Date(date),
-      },
+      where: { id: parseInt(params.id) },
+      data: validatedData
     });
-    return NextResponse.json(updatedClaim);
-  } catch (error) {
-    return NextResponse.json({ message: 'Error updating claim' }, { status: 500 });
-  }
-}
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    await nanosoftPrisma.claim.delete({
-      where: { id: Number(params.id) },
-    });
-    return new Response(null, { status: 204 });
-  } catch (error) {
-    return NextResponse.json({ message: 'Error deleting claim' }, { status: 500 });
+    return NextResponse.json(updatedClaim);
+  } catch (error: any) {
+    console.error('Error updating leave:', error);
+    if (error && error?.code && error.code === 'P2025') {
+      return NextResponse.json({ message: 'Leave not found' }, { status: 404 });
+    }
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
 

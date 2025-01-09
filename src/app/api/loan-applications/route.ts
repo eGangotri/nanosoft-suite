@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { loanApplicationSchema } from '@/components/loan-applications/LoanApplicationSchema'
 import { getUserEmployeeByEmail } from '@/prismaService/userService'
 import { NANOSOFT_ROLES } from '@/globalConstants'
+import nanosoftPrisma from '@/lib/prisma'
 
 
 export async function GET(req: Request) {
@@ -13,14 +14,9 @@ export async function GET(req: Request) {
   }
 
   try {
-    // const user = await prisma.user.findUnique({
-    //   where: { email: `${session.user.email}` },
-    //   include: { UserRole: true, UserEmployee: true },
-    // })
-
     if ([NANOSOFT_ROLES.EMPLOYEE, NANOSOFT_ROLES.SUPERVISOR, NANOSOFT_ROLES.MGR_TIER_ONE, NANOSOFT_ROLES.MGR_TIER_TWO].includes(session.user.role)) {
       const user = await getUserEmployeeByEmail(`${session.user.email}`, session.user.tenantId as number)
-      const loanApplications = await prisma.loanApplication.findMany({
+      const loanApplications = await nanosoftPrisma.loanApplication.findMany({
         where: { tenantId: session.user.tenantId, employeeId: user?.UserEmployee?.employeeId },
         include: { Employee: true },
       })
@@ -34,7 +30,7 @@ export async function GET(req: Request) {
     }
 
     else {
-      const loanApplications = await prisma.loanApplication.findMany({
+      const loanApplications = await nanosoftPrisma.loanApplication.findMany({
         where: { tenantId: session.user.tenantId },
         include: { Employee: true },
       })
@@ -63,7 +59,7 @@ export async function POST(req: Request) {
     const body = await req.json()
     const validatedData = loanApplicationSchema.parse(body)
 
-    const user = await prisma.user.findUnique({
+    const user = await nanosoftPrisma.user.findUnique({
       where: { email: `${session.user.email}` },
       include: { UserEmployee: true },
     })
@@ -72,7 +68,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Employee not found' }, { status: 404 })
     }
 
-    const loanApplication = await prisma.loanApplication.create({
+    const loanApplication = await nanosoftPrisma.loanApplication.create({
       data: {
         ...validatedData,
         employeeId: user.UserEmployee.employeeId,

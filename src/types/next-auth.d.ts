@@ -13,6 +13,8 @@ declare module "next-auth" {
       isWithinGeoFence: boolean
       roleId?: number
       tenantId?: number;
+      employeeId?: number;
+      employeeName?: string;
     } & DefaultSession["user"]
   }
 
@@ -21,6 +23,8 @@ declare module "next-auth" {
     isWithinGeoFence: boolean
     roleId?: number
     tenantId?: number;
+    employeeId?: number;
+    employeeName?: string;
   }
 }
 
@@ -30,5 +34,7 @@ declare module "next-auth/jwt" {
     isWithinGeoFence?: boolean
     roleId?: number
     tenantId?: number;
+    employeeId?: number;
+    employeeName?: string;
   }
 }

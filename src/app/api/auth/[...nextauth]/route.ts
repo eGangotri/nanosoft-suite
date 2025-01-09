@@ -2,13 +2,11 @@ import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
-import { UserRole } from "@prisma/client"
 import { Adapter } from "next-auth/adapters"
 import { JWT } from "next-auth/jwt"
 import { isWithinGeoFence } from "@/utils/geofence"
 import nanosoftPrisma from "@/lib/prisma"
-import { getEmployeeByUserId } from "@/services/UserService"
-import { NANOSOFT_ROLES } from "@/globalConstants"
+import { formatedEmployeeNameWithMidInitials, formatedWithMidInitials } from "@/components/employee/EmployeeUtils"
 
 
 interface ExtendedSession extends DefaultSession {
@@ -18,6 +16,8 @@ interface ExtendedSession extends DefaultSession {
     roleId?: number;
     isWithinGeoFence: boolean;
     tenantId?: number;
+    employeeId?: number;
+    employeeName?: string;
   } & DefaultSession["user"]
 }
 
@@ -26,8 +26,10 @@ interface ExtendedToken extends JWT {
   roleId?: number;
   isWithinGeoFence?: boolean;
   tenantId?: number;
+  employeeId?: number;
+  employeeName?: string;
 }
-
+``
 const authOptions: AuthOptions = {
   adapter: PrismaAdapter(nanosoftPrisma) as Adapter,
   providers: [
@@ -39,7 +41,7 @@ const authOptions: AuthOptions = {
       },
       async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          return null;
         }
 
         const user = await nanosoftPrisma.user.findUnique({
@@ -50,6 +52,18 @@ const authOptions: AuthOptions = {
             UserRole: {
               include: {
                 Role: true,
+              },
+            },
+            UserEmployee: {
+              select: {
+                employeeId: true,
+                Employee: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    middleName: true,
+                  },
+                },
               },
             },
           },
@@ -75,7 +89,8 @@ const authOptions: AuthOptions = {
 
         const roleName = user.UserRole[0]?.Role?.name || "ERROR"; // Default to 'Employee' if no role is found
         const roleId = user.UserRole[0]?.Role?.id || 0;
-
+        const employeeId = user.UserEmployee?.employeeId || null; // Access employeeId from UserEmployee relation
+        const employeeName = formatedWithMidInitials(user.UserEmployee?.Employee.firstName,user.UserEmployee?.Employee.middleName || "",user.UserEmployee?.Employee.lastName) || "";
         const tenantId = user.tenantId;
         const authValues = {
           id: user.id,
@@ -84,7 +99,9 @@ const authOptions: AuthOptions = {
           isWithinGeoFence: isWithinGeoFence(latitude, longitude),
           role: roleName,
           roleId,
-          tenantId
+          tenantId,
+          employeeId,
+          employeeName
         }
         console.log(`authValues: ${JSON.stringify(authValues)}`)
         return authValues
@@ -98,6 +115,8 @@ const authOptions: AuthOptions = {
         token.isWithinGeoFence = user.isWithinGeoFence;
         token.roleId = user.roleId;
         token.tenantId = user.tenantId;
+        token.employeeId = user.employeeId;
+        token.employeeName = user.employeeName;
       }
       return token as ExtendedToken;
     },
@@ -108,6 +127,8 @@ const authOptions: AuthOptions = {
         session.user.role = token.role as string;
         session.user.roleId = token.roleId as number;
         session.user.tenantId = token.tenantId as number;
+        session.user.employeeId = token.employeeId as number;
+        session.user.employeeName = token.employeeName as string;
       }
       return session as ExtendedSession;
     }

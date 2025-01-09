@@ -35,7 +35,7 @@ export const initCaps = (str: string) => {
     return str ? str?.charAt(0)?.toUpperCase() + str?.slice(1).toLowerCase() : "";
 }
 
-export const divideNames = (employee: { firstName: string, middleName?: string | null, lastName: string }) => {
+export const makeAllNameValuesInitaps = (employee: { firstName: string, middleName?: string | null, lastName: string }) => {
     return {
         firstName: initCaps(employee?.firstName),
         middleName: initCaps(employee?.middleName || ""),
@@ -47,19 +47,22 @@ export const formatedEmployeeName = (employee: {
     firstName: string,
     middleName?: string | null, lastName: string
 }) => {
-    const { firstName, middleName, lastName } = divideNames(employee);
+    const { firstName, middleName, lastName } = makeAllNameValuesInitaps(employee);
     const fullName = `${firstName} ${middleName} ${lastName}`.trim();
     return fullName
 }
 
 export const formatedEmployeeNameWithMidInitials = (employee:
     { firstName: string, middleName?: string | null, lastName: string }) => {
-    const { firstName, middleName, lastName } = divideNames(employee);
+    const { firstName, middleName, lastName } = makeAllNameValuesInitaps(employee);
     const midInitial = middleName.length > 0 ? middleName.charAt(0) + ". " : "";
     const withMidInitial = `${firstName} ${midInitial}${lastName}`.trim();
     return withMidInitial
 }
 
+export const formatedWithMidInitials = (firstName: string = "", middleName: string = "", lastName: string = "") => {
+    return formatedEmployeeNameWithMidInitials({firstName, middleName, lastName});
+}
 export const employeeInitials = (employee:
     { firstName: string, lastName: string }) => {
     const initial1 = employee?.firstName?.charAt(0) ? `${employee?.firstName?.charAt(0)}.` : "";

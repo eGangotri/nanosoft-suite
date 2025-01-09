@@ -44,9 +44,6 @@ export function AuthStateManager() {
         const _emp = await getEmployeeCorrespondingToUser();
         setLoggedUserEmployee(_emp || emptyData);
         setLoggedUserEmployeeId(_emp?.id || 0);
-        console.log(`session.user.role", ${JSON.stringify(session.user)}
-        ${JSON.stringify(_emp)}
-        `);
       } else {
         setIsLoggedIn(false);
         setLoggedRole("");
