@@ -1,136 +1,110 @@
 import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material'
+import { Claim, ClaimFormProps, claimSchema, ClaimStatus } from './ClaimSchema'
 
-export interface Claim {
-  id?: number
-  employeeId: number
-  description: string
-  amount: number
-  status: ClaimStatus
-  cycleMonth: number
-  cycleYear: number
-  createdAt?: Date
-  updatedAt?: Date
-  tenantId: number
-}
-
-export enum ClaimStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
-}
-
-export const claimSchema = z.object({
-  id: z.number().optional(),
-  description: z.string().min(1, 'Description is required'),
-  amount: z.coerce.number().min(0, 'Amount must be positive'),
-  status: z.enum(['PENDING', 'APPROVED', 'REJECTED']),
-  cycleMonth: z.number().min(1).max(12),
-  cycleYear: z.number().min(2000).max(2100),
-})
-
-type ClaimFormProps = {
-  claim?: Claim | null
-  onSave: (claim: Claim) => void
-}
-
-export default function ClaimForm({ claim, onSave }: ClaimFormProps) {
+export const ClaimForm: React.FC<ClaimFormProps> = ({ initialData, onSubmit }) => {
   const { control, handleSubmit, formState: { errors } } = useForm<Claim>({
     resolver: zodResolver(claimSchema),
-    defaultValues: claim || {
-      description: '',
-      amount: 0,
-      status: 'PENDING' as ClaimStatus,
-      cycleMonth: new Date().getMonth() + 1,
-      cycleYear: new Date().getFullYear(),
+    defaultValues: {
+      id: initialData?.id || 0,
+      employeeId: initialData?.employeeId || 0,
+      description: initialData?.description || '',
+      amount: initialData?.amount || 0,
+      status: initialData?.status || ClaimStatus.PENDING,
+      cycleMonth: initialData?.cycleMonth || new Date().getMonth() + 1,
+      cycleYear: initialData?.cycleYear || new Date().getFullYear(),
+      tenantId: initialData?.tenantId || 0,
     },
   })
 
-  const onSubmit = (data: Claim) => {
-    onSave(data)
+  const _onSubmit = (data: Claim) => {
+    onSubmit(data)
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Controller
-        name="description"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            label="Description"
-            fullWidth
-            error={!!errors.description}
-            helperText={errors.description?.message}
-          />
-        )}
-      />
-      <Controller
-        name="amount"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            label="Amount"
-            type="number"
-            fullWidth
-            error={!!errors.amount}
-            helperText={errors.amount?.message}
-          />
-        )}
-      />
-      <Controller
-        name="status"
-        control={control}
-        render={({ field }) => (
-          <FormControl fullWidth>
-            <InputLabel>Status</InputLabel>
-            <Select {...field}>
-              <MenuItem value="PENDING">Pending</MenuItem>
-              <MenuItem value="APPROVED">Approved</MenuItem>
-              <MenuItem value="REJECTED">Rejected</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-      />
-      <div className="flex space-x-4">
+    <form onSubmit={handleSubmit(_onSubmit)}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Controller
-          name="cycleMonth"
+          name="description"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Description"
+              fullWidth
+              error={!!errors.description}
+              helperText={errors.description?.message}
+            />
+          )}
+        />
+        <Controller
+          name="amount"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Amount"
+              type="number"
+              fullWidth
+              error={!!errors.amount}
+              helperText={errors.amount?.message}
+            />
+          )}
+        />
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Controller
+            name="cycleMonth"
+            control={control}
+            render={({ field }) => (
+              <FormControl fullWidth>
+                <InputLabel>Month</InputLabel>
+                <Select {...field} label="Month">
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <MenuItem key={i + 1} value={i + 1}>
+                      {new Date(0, i).toLocaleString('default', { month: 'long' })}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+          <Controller
+            name="cycleYear"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Year"
+                type="number"
+                fullWidth
+                error={!!errors.cycleYear}
+                helperText={errors.cycleYear?.message}
+              />
+            )}
+          />
+        </Box>
+        {/* <Controller
+          name="status"
           control={control}
           render={({ field }) => (
             <FormControl fullWidth>
-              <InputLabel>Month</InputLabel>
-              <Select {...field}>
-                {Array.from({ length: 12 }, (_, i) => (
-                  <MenuItem key={i + 1} value={i + 1}>
-                    {new Date(0, i).toLocaleString('default', { month: 'long' })}
+              <InputLabel>Status</InputLabel>
+              <Select {...field} label="Status">
+                {Object.values(ClaimStatus).map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           )}
-        />
-        <Controller
-          name="cycleYear"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Year"
-              type="number"
-              fullWidth
-              error={!!errors.cycleYear}
-              helperText={errors.cycleYear?.message}
-            />
-          )}
-        />
-      </div>
-      <Button type="submit" variant="contained" color="primary">
-        {claim?.id ? 'Update Claim' : 'Add Claim'}
-      </Button>
+        /> */}
+        <Button type="submit" variant="contained" color="primary">
+          {initialData?.id ? 'Update Claim' : 'Add Claim'}
+        </Button>
+      </Box>
     </form>
   )
 }

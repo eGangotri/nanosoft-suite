@@ -3,24 +3,24 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Typography, Container, CircularProgress } from '@mui/material';
-import { ClaimFormData } from '@/components/claims/claimScehma';
-import { ClaimForm } from '@/components/claims/ClaimForm';
+import { Claim } from '../../ClaimSchema';
+import { ClaimForm } from '../../ClaimForm';
 
 const EditClaimPage: React.FC = () => {
   const params = useParams();
   const router = useRouter();
-  const [claim, setClaim] = useState<ClaimFormData | null>(null);
+  const [claim, setClaim] = useState<Claim | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (params.id) {
+    if (params?.id) {
       fetchClaim();
     }
-  }, [params.id]);
+  }, [params?.id]);
 
   const fetchClaim = async () => {
     try {
-      const response = await fetch(`/api/claims/${params.id}`);
+      const response = await fetch(`/api/claims/${params?.id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch claim');
       }
@@ -34,9 +34,9 @@ const EditClaimPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (data: ClaimFormData) => {
+  const handleSubmit = async (data: Claim) => {
     try {
-      const response = await fetch(`/api/claims/${params.id}`, {
+      const response = await fetch(`/api/claims/${params?.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

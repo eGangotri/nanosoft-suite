@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid'
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
-import ClaimForm, { Claim } from './ClaimForm'
+import { Button, Dialog, DialogTitle, DialogContent } from '@mui/material'
 import { useRouter } from 'next/navigation'
+import { Claim, ClaimStatus } from './ClaimSchema'
+import { ClaimForm } from './ClaimForm'
 
 export default function ClaimsListPage() {
   const [claims, setClaims] = useState<Claim[]>([])
@@ -24,7 +25,6 @@ export default function ClaimsListPage() {
       const data = await response.json()
       setClaims(data)
     }
-    console.log('Fetching claims...', JSON.stringify(claims))
     fetchClaims()
   }, [])
 
@@ -43,12 +43,13 @@ export default function ClaimsListPage() {
       headerName: 'Actions',
       width: 200,
       renderCell: (params) => (
-        <Button onClick={() => handleEdit(params.row)}>Edit</Button>
+        <Button disabled={params.row.status !== ClaimStatus.PENDING} onClick={() => handleEdit(params.row)}>Edit</Button>
       ),
     },
   ]
 
   const handleEdit = (claim: Claim) => {
+    console.log(`Editing claim: ${JSON.stringify(claim)}`)
     setEditingClaim(claim)
     setOpenForm(true)
   }
@@ -60,7 +61,7 @@ export default function ClaimsListPage() {
 
   const handleSaveClaim = async (claim: Claim) => {
     const id = claim?.id || undefined
-
+    console.log(`Saving claim: ${JSON.stringify(claim)}`, id ? ` (id: ${id})` : 'no id')
     try {
       const url = id ? `/api/claims/${id}` : '/api/claims'
       const method = id ? 'PUT' : 'POST';
@@ -101,7 +102,7 @@ export default function ClaimsListPage() {
       <Dialog open={openForm} onClose={handleCloseForm}>
         <DialogTitle>{editingClaim ? 'Edit Claim' : 'Add New Claim'}</DialogTitle>
         <DialogContent>
-          <ClaimForm claim={editingClaim} onSave={handleSaveClaim} />
+          <ClaimForm initialData={editingClaim} onSubmit={handleSaveClaim} />
         </DialogContent>
       </Dialog>
     </div>

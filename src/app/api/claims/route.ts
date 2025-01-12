@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import nanosoftPrisma from '@/lib/prisma';
 import { z } from 'zod';
-import { claimSchema } from '@/components/claims/ClaimForm';
 import { getServerSession } from 'next-auth';
 import { NANOSOFT_ROLES } from '@/globalConstants';
+import { claimSchema } from '@/components/claims/ClaimSchema';
 
 export async function GET() {
   const session = await getServerSession()
@@ -32,7 +31,7 @@ export async function GET() {
   
 }
 
-export async function POST(req: Request) {
+export async function PUT(req: Request) {
   const session = await getServerSession();
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

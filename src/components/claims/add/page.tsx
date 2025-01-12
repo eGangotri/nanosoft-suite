@@ -3,13 +3,13 @@
 import React from 'react';
 import { Typography, Container } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { ClaimFormData } from '@/components/claims/claimScehma';
-import { ClaimForm } from '@/components/claims/ClaimForm';
+import { Claim } from '../ClaimSchema';
+import { ClaimForm } from '../ClaimForm';
 
 const AddClaimPage: React.FC = () => {
   const router = useRouter();
 
-  const handleSubmit = async (data: ClaimFormData) => {
+  const handleSubmit = async (data: Claim) => {
     try {
       const response = await fetch('/api/claims', {
         method: 'POST',
