@@ -1,4 +1,4 @@
-import { NANOSOFT_ROLES } from "@/globalConstants";
+import { NANOSOFT_ADMIN_ROLES, NANOSOFT_ADMIN_ROLES_VALUES, NANOSOFT_ROLES } from "@/globalConstants";
 
 const emptyResult = {
     blkNo: "",
@@ -34,6 +34,10 @@ export const lookupPostalCodeSG = async (postalCode: string) => {
 
 export const isAdminOrSuperAdmin = (role: string) => {
     return (role === NANOSOFT_ROLES.ADMIN || role === NANOSOFT_ROLES.SUPERADMIN);
+}
+
+export const isAnyManagerialRole = (role: string) => {
+    return NANOSOFT_ADMIN_ROLES_VALUES.includes(role);
 }
 
 export const isEmployee = (role: string) => {

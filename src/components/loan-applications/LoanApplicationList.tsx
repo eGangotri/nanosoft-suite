@@ -4,25 +4,25 @@ import { Button, Typography, Box } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-    Add as AddIcon
+    Add as AddIcon,
+    Edit as EditIcon,
+    CheckCircle as ApproveIcon,
+    Cancel as DeclineIcon
 }
     from '@mui/icons-material'
-interface LoanApplication {
-    id: number
-    employeeId: number
-    amount: number
-    reason: string
-    status: 'PENDING' | 'APPROVED' | 'DECLINED'
-    appliedAt: string
-    employeeName: string
-    month: number
-    year: number
-}
+
+import { LoanStatus } from './LoanApplicationSchema'
+import { isAnyManagerialRole } from '@/utils/utils';
+import { useRecoilValue } from 'recoil'
+import { loggedUserRole } from '../recoilConsts'
+import { LoanApplication } from '@prisma/client'
+
 
 export default function LoanApplicationList() {
     const [applications, setApplications] = useState<LoanApplication[]>([])
     const [loading, setLoading] = useState(true)
-    const router = useRouter()
+    const router = useRouter();
+    const __loggedUserRole = useRecoilValue(loggedUserRole);
 
     useEffect(() => {
         fetchApplications()
@@ -61,6 +61,7 @@ export default function LoanApplicationList() {
         }
     }
 
+
     const columns: GridColDef[] = [
         { field: 'employeeName', headerName: 'Employee', width: 120 },
         {
@@ -92,10 +93,11 @@ export default function LoanApplicationList() {
                         color="primary"
                         size="small"
                         onClick={() => router.push(`/loans/edit/${params.row.id}`)}
+                        disabled={params.row.status !== LoanStatus.PENDING}
                     >
-                        Edit {params.row.id}
+                        Edit
                     </Button>
-                    {params.row.status === 'PENDING' && (
+                    {(params.row.status === LoanStatus.PENDING && isAnyManagerialRole(__loggedUserRole)) && (
                         <>
                             <Button
                                 variant="contained"

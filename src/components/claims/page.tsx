@@ -2,15 +2,25 @@
 
 import React, { useState, useEffect } from 'react'
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid'
-import { Button, Dialog, DialogTitle, DialogContent, Snackbar, Alert } from '@mui/material'
+import { Button, Dialog, DialogTitle, DialogContent, Snackbar, Alert, Tooltip, IconButton } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { Claim, ClaimStatus } from './ClaimSchema'
 import { ClaimForm } from './ClaimForm'
+import {
+  Edit as EditIcon,
+  CheckCircle as ApproveIcon,
+  Cancel as DeclineIcon
+} from '@mui/icons-material';
+import { loggedUserRole } from '../recoilConsts'
+import { useRecoilValue } from 'recoil'
+import { isAnyManagerialRole } from '@/utils/utils'
 
 export default function ClaimsListPage() {
   const [claims, setClaims] = useState<Claim[]>([])
   const [openForm, setOpenForm] = useState(false)
-  const [editingClaim, setEditingClaim] = useState<Claim | null>(null)
+  const [editingClaim, setEditingClaim] = useState<Claim | null>(null);
+  const __loggedUserRole = useRecoilValue(loggedUserRole);
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 5,
@@ -34,7 +44,7 @@ export default function ClaimsListPage() {
   useEffect(() => {
     // Fetch claims data
     // This is a placeholder. Replace with actual API call.
- 
+
     fetchClaims()
   }, [])
 
@@ -52,9 +62,43 @@ export default function ClaimsListPage() {
       field: 'actions',
       headerName: 'Actions',
       width: 200,
-      renderCell: (params) => (
-        <Button disabled={params.row.status !== ClaimStatus.PENDING} onClick={() => handleEdit(params.row)}>Edit</Button>
-      ),
+      renderCell: (params) => {
+        const claim = params.row as Claim
+        return (
+          <>
+            <Tooltip title="Edit">
+              <IconButton
+                onClick={() => handleEdit(claim)}
+                disabled={claim.status !== ClaimStatus.PENDING}
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            {(params.row.status === ClaimStatus.PENDING && isAnyManagerialRole(__loggedUserRole)) && (
+              <>
+                <Tooltip title="Approve">
+                  <IconButton
+                    onClick={() => handleApprove(claim)}
+                    disabled={claim.status !== ClaimStatus.PENDING}
+                    color="success"
+                  >
+                    <ApproveIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Decline">
+                  <IconButton
+                    onClick={() => handleDecline(claim)}
+                    disabled={claim.status !== ClaimStatus.PENDING}
+                    color="error"
+                  >
+                    <DeclineIcon />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
+          </>
+        )
+      },
     },
   ]
 
@@ -62,6 +106,40 @@ export default function ClaimsListPage() {
     console.log(`Editing claim: ${JSON.stringify(claim)}`)
     setEditingClaim(claim)
     setOpenForm(true)
+  }
+
+  const handleApprove = async (claim: Claim) => {
+    try {
+      const response = await fetch(`/api/claims/${claim.id}/approve`, {
+        method: 'PUT',
+      })
+      if (response.ok) {
+        setSnackbar({ open: true, message: 'Claim approved successfully', severity: 'success' })
+        fetchClaims()
+      } else {
+        throw new Error('Failed to approve claim')
+      }
+    } catch (error) {
+      console.error('Error approving claim:', error)
+      setSnackbar({ open: true, message: 'Failed to approve claim', severity: 'error' })
+    }
+  }
+
+  const handleDecline = async (claim: Claim) => {
+    try {
+      const response = await fetch(`/api/claims/${claim.id}/decline`, {
+        method: 'PUT',
+      })
+      if (response.ok) {
+        setSnackbar({ open: true, message: 'Claim declined successfully', severity: 'success' })
+        fetchClaims()
+      } else {
+        throw new Error('Failed to decline claim')
+      }
+    } catch (error) {
+      console.error('Error declining claim:', error)
+      setSnackbar({ open: true, message: 'Failed to decline claim', severity: 'error' })
+    }
   }
 
   const handleCloseForm = () => {
@@ -81,8 +159,8 @@ export default function ClaimsListPage() {
         body: JSON.stringify(claim),
       })
       if (response.ok) {
-        setSnackbar({ 
-          open: true, 
+        setSnackbar({
+          open: true,
           message: id ? 'Claim updated successfully' : 'New claim added successfully',
           severity: 'success'
         })
@@ -96,8 +174,8 @@ export default function ClaimsListPage() {
       }
     } catch (error) {
       console.error(`Error ${id ? 'updating' : 'submitting'} claim:`, error)
-      setSnackbar({ 
-        open: true, 
+      setSnackbar({
+        open: true,
         message: `Failed to ${id ? 'update' : 'add'} claim`,
         severity: 'error'
       })

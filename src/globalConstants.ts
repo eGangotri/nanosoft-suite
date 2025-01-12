@@ -6,14 +6,16 @@ export const GLOBAL_CONSTS = {
     }
 }
 
+
 export const NANOSOFT_ADMIN_ROLES = {
     ADMIN: 'ADMIN',
     SUPERADMIN: 'SUPERADMIN',
     SUPERVISOR: 'SUPERVISOR',
     MGR_TIER_ONE: 'MGR_TIER_ONE',
     MGR_TIER_TWO: 'MGR_TIER_TWO',
-
 }
+
+export const NANOSOFT_ADMIN_ROLES_VALUES = Object.values(NANOSOFT_ADMIN_ROLES); 
 
 export const NANOSOFT_NON_ADMIN_ROLES = {
     EMPLOYEE: 'EMPLOYEE',
