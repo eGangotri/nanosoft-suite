@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
-import { Button, Typography, Box } from '@mui/material'
+import { Button, Typography, Box, Tooltip, IconButton } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -81,43 +81,49 @@ export default function LoanApplicationList() {
             }
         },
         { field: 'appliedAt', headerName: 'Applied At', width: 200, valueFormatter: ({ value }) => new Date(value).toLocaleString() },
+
+
         {
             field: 'actions',
             headerName: 'Actions',
             width: 250,
-            renderCell: (params: GridRenderCellParams) => (
-                <Box className="flex gap-2 p-2">
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={() => router.push(`/loans/edit/${params.row.id}`)}
-                        disabled={params.row.status !== LoanStatus.PENDING}
-                    >
-                        Edit
-                    </Button>
-                    {(params.row.status === LoanStatus.PENDING && isAnyManagerialRole(__loggedUserRole)) && (
-                        <>
-                            <Button
-                                variant="contained"
-                                color="success"
-                                size="small"
-                                onClick={() => handleAction(params.row.id, 'approve')}
+            renderCell: (params) => {
+                const loan = params.row as LoanApplication
+                return (
+                    <>
+                        <Tooltip title="Edit">
+                            <IconButton
+                                onClick={() => router.push(`/loans/edit/${params.row.id}`)}
+                                disabled={loan.status !== LoanStatus.PENDING}
                             >
-                                Approve
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="error"
-                                size="small"
-                                onClick={() => handleAction(params.row.id, 'decline')}
-                            >
-                                Decline
-                            </Button>
-                        </>
-                    )}
-                </Box>
-            ),
+                                <EditIcon />
+                            </IconButton>
+                        </Tooltip>
+                        {(params.row.status === LoanStatus.PENDING && isAnyManagerialRole(__loggedUserRole)) && (
+                            <>
+                                <Tooltip title="Approve">
+                                    <IconButton
+                                        onClick={() => handleAction(loan.id, 'approve')}
+                                        disabled={loan.status !== LoanStatus.PENDING}
+                                        color="success"
+                                    >
+                                        <ApproveIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Decline">
+                                    <IconButton
+                                        onClick={() => handleAction(loan.id, 'decline')}
+                                        disabled={loan.status !== LoanStatus.PENDING}
+                                        color="error"
+                                    >
+                                        <DeclineIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </>
+                        )}
+                    </>
+                )
+            },
         },
     ]
 
