@@ -3,7 +3,7 @@ import { z } from 'zod'
 export enum ClaimStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
+  DECLINED = 'DECLINED',
 }
 
 export const claimSchema = z.object({

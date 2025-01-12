@@ -115,7 +115,7 @@ export default function ClaimsListPage() {
       const response = await fetch(`/api/claims/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: action === 'approve' ? ClaimStatus.APPROVED : ClaimStatus.REJECTED }),
+        body: JSON.stringify({ status: action === 'approve' ? ClaimStatus.APPROVED : ClaimStatus.DECLINED }),
       })
       if (response.ok) {
         setSnackbar({ open: true, message: 'Claim declined successfully', severity: 'success' })

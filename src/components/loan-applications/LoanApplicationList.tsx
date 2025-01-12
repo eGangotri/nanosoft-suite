@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
-import { Button, Typography, Box, Tooltip, IconButton } from '@mui/material'
+import { Button, Typography, Box, Tooltip, IconButton, Snackbar, Alert } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -22,10 +22,21 @@ export default function LoanApplicationList() {
     const [loading, setLoading] = useState(true)
     const router = useRouter();
     const __loggedUserRole = useRecoilValue(loggedUserRole);
-
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+        open: false,
+        message: '',
+        severity: 'success',
+    })
     useEffect(() => {
         fetchApplications()
     }, [])
+
+    const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return
+        }
+        setSnackbar({ ...snackbar, open: false })
+    }
 
     const fetchApplications = async () => {
         try {
@@ -48,15 +59,28 @@ export default function LoanApplicationList() {
             const response = await fetch(`/api/loan-applications/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: action === 'approve' ? LoanStatus.APPROVED : LoanStatus.REJECTED }),
+                body: JSON.stringify({ status: action === 'approve' ? LoanStatus.APPROVED : LoanStatus.DECLINED }),
             })
             if (response.ok) {
-                fetchApplications()
+                setSnackbar({
+                    open: true,
+                    message: id ? 'Loan Application updated successfully' : 'New loan application added successfully',
+                    severity: 'success'
+                })
+                // Refresh the loan applications data after a short delay
+                setTimeout(() => {
+                    fetchApplications()
+                }, 500)
             } else {
-                throw new Error(`Failed to ${action} loan application`)
+                throw new Error(`Failed to ${id ? 'update' : 'submit'} loan application`)
             }
         } catch (error) {
-            console.error(`Error ${action}ing loan application:`, error)
+            console.error(`Error ${id ? 'updating' : 'submitting'} loan application:`, error)
+            setSnackbar({
+                open: true,
+                message: `Failed to ${id ? 'update' : 'add'} loan application`,
+                severity: 'error'
+            })
         }
     }
 
@@ -150,6 +174,23 @@ export default function LoanApplicationList() {
                 pageSizeOptions={[5, 10]}
                 loading={loading}
             />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbar.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Box>
     )
 }

@@ -410,5 +410,5 @@ enum LoanStatus {
 enum ClaimStatus {
   PENDING
   APPROVED
-  REJECTED
+  DECLINED
 }

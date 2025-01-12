@@ -15,7 +15,7 @@ interface LoanApplication {
 export enum LoanStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
+  DECLINED = 'DECLINED',
 }
 
 export const loanApplicationSchema = z.object({
