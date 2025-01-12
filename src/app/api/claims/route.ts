@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import nanosoftPrisma from '@/lib/prisma';
-import { z } from 'zod';
 import { getServerSession } from 'next-auth';
 import { NANOSOFT_ROLES } from '@/globalConstants';
 import { claimSchema } from '@/components/claims/ClaimSchema';
@@ -31,7 +30,7 @@ export async function GET() {
   
 }
 
-export async function PUT(req: Request) {
+export async function POST(req: Request) {
   const session = await getServerSession();
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -39,6 +38,7 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json();
+    console.log('POST /api/claims', JSON.stringify(body, null, 2));
     const validatedClaim = claimSchema.parse(body);
 
     const newClaim = await nanosoftPrisma.claim.create({

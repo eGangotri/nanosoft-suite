@@ -1,4 +1,4 @@
-import { claimSchema } from '@/components/claims/ClaimForm';
+import { claimSchema } from '@/components/claims/ClaimSchema';
 import nanosoftPrisma from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -23,25 +23,39 @@ export async function GET(
   }
 }
 
-// PUT: Update an existing leave
-export async function PUT(request: NextRequest,
-  { params }: { params: { id: string } }) {
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
+    const id = parseInt(params.id, 10)
+    if (isNaN(id)) {
+      return NextResponse.json({ error: 'Invalid claim ID' }, { status: 400 })
+    }
+
     const body = await request.json()
-    const validatedData = claimSchema.parse(body)
+    console.log('PUT /api/claims/:id body:', JSON.stringify(body))
+    const validatedData = claimSchema.safeParse(body)
+
+    if (!validatedData.success) {
+      return NextResponse.json(
+        { error: validatedData.error.flatten().fieldErrors },
+        { status: 400 }
+      )
+    }
 
     const updatedClaim = await nanosoftPrisma.claim.update({
-      where: { id: parseInt(params.id) },
-      data: validatedData
-    });
+      where: { id },
+      data: validatedData.data,
+    })
 
-    return NextResponse.json(updatedClaim);
-  } catch (error: any) {
-    console.error('Error updating leave:', error);
-    if (error && error?.code && error.code === 'P2025') {
-      return NextResponse.json({ message: 'Leave not found' }, { status: 404 });
-    }
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(updatedClaim)
+  } catch (error) {
+    console.error('Error updating claim:', error)
+    return NextResponse.json(
+      { error: 'An error occurred while updating the claim' },
+      { status: 500 }
+    )
   }
 }
-
