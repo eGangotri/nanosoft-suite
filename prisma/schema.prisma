@@ -385,6 +385,7 @@ model Claim {
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
   updatedAt   DateTime    @default(now()) @db.Timestamp(6)
   tenantId    Int
+  approvedBy  String?     @map("  approvedBy")
   Employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 

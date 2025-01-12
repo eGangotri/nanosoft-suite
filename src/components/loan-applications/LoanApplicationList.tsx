@@ -48,7 +48,7 @@ export default function LoanApplicationList() {
             const response = await fetch(`/api/loan-applications/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: action === 'approve' ? 'APPROVED' : 'DECLINED' }),
+                body: JSON.stringify({ status: action === 'approve' ? LoanStatus.APPROVED : LoanStatus.REJECTED }),
             })
             if (response.ok) {
                 fetchApplications()

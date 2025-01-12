@@ -80,7 +80,7 @@ export default function ClaimsListPage() {
               <>
                 <Tooltip title="Approve">
                   <IconButton
-                    onClick={() => handleApprove(claim)}
+                    onClick={() => handleAction(claim?.id, 'approve')}
                     disabled={claim.status !== ClaimStatus.PENDING}
                     color="success"
                   >
@@ -89,7 +89,7 @@ export default function ClaimsListPage() {
                 </Tooltip>
                 <Tooltip title="Decline">
                   <IconButton
-                    onClick={() => handleDecline(claim)}
+                    onClick={() => handleAction(claim.id, 'decline')}
                     disabled={claim.status !== ClaimStatus.PENDING}
                     color="error"
                   >
@@ -110,129 +110,115 @@ export default function ClaimsListPage() {
     setOpenForm(true)
   }
 
-  const handleApprove = async (claim: Claim) => {
+  const handleAction = async (id: number = 0, action: 'approve' | 'decline') => {
     try {
-      const response = await fetch(`/api/claims/${claim.id}/approve`, {
-        method: 'PUT',
-      })
-      if (response.ok) {
-        setSnackbar({ open: true, message: 'Claim approved successfully', severity: 'success' })
-        fetchClaims()
-      } else {
-        throw new Error('Failed to approve claim')
-      }
-    } catch (error) {
-      console.error('Error approving claim:', error)
-      setSnackbar({ open: true, message: 'Failed to approve claim', severity: 'error' })
-    }
-  }
-
-  const handleDecline = async (claim: Claim) => {
-    try {
-      const response = await fetch(`/api/claims/${claim.id}/decline`, {
-        method: 'PUT',
+      const response = await fetch(`/api/claims/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: action === 'approve' ? ClaimStatus.APPROVED : ClaimStatus.REJECTED }),
       })
       if (response.ok) {
         setSnackbar({ open: true, message: 'Claim declined successfully', severity: 'success' })
         fetchClaims()
       } else {
-        throw new Error('Failed to decline claim')
+        throw new Error(`Failed to ${action} claim`)
       }
     } catch (error) {
-      console.error('Error declining claim:', error)
-      setSnackbar({ open: true, message: 'Failed to decline claim', severity: 'error' })
+      console.error(`Error ${action}ing loan application:`, error)
+      setSnackbar({ open: true, message: `Failed to  ${action} claim`, severity: 'error' })
+
     }
   }
 
-  const handleCloseForm = () => {
-    setOpenForm(false)
-    setEditingClaim(null)
-  }
+const handleCloseForm = () => {
+  setOpenForm(false)
+  setEditingClaim(null)
+}
 
-  const handleSaveClaim = async (claim: Claim) => {
-    const id = claim?.id || undefined
-    console.log(`Saving claim: ${JSON.stringify(claim)}`, id ? ` (id: ${id})` : 'no id')
-    try {
-      const url = id ? `/api/claims/${id}` : '/api/claims'
-      const method = id ? 'PUT' : 'POST';
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(claim),
-      })
-      if (response.ok) {
-        setSnackbar({
-          open: true,
-          message: id ? 'Claim updated successfully' : 'New claim added successfully',
-          severity: 'success'
-        })
-        handleCloseForm()
-        // Refresh the claims data after a short delay
-        setTimeout(() => {
-          fetchClaims()
-        }, 500)
-      } else {
-        throw new Error(`Failed to ${id ? 'update' : 'submit'} claim`)
-      }
-    } catch (error) {
-      console.error(`Error ${id ? 'updating' : 'submitting'} claim:`, error)
+const handleSaveClaim = async (claim: Claim) => {
+  const id = claim?.id || undefined
+  console.log(`Saving claim: ${JSON.stringify(claim)}`, id ? ` (id: ${id})` : 'no id')
+  try {
+    const url = id ? `/api/claims/${id}` : '/api/claims'
+    const method = id ? 'PUT' : 'POST';
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(claim),
+    })
+    if (response.ok) {
       setSnackbar({
         open: true,
-        message: `Failed to ${id ? 'update' : 'add'} claim`,
-        severity: 'error'
+        message: id ? 'Claim updated successfully' : 'New claim added successfully',
+        severity: 'success'
       })
+      handleCloseForm()
+      // Refresh the claims data after a short delay
+      setTimeout(() => {
+        fetchClaims()
+      }, 500)
+    } else {
+      throw new Error(`Failed to ${id ? 'update' : 'submit'} claim`)
     }
-    handleCloseForm()
+  } catch (error) {
+    console.error(`Error ${id ? 'updating' : 'submitting'} claim:`, error)
+    setSnackbar({
+      open: true,
+      message: `Failed to ${id ? 'update' : 'add'} claim`,
+      severity: 'error'
+    })
   }
+  handleCloseForm()
+}
 
-  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
-    setSnackbar({ ...snackbar, open: false })
+const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason?: string) => {
+  if (reason === 'clickaway') {
+    return
   }
+  setSnackbar({ ...snackbar, open: false })
+}
 
-  return (
-    <div className="container mx-auto p-4 flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Claims Management</h1>
-        <Button onClick={() => setOpenForm(true)} variant="contained" className="ml-auto">
-          Add New Claim
-        </Button>
-      </div>
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={claims}
-          columns={columns}
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-          pageSizeOptions={[5, 10, 25]}
-        />
-      </div>
-      <Dialog open={openForm} onClose={handleCloseForm}>
-        <DialogTitle>{editingClaim ? 'Edit Claim' : 'Add New Claim'}</DialogTitle>
-        <DialogContent>
-          <ClaimForm initialData={editingClaim} onSubmit={handleSaveClaim} />
-        </DialogContent>
-      </Dialog>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+return (
+  <div className="container mx-auto p-4 flex flex-col">
+    <div className="flex justify-between items-center mb-4">
+      <h1 className="text-2xl font-bold">Claims Management</h1>
+      <Button onClick={() => setOpenForm(true)} variant="contained" className="ml-auto">
+        Add New Claim
+      </Button>
     </div>
-  )
+    <div style={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={claims}
+        columns={columns}
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
+        pageSizeOptions={[5, 10, 25]}
+      />
+    </div>
+    <Dialog open={openForm} onClose={handleCloseForm}>
+      <DialogTitle>{editingClaim ? 'Edit Claim' : 'Add New Claim'}</DialogTitle>
+      <DialogContent>
+        <ClaimForm initialData={editingClaim} onSubmit={handleSaveClaim} />
+      </DialogContent>
+    </Dialog>
+    <Snackbar
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={snackbar.open}
+      autoHideDuration={6000}
+      onClose={handleCloseSnackbar}
+    >
+      <Alert
+        onClose={handleCloseSnackbar}
+        severity={snackbar.severity}
+        sx={{ width: '100%' }}
+      >
+        {snackbar.message}
+      </Alert>
+    </Snackbar>
+  </div>
+)
 }
 

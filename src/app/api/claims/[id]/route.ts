@@ -1,6 +1,8 @@
 import { claimSchema } from '@/components/claims/ClaimSchema';
 import nanosoftPrisma from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { authOptions } from '../../auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
 
 
 // GET: Fetch all leaves or a specific leave
@@ -35,7 +37,6 @@ export async function PUT(
     }
 
     const body = await request.json()
-    console.log('PUT /api/claims/:id body:', JSON.stringify(body))
     const validatedData = claimSchema.safeParse(body)
 
     if (!validatedData.success) {
@@ -57,5 +58,26 @@ export async function PUT(
       { error: 'An error occurred while updating the claim' },
       { status: 500 }
     )
+  }
+}
+
+
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions)
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { status } = await req.json()
+  try {
+    const updatedApplication = await nanosoftPrisma.claim.update({
+      where: { id: parseInt(params.id) },
+      data: { status, approvedBy: session?.user?.id },
+    })
+
+    return NextResponse.json(updatedApplication)
+  } catch (error) {
+    console.error('Failed to update loan application:', error)
+    return NextResponse.json({ error: 'Failed to update loan application' }, { status: 500 })
   }
 }

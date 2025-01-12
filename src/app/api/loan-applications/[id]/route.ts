@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import prisma from '@/lib/prisma'
 import { loanApplicationSchema } from '@/components/loan-applications/LoanApplicationSchema'
+import { authOptions } from '../../auth/[...nextauth]/route'
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const session = await getServerSession()
@@ -49,26 +50,15 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-
   const { status } = await req.json()
-
   try {
-    const user = await prisma.user.findUnique({
-      where: { email: `${session.user.email}` },
-      include: { UserRole: true },
-    })
-
-    // if (!user || !user.UserRole.some(role => ['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(role.Role.name))) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-    // }
-
     const updatedApplication = await prisma.loanApplication.update({
       where: { id: parseInt(params.id) },
-      data: { status, approvedBy: user?.id },
+      data: { status, approvedBy: session?.user?.id },
     })
 
     return NextResponse.json(updatedApplication)
