@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid'
-import { Button, Dialog, DialogTitle, DialogContent } from '@mui/material'
+import { Button, Dialog, DialogTitle, DialogContent, Snackbar, Alert } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { Claim, ClaimStatus } from './ClaimSchema'
 import { ClaimForm } from './ClaimForm'
@@ -15,16 +15,26 @@ export default function ClaimsListPage() {
     page: 0,
     pageSize: 5,
   })
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+    open: false,
+    message: '',
+    severity: 'success',
+  })
   const router = useRouter()
-
-  useEffect(() => {
-    // Fetch claims data
-    // This is a placeholder. Replace with actual API call.
-    const fetchClaims = async () => {
+  const fetchClaims = async () => {
+    try {
       const response = await fetch('/api/claims')
       const data = await response.json()
       setClaims(data)
+    } catch (error) {
+      console.error('Error fetching claims:', error)
+      setSnackbar({ open: true, message: 'Failed to fetch claims', severity: 'error' })
     }
+  }
+  useEffect(() => {
+    // Fetch claims data
+    // This is a placeholder. Replace with actual API call.
+ 
     fetchClaims()
   }, [])
 
@@ -71,15 +81,35 @@ export default function ClaimsListPage() {
         body: JSON.stringify(claim),
       })
       if (response.ok) {
-        router.push('/claims')
+        setSnackbar({ 
+          open: true, 
+          message: id ? 'Claim updated successfully' : 'New claim added successfully',
+          severity: 'success'
+        })
+        handleCloseForm()
+        // Refresh the claims data after a short delay
+        setTimeout(() => {
+          fetchClaims()
+        }, 500)
       } else {
-        throw new Error(`Failed to ${id ? 'update' : 'submit'} loan application`)
+        throw new Error(`Failed to ${id ? 'update' : 'submit'} claim`)
       }
     } catch (error) {
-      console.error(`Error ${id ? 'updating' : 'submitting'} loan application:`, error)
-      // You might want to add some error handling here, e.g., showing an error message to the user
+      console.error(`Error ${id ? 'updating' : 'submitting'} claim:`, error)
+      setSnackbar({ 
+        open: true, 
+        message: `Failed to ${id ? 'update' : 'add'} claim`,
+        severity: 'error'
+      })
     }
     handleCloseForm()
+  }
+
+  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbar({ ...snackbar, open: false })
   }
 
   return (
@@ -105,6 +135,23 @@ export default function ClaimsListPage() {
           <ClaimForm initialData={editingClaim} onSubmit={handleSaveClaim} />
         </DialogContent>
       </Dialog>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }
