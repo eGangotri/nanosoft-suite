@@ -5,6 +5,7 @@ import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid'
 import { Button, Dialog, DialogTitle, DialogContent, Snackbar, Alert, Tooltip, IconButton } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { Claim, ClaimStatus } from './ClaimSchema'
+import { Claim as PrismaClaim } from '@prisma/client';
 import { ClaimForm } from './ClaimForm'
 import {
   Edit as EditIcon,
@@ -16,7 +17,7 @@ import { useRecoilValue } from 'recoil'
 import { isAnyManagerialRole } from '@/utils/utils'
 
 export default function ClaimsListPage() {
-  const [claims, setClaims] = useState<Claim[]>([])
+  const [claims, setClaims] = useState<PrismaClaim[]>([])
   const [openForm, setOpenForm] = useState(false)
   const [editingClaim, setEditingClaim] = useState<Claim | null>(null);
   const __loggedUserRole = useRecoilValue(loggedUserRole);
@@ -49,6 +50,7 @@ export default function ClaimsListPage() {
   }, [])
 
   const columns: GridColDef[] = [
+    { field: 'employeeName', headerName: 'Employee', width: 120 },
     { field: 'description', headerName: 'Description', width: 200 },
     { field: 'amount', headerName: 'Amount', width: 130, type: 'number' },
     { field: 'status', headerName: 'Status', width: 130 },

@@ -29,8 +29,8 @@ interface ExtendedToken extends JWT {
   employeeId?: number;
   employeeName?: string;
 }
-``
-const authOptions: AuthOptions = {
+
+export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(nanosoftPrisma) as Adapter,
   providers: [
     CredentialsProvider({
@@ -40,6 +40,7 @@ const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
+        
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -87,9 +88,9 @@ const authOptions: AuthOptions = {
         const latitude = parseFloat(req?.headers?.['x-vercel-ip-latitude'] as string || '0')
         const longitude = parseFloat(req?.headers?.['x-vercel-ip-longitude'] as string || '0')
 
-        const roleName = user.UserRole[0]?.Role?.name || "ERROR"; // Default to 'Employee' if no role is found
+        const roleName = user.UserRole[0]?.Role?.name || "ERROR"; 
         const roleId = user.UserRole[0]?.Role?.id || 0;
-        const employeeId = user.UserEmployee?.employeeId || null; // Access employeeId from UserEmployee relation
+        const employeeId = user.UserEmployee?.employeeId ?? undefined; 
         const employeeName = formatedWithMidInitials(user.UserEmployee?.Employee.firstName,user.UserEmployee?.Employee.middleName || "",user.UserEmployee?.Employee.lastName) || "";
         const tenantId = user.tenantId;
         const authValues = {

@@ -3,31 +3,46 @@ import nanosoftPrisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { NANOSOFT_ROLES } from '@/globalConstants';
 import { claimSchema } from '@/components/claims/ClaimSchema';
+import { isAnyManagerialRole } from '@/utils/utils';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 export async function GET() {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+  console.log('GET /api/claims', JSON.stringify(session.user, null, 2))
 
-  if ([NANOSOFT_ROLES.EMPLOYEE, NANOSOFT_ROLES.SUPERVISOR, NANOSOFT_ROLES.MGR_TIER_ONE, NANOSOFT_ROLES.MGR_TIER_TWO].includes(session.user.role)) {
+  if (!isAnyManagerialRole(session.user.role)) {
+    console.log('!isAnyManagerialRole')
     const claims = await nanosoftPrisma.claim.findMany({
       where: { tenantId: session.user.tenantId, employeeId: session.user.employeeId },
       include: { Employee: true },
     })
+    const formattedApplications = claims.map(claim => ({
+      ...claim,
+      employeeName: `${claim.Employee.firstName} ${claim.Employee.lastName}`,
+    }))
 
-    return NextResponse.json(claims)
+    return NextResponse.json(formattedApplications)
   }
 
   else {
+    console.log('else !isAnyManagerialRole')
+
     const claims = await nanosoftPrisma.claim.findMany({
       where: { tenantId: session.user.tenantId },
       include: { Employee: true },
     })
 
-    return NextResponse.json(claims);
+    const formattedApplications = claims.map(claim => ({
+      ...claim,
+      employeeName: `${claim.Employee.firstName} ${claim.Employee.lastName}`,
+    }))
+
+    return NextResponse.json(formattedApplications)
   }
-  
+
 }
 
 export async function POST(req: Request) {
@@ -46,7 +61,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(newClaim, { status: 201 });
-  } catch (error:any) {
+  } catch (error: any) {
     return NextResponse.json({ error: error?.message }, { status: 400 });
   }
 }

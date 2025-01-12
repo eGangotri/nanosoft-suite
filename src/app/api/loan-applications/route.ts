@@ -5,16 +5,18 @@ import { loanApplicationSchema } from '@/components/loan-applications/LoanApplic
 import { getUserEmployeeByEmail } from '@/prismaService/userService'
 import { NANOSOFT_ROLES } from '@/globalConstants'
 import nanosoftPrisma from '@/lib/prisma'
+import { isAdminOrSuperAdmin, isAnyManagerialRole } from '@/utils/utils'
+import { authOptions } from '../auth/[...nextauth]/route'
 
 
 export async function GET(req: Request) {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
-    if ([NANOSOFT_ROLES.EMPLOYEE, NANOSOFT_ROLES.SUPERVISOR, NANOSOFT_ROLES.MGR_TIER_ONE, NANOSOFT_ROLES.MGR_TIER_TWO].includes(session.user.role)) {
+    if (!isAnyManagerialRole(session.user.role)) {
       const user = await getUserEmployeeByEmail(`${session.user.email}`, session.user.tenantId as number)
       const loanApplications = await nanosoftPrisma.loanApplication.findMany({
         where: { tenantId: session.user.tenantId, employeeId: user?.UserEmployee?.employeeId },

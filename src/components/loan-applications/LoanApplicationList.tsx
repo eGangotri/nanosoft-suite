@@ -17,7 +17,6 @@ import { useRecoilValue } from 'recoil'
 import { loggedUserRole } from '../recoilConsts'
 import { LoanApplication } from '@prisma/client'
 
-
 export default function LoanApplicationList() {
     const [applications, setApplications] = useState<LoanApplication[]>([])
     const [loading, setLoading] = useState(true)

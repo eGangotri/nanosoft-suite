@@ -50,6 +50,11 @@ export const nanosoftMenuItems: MenuItem[] = [
     route: '/tenant/dashboard'
   },
   {
+    text: 'Claims',
+    icon: <ReceiptLongIcon />,
+    route: '/claims'
+  },
+  {
     text: 'Loans',
     icon: <AccountBalanceIcon />,
     subItems: [
@@ -96,7 +101,7 @@ export const menuItemsForEmployee: MenuItem[] = [
       { text: 'Reports and Analytics', icon: <ReportsIcon />, route: '/products/reports' }
     ]
   },
-   {
+  {
     text: 'Claims',
     icon: <ReceiptLongIcon />,
     route: '/claims'
