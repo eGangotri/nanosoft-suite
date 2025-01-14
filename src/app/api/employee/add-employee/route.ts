@@ -1,14 +1,27 @@
 import nanosoftPrisma from '@/lib/prisma';
 import { create } from 'domain';
 import { NextResponse } from 'next/server'
+import { getServerSessionWithDefaultAuthOptions } from '../../auth/[...nextauth]/route';
 
 export async function POST(request: Request) {
   console.log('Request body:', JSON.stringify(request.body));
+  const session = await getServerSessionWithDefaultAuthOptions();
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+  
   try {
     const body = await request.json()
     const empId = createEmpId(body);
+    if (!session.user.tenantId) {
+      return NextResponse.json({ error: 'Tenant ID is missing' }, { status: 400 });
+    }
+
     const employee = await nanosoftPrisma.employee.create({
       data: {
+        empId: empId,
+        tenantId: session.user.tenantId,
+        mobile: body.mobile,
         firstName: body.firstName,
         middleName: body.middleName || "",
         lastName: body.lastName,
@@ -16,14 +29,12 @@ export async function POST(request: Request) {
         dateOfBirth: new Date(body.dateOfBirth),
         nationality: body.nationality,
         email: body.email,
-        mobile: body.mobile,
         citizenshipStatus: body.citizenshipStatus,
         nricOrFinNo: body.nricOrFinNo,
         expiryDate: body.expiryDate ? new Date(body.expiryDate) : null,
-        maritalStatus: body.maritalStatus,
-        empId: empId,
         localAddressLine1: body.localAddressLine1,
         localAddressLine2: body.localAddressLine2,
+        maritalStatus: body.maritalStatus,
         localPostalCode: body.localPostalCode,
 
         foreignAddressLine1: body.foreignAddressLine1,

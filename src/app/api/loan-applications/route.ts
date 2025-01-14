@@ -5,12 +5,12 @@ import { loanApplicationSchema } from '@/components/loan-applications/LoanApplic
 import { getUserEmployeeByEmail } from '@/prismaService/userService'
 import { NANOSOFT_ROLES } from '@/globalConstants'
 import nanosoftPrisma from '@/lib/prisma'
-import { isAdminOrSuperAdmin, isAnyManagerialRole } from '@/utils/utils'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { isAnyManagerialRole } from '@/utils/utils'
+import { getServerSessionWithDefaultAuthOptions } from '../auth/[...nextauth]/route'
 
 
 export async function GET(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSessionWithDefaultAuthOptions();
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -52,7 +52,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const session = await getServerSession()
+  const session = await getServerSessionWithDefaultAuthOptions();
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

@@ -1,10 +1,19 @@
+import { getServerSessionWithDefaultAuthOptions } from '@/app/api/auth/[...nextauth]/route';
 import { bankDetailsSchema } from '@/components/employee/details/bank-details/schema'
 import nanosoftPrisma from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const bankDetails = await nanosoftPrisma.employeeBankDetails.findMany()
+    const session = await getServerSessionWithDefaultAuthOptions();
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const bankDetails = await nanosoftPrisma.employeeBankDetails.findMany({
+      where: { tenantId: session.user.tenantId },
+    })
+
     return NextResponse.json(bankDetails)
   } catch (error) {
     console.error('Error fetching bank details:', error)
@@ -13,6 +22,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const session = await getServerSessionWithDefaultAuthOptions();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const body = await request.json()
   delete body.id;
   const result = bankDetailsSchema.safeParse(body)
@@ -22,8 +36,15 @@ export async function POST(request: Request) {
   }
 
   try {
+    if (!session.user.tenantId) {
+      return NextResponse.json({ error: 'Tenant ID is missing' }, { status: 400 });
+    }
+
     const newBankDetail = await nanosoftPrisma.employeeBankDetails.create({
-      data: result.data,
+      data: {
+        ...result.data,
+        tenantId: session.user.tenantId,
+      }
     })
 
     return NextResponse.json(newBankDetail, { status: 201 })

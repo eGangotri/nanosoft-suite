@@ -1,15 +1,23 @@
 import { NextResponse } from 'next/server'
 import nanosoftPrisma from '@/lib/prisma';
 import { bankDetailsSchema } from '@/components/employee/details/bank-details/schema';
+import { getServerSessionWithDefaultAuthOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function GET(request: Request, { params }: { params: { employeeId: string } }) {
-  const employeeId = parseInt(params.employeeId)
+  const employeeId = parseInt(params.employeeId);
+  const session = await getServerSessionWithDefaultAuthOptions();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
+  if (!session.user.tenantId) {
+    return NextResponse.json({ error: 'Tenant ID is missing' }, { status: 400 });
+  }
   try {
     console.log(`Bank detail:(${employeeId}) ${params.employeeId}`, employeeId);
 
     const bankDetail = await nanosoftPrisma.employeeBankDetails.findUnique({
-      where: { employeeId: employeeId }
+      where: { employeeId: employeeId, tenantId: session.user.tenantId }
     })
 
     if (!bankDetail) {
@@ -24,6 +32,11 @@ export async function GET(request: Request, { params }: { params: { employeeId: 
 }
 
 export async function PUT(request: Request, { params }: { params: { employeeId: string } }) {
+  const session = await getServerSessionWithDefaultAuthOptions();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const id = parseInt(params.employeeId)
   const body = await request.json()
   const result = bankDetailsSchema.safeParse(body)
@@ -35,7 +48,10 @@ export async function PUT(request: Request, { params }: { params: { employeeId: 
   try {
     const updatedBankDetail = await nanosoftPrisma.employeeBankDetails.update({
       where: { id },
-      data: result.data,
+      data: {
+        ...result.data,
+        tenantId: session.user.tenantId,
+      },
     })
 
     if (!updatedBankDetail) {

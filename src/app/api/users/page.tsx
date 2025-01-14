@@ -1,15 +1,16 @@
+
 'use client'
 
 import MainLayout from '@/components/_layout/main-layout';
-import ClaimsListPage from '@/components/claims/page';
+import UserListingPage from '@/components/users/page';
 import React from 'react';
 
 const ClaimsListing: React.FC = () => {
-  return (
-    <MainLayout>
-      <ClaimsListPage />
-    </MainLayout>
-  );
+    return (
+        <MainLayout>
+            <UserListingPage />
+        </MainLayout>
+    );
 };
 
 export default ClaimsListing;

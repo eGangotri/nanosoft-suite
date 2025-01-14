@@ -1,4 +1,4 @@
-import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
+import NextAuth, { AuthOptions, DefaultSession, getServerSession } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
@@ -28,6 +28,11 @@ interface ExtendedToken extends JWT {
   tenantId?: number;
   employeeId?: number;
   employeeName?: string;
+}
+
+export const getServerSessionWithDefaultAuthOptions = async () => {
+  const _session = await getServerSession(authOptions);
+  return _session as ExtendedSession;
 }
 
 export const authOptions: AuthOptions = {

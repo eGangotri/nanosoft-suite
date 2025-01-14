@@ -1,7 +1,8 @@
 import nanosoftPrisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { getServerSessionWithDefaultAuthOptions } from '../../auth/[...nextauth]/route';
 
-async function fetchEmployeeById(id: number) {
+async function fetchEmployeeById(id: number, tenantId: number) {
   if (isNaN(id)) {
     throw new Error('Invalid employee ID');
   }
@@ -10,6 +11,7 @@ async function fetchEmployeeById(id: number) {
   const employee = await nanosoftPrisma.employee.findUnique({
     where: {
       id: id,
+      tenantId
     },
   });
 
@@ -21,7 +23,7 @@ async function fetchEmployeeById(id: number) {
   return employee;
 }
 
-async function fetchEmployees(searchTerm: string, offset: number, limit: number) {
+async function fetchEmployees(tenantId: number, searchTerm: string, offset: number, limit: number) {
   const employees = await nanosoftPrisma.employee.findMany({
     where: {
       AND: [
@@ -33,12 +35,16 @@ async function fetchEmployees(searchTerm: string, offset: number, limit: number)
           ],
         },
         { deleted: false },
+        {
+          tenantId: tenantId
+        }
       ],
     },
     skip: offset,
     take: limit,
     orderBy: { id: 'asc' },
   });
+
   const totalCount = await nanosoftPrisma.employee.count({
     where: {
       OR: [
@@ -54,6 +60,12 @@ async function fetchEmployees(searchTerm: string, offset: number, limit: number)
 
 export async function GET(request: Request) {
   console.log('GET request received for employee:list');
+
+  const session = await getServerSessionWithDefaultAuthOptions();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -61,10 +73,11 @@ export async function GET(request: Request) {
     const searchTerm = searchParams.get('searchTerm') || '';
     const id = searchParams.get('id') || '0';
     const offset = (page - 1) * limit;
+
     if (parseInt(id) > 0) {
       console.log('Fetching employee with ID:', id);
       const employeeId = parseInt(id);
-      const employee = await fetchEmployeeById(employeeId);
+      const employee = await fetchEmployeeById(employeeId, session.user.tenantId || 0);
 
       if (!employee) {
         return NextResponse.json({ error: 'Employee not found' }, { status: 404 });
@@ -72,7 +85,7 @@ export async function GET(request: Request) {
 
       return NextResponse.json(employee);
     } else {
-      const { employees, totalCount } = await fetchEmployees(searchTerm, offset, limit);
+      const { employees, totalCount } = await fetchEmployees(session.user.tenantId || 0, searchTerm, offset, limit);
 
       return NextResponse.json({
         employees,

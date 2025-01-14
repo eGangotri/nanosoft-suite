@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import nanosoftPrisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth';
-import { NANOSOFT_ROLES } from '@/globalConstants';
 import { claimSchema } from '@/components/claims/ClaimSchema';
 import { isAnyManagerialRole } from '@/utils/utils';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { getServerSessionWithDefaultAuthOptions } from '../auth/[...nextauth]/route';
 
 export async function GET() {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSessionWithDefaultAuthOptions();
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -46,7 +44,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await getServerSession();
+  const session = await getServerSessionWithDefaultAuthOptions();
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

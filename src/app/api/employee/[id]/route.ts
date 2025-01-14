@@ -1,13 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nanosoftPrisma from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
+import { getServerSessionWithDefaultAuthOptions } from '../../auth/[...nextauth]/route'
 
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
+  const session = await getServerSessionWithDefaultAuthOptions();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   const employeeId = parseInt(params.id)
   try {
     const employee = await nanosoftPrisma.employee.findUnique({
-      where: { id: employeeId },
+      where: {
+        id: employeeId,
+        tenantId: session.user.tenantId,
+      },
       include: {
         EmployeeBankDetails: true,
         EmployeeEmergencyContact: true,
@@ -45,6 +53,11 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await getServerSessionWithDefaultAuthOptions();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const employeeId = parseInt(params.id, 10)
   console.log(`Updating employee with ID: ${employeeId}`)
   try {
@@ -72,7 +85,10 @@ export async function PATCH(
     }, {} as Prisma.EmployeeUpdateInput)
 
     const updatedEmployee = await nanosoftPrisma.employee.update({
-      where: { id: employeeId },
+      where: {
+        id: employeeId,
+        tenantId: session.user.tenantId
+      },
       data: updateData,
     })
 

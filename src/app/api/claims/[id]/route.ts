@@ -1,8 +1,7 @@
 import { claimSchema } from '@/components/claims/ClaimSchema';
 import nanosoftPrisma from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { authOptions } from '../../auth/[...nextauth]/route';
-import { getServerSession } from 'next-auth';
+import { getServerSessionWithDefaultAuthOptions } from '../../auth/[...nextauth]/route';
 
 
 // GET: Fetch all leaves or a specific leave
@@ -63,7 +62,7 @@ export async function PUT(
 
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSessionWithDefaultAuthOptions();
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

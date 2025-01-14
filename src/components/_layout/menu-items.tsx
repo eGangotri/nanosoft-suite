@@ -44,11 +44,7 @@ export const nanosoftMenuItems: MenuItem[] = [
   { text: 'Leave-Types-Mgmt', icon: <PeopleIcon />, route: '/leaves-type/' },
   { text: 'Gen-Confirmation-Letter', icon: <FactCheckIcon />, route: '/letters/gen-confirmation-letter/' },
   { text: 'Gen-Offer-Letter', icon: <DescriptionIcon />, route: '/letters/get-offer-letter/' },
-  {
-    text: 'Tenant-Dashboard',
-    icon: <BusinessIcon />,
-    route: '/tenant/dashboard'
-  },
+
   {
     text: 'Claims',
     icon: <ReceiptLongIcon />,
@@ -109,8 +105,20 @@ export const menuItemsForEmployee: MenuItem[] = [
 
 ]
 
+export const menuItemsForSuperAdmin: MenuItem[] = [
+  {
+    text: 'Tenant-Dashboard',
+    icon: <BusinessIcon />,
+    route: '/tenant/dashboard'
+  },
+  { text: 'Settings', icon: <SettingsIcon />, route: '/settings' },
+
+]
 export const getMenuItemsForRole = (role: string): MenuItem[] => {
-  if (isAdminOrSuperAdmin(role)) {
+  if (role === NANOSOFT_ROLES.SUPERADMIN) {
+    return menuItemsForSuperAdmin
+  }
+  if (role === NANOSOFT_ROLES.ADMIN) {
     return nanosoftMenuItems
   }
   if (role === NANOSOFT_ROLES.EMPLOYEE) {
