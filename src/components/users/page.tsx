@@ -22,6 +22,8 @@ import {
     PersonAdd as PersonAddIcon,
     FilterList as FilterListIcon
 } from '@mui/icons-material'
+import { useRecoilValue } from 'recoil'
+import { loggedUserRole } from '../recoilConsts'
 
 interface User {
     id: string
@@ -45,6 +47,7 @@ export default function UserListingPage() {
         page: 0,
         pageSize: 5,
     })
+    const __loggedUserRole = useRecoilValue(loggedUserRole);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -153,14 +156,18 @@ export default function UserListingPage() {
                     >
                         Filter
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<PersonAddIcon />}
-                        onClick={handleAddUser}
-                    >
-                        Add User
-                    </Button>
+                    {(__loggedUserRole === 'admin') ?
+                        <>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<PersonAddIcon />}
+                                onClick={handleAddUser}
+                            >
+                                Add User
+                            </Button>
+                        </> : null
+                    }
                 </Box>
             </Box>
             <div style={{ height: 400 }}>

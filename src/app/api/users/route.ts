@@ -51,7 +51,7 @@ export async function GET() {
             return NextResponse.json(formattedUsers)
         }
         else if (isAnyManagerialRole(session.user.role)) {
-
+            console.log('!not reeady yet for Managers')
             return NextResponse.json({
                 error: 'Unauthorized',
                 title: "Unimplemented"
