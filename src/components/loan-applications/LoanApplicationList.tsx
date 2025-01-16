@@ -12,7 +12,7 @@ import {
     from '@mui/icons-material'
 
 import { LoanStatus } from './LoanApplicationSchema'
-import { isAnyManagerialRole } from '@/utils/utils';
+import { isAnyAdminRole } from '@/utils/utils';
 import { useRecoilValue } from 'recoil'
 import { loggedUserRole } from '../recoilConsts'
 import { LoanApplication } from '@prisma/client'
@@ -123,7 +123,7 @@ export default function LoanApplicationList() {
                                 <EditIcon />
                             </IconButton>
                         </Tooltip>
-                        {(params.row.status === LoanStatus.PENDING && isAnyManagerialRole(__loggedUserRole)) && (
+                        {(params.row.status === LoanStatus.PENDING && isAnyAdminRole(__loggedUserRole)) && (
                             <>
                                 <Tooltip title="Approve">
                                     <IconButton

@@ -14,7 +14,7 @@ import {
 } from '@mui/icons-material';
 import { loggedUserRole } from '../recoilConsts'
 import { useRecoilValue } from 'recoil'
-import { isAnyManagerialRole } from '@/utils/utils'
+import { isAnyAdminRole } from '@/utils/utils'
 
 export default function ClaimsListPage() {
   const [claims, setClaims] = useState<PrismaClaim[]>([])
@@ -76,7 +76,7 @@ export default function ClaimsListPage() {
                 <EditIcon />
               </IconButton>
             </Tooltip>
-            {(params.row.status === ClaimStatus.PENDING && isAnyManagerialRole(__loggedUserRole)) && (
+            {(params.row.status === ClaimStatus.PENDING && isAnyAdminRole(__loggedUserRole)) && (
               <>
                 <Tooltip title="Approve">
                   <IconButton

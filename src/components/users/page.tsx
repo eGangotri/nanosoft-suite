@@ -73,7 +73,7 @@ export default function UserListingPage() {
         {
             field: 'emailVerified',
             headerName: 'Email Verified',
-            width: 150,
+            width: 100,
             renderCell: (params) => {
                 return params.row.emailVerified ? 'Yes' : 'No'
             },
@@ -81,7 +81,7 @@ export default function UserListingPage() {
         {
             field: 'createdAt',
             headerName: 'Created At',
-            width: 200,
+            width: 100,
             renderCell: (params) => {
                 return params.row.createdAt?.toLocaleString();
             }
