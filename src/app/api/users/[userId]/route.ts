@@ -1,3 +1,4 @@
+import { formatedWithMidInitials } from '@/components/employee/EmployeeUtils'
 import { userSchema } from '@/components/users/schema'
 import nanosoftPrisma from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
@@ -10,24 +11,25 @@ export async function GET(
   try {
     const userId = params.userId
     console.log('userId:', userId)
-    const user = await nanosoftPrisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        emailVerified: true,
-        createdAt: true,
-        updatedAt: true,
-        tenantId: true,
-        Tenant: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    })
+    // const user = await nanosoftPrisma.user.findUnique({
+    //   where: { id: userId },
+    //   select: {
+    //     id: true,
+    //     name: true,
+    //     email: true,
+    //     emailVerified: true,
+    //     createdAt: true,
+    //     updatedAt: true,
+    //     tenantId: true,
+    //     Tenant: {
+    //       select: {
+    //         name: true,
+    //       },
+    //     },
+    //   },
+    // })
 
+    const user = await getUserWithRelations(userId)
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
@@ -37,6 +39,9 @@ export async function GET(
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
       tenantName: user.Tenant.name,
+      roleName: user.UserRole[0].Role.name,
+      employeeName: formatedWithMidInitials(user.UserEmployee?.Employee.firstName, user.UserEmployee?.Employee?.middleName || "", user.UserEmployee?.Employee.lastName),
+      employeeId: user.UserEmployee?.Employee.empId
     }
 
     return NextResponse.json(formattedUser)
@@ -96,3 +101,29 @@ export async function PUT(
   }
 }
 
+
+export async function getUserWithRelations(userId: string) {
+  try {
+    const user = await nanosoftPrisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        UserRole: {
+          include: {
+            Role: true
+          }
+        },
+        Tenant: true,
+        UserEmployee: {
+          include: {
+            Employee: true
+          }
+        }
+      }
+    })
+
+    console.log(`getUserWithRelations for userId ${userId}` + JSON.stringify(user, null, 2))
+    return user
+  } catch (error) {
+    console.error('Error fetching user data:', error)
+  }
+}

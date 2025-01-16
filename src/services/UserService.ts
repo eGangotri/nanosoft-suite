@@ -21,29 +21,3 @@ export const getUserByEmployeeId = async (employeeId: number):
         return data
     }
 }
-
-export async function getUserWithRelations(userId:string) {
-  try {
-    const user = await nanosoftPrisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        UserRole: {
-          include: {
-            Role: true
-          }
-        },
-        Tenant: true,
-        UserEmployee: {
-          include: {
-            Employee: true
-          }
-        }
-      }
-    })
-
-    console.log(JSON.stringify(user, null, 2))
-    return user
-  } catch (error) {
-    console.error('Error fetching user data:', error)
-  } 
-}

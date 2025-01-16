@@ -48,15 +48,14 @@ export default function UserForm({ userId }: UserFormProps) {
   })
 
   useEffect(() => {
-
-
     const fetchUserData = async () => {
       if (userId) {
         try {
           const userWithData = await getUserWithRelations(userId)
+          console.log('userWithData:', userWithData);
           const userData = {
             tenantId: userWithData?.Tenant.id.toString() || '',
-            name: userWithData?.name|| "",
+            name: userWithData?.name || "",
             email: userWithData?.email || "",
             password: userWithData?.Tenant.password || "",
           }
@@ -67,7 +66,6 @@ export default function UserForm({ userId }: UserFormProps) {
         }
       }
     }
-
     fetchUserData().then(() => setLoading(false));
   }, [userId, reset])
 
@@ -108,26 +106,7 @@ export default function UserForm({ userId }: UserFormProps) {
           <Grid item xs={12}>
             <FormControl fullWidth error={!!errors.tenantId}>
               <InputLabel id="tenant-select-label">Tenant</InputLabel>
-              <Controller
-                name="tenantId"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    labelId="tenant-select-label"
-                    label="Tenant"
-                  >
-                    {tenants.map((tenant) => (
-                      <MenuItem key={tenant.id} value={tenant.id.toString()}>
-                        {tenant.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-              />
-              {errors.tenantId && (
-                <FormHelperText>{errors.tenantId.message}</FormHelperText>
-              )}
+              <Typography>{tenantName}</Typography>
             </FormControl>
           </Grid>
           <Grid item xs={12}>
