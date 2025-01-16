@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import nanosoftPrisma from '@/lib/prisma';
 import { claimSchema } from '@/components/claims/ClaimSchema';
-import { isAnyAdminRole } from '@/utils/utils';
+import { isAdminOrSuperAdmin } from '@/utils/utils';
 import { getServerSessionWithDefaultAuthOptions } from '../auth/[...nextauth]/route';
 
 export async function GET() {
@@ -11,7 +11,7 @@ export async function GET() {
   }
   console.log('GET /api/claims', JSON.stringify(session.user, null, 2))
 
-  if (!isAnyAdminRole(session.user.role)) {
+  if (!isAdminOrSuperAdmin(session.user.role)) {
     console.log('!isAnyManagerialRole')
     const claims = await nanosoftPrisma.claim.findMany({
       where: { tenantId: session.user.tenantId, employeeId: session.user.employeeId },

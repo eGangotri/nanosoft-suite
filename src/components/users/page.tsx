@@ -24,6 +24,7 @@ import {
 } from '@mui/icons-material'
 import { useRecoilValue } from 'recoil'
 import { loggedUserRole } from '../recoilConsts'
+import { isAnyManagerialOrAdminRole } from '@/utils/utils'
 
 interface User {
     id: string
@@ -96,17 +97,20 @@ export default function UserListingPage() {
             renderCell: (params: GridRenderCellParams) => (
                 <Box>
                     <Tooltip title="Edit">
-                        <IconButton onClick={() => handleEdit(params.row.id)}>
+                        <IconButton onClick={() => handleEdit(params.row.id)}
+                            disabled={(!isAnyManagerialOrAdminRole(__loggedUserRole))}>
                             <EditIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Deactivate">
-                        <IconButton onClick={() => handleDeactivate(params.row.id)}>
+                        <IconButton onClick={() => handleDeactivate(params.row.id)}
+                            disabled={(!isAnyManagerialOrAdminRole(__loggedUserRole))}>
                             <BlockIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDelete(params.row.id)}>
+                        <IconButton onClick={() => handleDelete(params.row.id)}
+                            disabled={(!isAnyManagerialOrAdminRole(__loggedUserRole))}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
@@ -156,7 +160,7 @@ export default function UserListingPage() {
                     >
                         Filter
                     </Button>
-                    {(__loggedUserRole === 'admin') ?
+                    {(isAnyManagerialOrAdminRole(__loggedUserRole)) ?
                         <>
                             <Button
                                 variant="contained"

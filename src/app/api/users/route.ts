@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import nanosoftPrisma from '@/lib/prisma'
 import { formatedWithMidInitials } from '@/components/employee/EmployeeUtils'
 import { getServerSessionWithDefaultAuthOptions } from '../auth/[...nextauth]/route';
-import { isAdmin, isAnyAdminRole, isAnyManagerialRole, isSuperAdmin } from '@/utils/utils';
+import { isAdmin, isAnyManagerialRole, isSuperAdmin } from '@/utils/utils';
 
 
 export async function GET() {

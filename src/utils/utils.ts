@@ -50,6 +50,10 @@ export const isAnyManagerialRole = (role: string) => {
     return NANOSOFT_MANAGERIAL_ROLES_VALUES.includes(role);
 }
 
+export const isAnyManagerialOrAdminRole = (role: string) => {
+    return isAdmin(role) && isAnyManagerialRole(role);
+}
+
 export const isEmployee = (role: string) => {
     return (role === NANOSOFT_ROLES.EMPLOYEE);
 }
