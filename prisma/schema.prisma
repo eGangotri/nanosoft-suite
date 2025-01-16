@@ -19,6 +19,8 @@ model User {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
   tenantId         Int
+  active           Boolean       @default(true)
+  deleted          Boolean       @default(false)
   Account          Account[]
   Session          Session[]
   Tenant           Tenant        @relation(fields: [tenantId], references: [id])

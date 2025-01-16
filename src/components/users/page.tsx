@@ -60,7 +60,7 @@ export default function UserListingPage() {
     }, [])
 
     const columns: GridColDef[] = [
-        { field: 'id', headerName: 'ID', width: 100 },
+        { field: 'tenantName', headerName: 'Tenant Name', width: 200 },
         { field: 'name', headerName: 'Name', width: 150 },
         { field: 'email', headerName: 'Email', width: 200 },
         {
@@ -75,8 +75,9 @@ export default function UserListingPage() {
             field: 'createdAt',
             headerName: 'Created At',
             width: 200,
-            valueGetter: (params: GridValueGetterParams) =>
-                new Date(params.row.createdAt).toLocaleString(),
+            renderCell: (params) => {
+                return params.row.createdAt?.toLocaleString();
+            }
         },
         {
             field: 'actions',
