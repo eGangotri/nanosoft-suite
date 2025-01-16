@@ -30,7 +30,12 @@ interface User {
     emailVerified: string | null
     createdAt: string
     updatedAt: string
-    tenantId: number
+    tenantId: number,
+    tenantName: string,
+    role: Role,
+    employeeName: string,
+    employeeId: string
+
 }
 
 export default function UserListingPage() {
@@ -60,7 +65,9 @@ export default function UserListingPage() {
     }, [])
 
     const columns: GridColDef[] = [
-        { field: 'tenantName', headerName: 'Tenant Name', width: 200 },
+        { field: 'tenantName', headerName: 'Tenant Name', width: 120 },
+        { field: 'roleName', headerName: 'Role', width: 120 },
+        { field: 'employeeName', headerName: 'Connected Employee', width: 200 },
         { field: 'name', headerName: 'Name', width: 150 },
         { field: 'email', headerName: 'Email', width: 200 },
         {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import nanosoftPrisma from '@/lib/prisma'
+import { formatedWithMidInitials } from '@/components/employee/EmployeeUtils'
 
 
 export async function GET() {
@@ -20,6 +21,16 @@ export async function GET() {
                         name: true,
                     },
                 },
+                UserRole: {
+                    include: {
+                        Role: true
+                    }
+                },
+                UserEmployee: {
+                    include: {
+                        Employee: true
+                    }
+                }
             },
         })
 
@@ -32,6 +43,10 @@ export async function GET() {
             updatedAt: user.updatedAt.toISOString(),
             tenantId: user.tenantId,
             tenantName: user.Tenant.name,
+            role: user.UserRole[0]?.Role,
+            roleName: user.UserRole[0]?.Role.name,
+            employeeName: user.UserEmployee?.Employee ? formatedWithMidInitials(user.UserEmployee?.Employee.firstName, user.UserEmployee?.Employee?.middleName || "", user.UserEmployee?.Employee.lastName): "N/A",
+            employeeId: user.UserEmployee?.Employee.empId || "N/A"
         }))
 
         return NextResponse.json(formattedUsers)

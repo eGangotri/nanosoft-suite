@@ -40,7 +40,7 @@ export async function GET(
       updatedAt: user.updatedAt.toISOString(),
       tenantName: user.Tenant.name,
       roleName: user.UserRole[0]?.Role?.name,
-      employeeName: formatedWithMidInitials(user.UserEmployee?.Employee.firstName, user.UserEmployee?.Employee?.middleName || "", user.UserEmployee?.Employee.lastName),
+      employeeName: user.UserEmployee?.Employee ? formatedWithMidInitials(user.UserEmployee?.Employee.firstName, user.UserEmployee?.Employee?.middleName || "", user.UserEmployee?.Employee.lastName): "",
       employeeId: user.UserEmployee?.Employee.empId
     }
 
