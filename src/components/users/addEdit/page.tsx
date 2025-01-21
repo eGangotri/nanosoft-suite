@@ -104,12 +104,12 @@ export default function UserForm({ userId }: UserFormProps) {
         {userId ? 'Edit User' : 'Create User'}
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+          <div>
             <InputLabel id="tenant-select-label">Tenant</InputLabel>
             <Typography>{tenantName}</Typography>
-          </Grid>
-          <Grid item xs={12}>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <Controller
               name="name"
               control={control}
@@ -123,8 +123,8 @@ export default function UserForm({ userId }: UserFormProps) {
                 />
               )}
             />
-          </Grid>
-          <Grid item xs={12}>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <Controller
               name="email"
               control={control}
@@ -138,8 +138,8 @@ export default function UserForm({ userId }: UserFormProps) {
                 />
               )}
             />
-          </Grid>
-          <Grid item xs={12}>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="password"
               control={control}
@@ -154,24 +154,36 @@ export default function UserForm({ userId }: UserFormProps) {
                 />
               )}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <Box display="flex" justifyContent="flex-end">
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  type="password"
+                  label={userId ? 'New Password (optional)' : 'Password'}
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword?.message}
+                />
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Button
                 type="button"
+                variant="contained" 
                 onClick={() => router.push('/users')}
-                sx={{ mr: 2 }}
               >
                 Cancel
               </Button>
               <Button type="submit" variant="contained" color="primary">
                 {userId ? 'Update' : 'Create'} User
               </Button>
-            </Box>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </form>
-    </Paper>
+    </Paper >
   )
 }
 
