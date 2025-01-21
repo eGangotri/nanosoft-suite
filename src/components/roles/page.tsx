@@ -6,10 +6,10 @@ import { RolesSchema, type Role } from "./schema"
 
 const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 200 },
-    { field: "level", headerName: "Level", width: 130 },
-    { field: "description", headerName: "Description", width: 130 },
-    { field: "code", headerName: "Code", width: 130 },
+    { field: "name", headerName: "Name", width: 150 },
+    { field: "description", headerName: "Description", width: 200 },
+    { field: "code", headerName: "Code", width: 100 },
+    { field: "level", headerName: "Level", width: 100 },
 ]
 
 export default function RolesList() {
