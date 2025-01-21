@@ -19,12 +19,12 @@ import {
   People as PeopleIcon,
   FactCheck as FactCheckIcon,
   Description as DescriptionIcon,
-  Receipt as ReceiptIcon
+  Receipt as ReceiptIcon,
+  ReceiptLong as ReceiptLongIcon,
+  AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material'
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 import { NANOSOFT_ROLES } from '@/globalConstants'
-import { isAdminOrSuperAdmin } from '@/utils/utils'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 
 export interface MenuItem {
@@ -34,13 +34,18 @@ export interface MenuItem {
   subItems?: MenuItem[]
 }
 
-export const nanosoftMenuItems: MenuItem[] = [
+export const menuItemsForAdmin: MenuItem[] = [
   {
     text: 'Dashboard',
     icon: <DashboardIcon />,
     route: '/'
   },
   { text: 'Employee-Data', icon: <PeopleIcon />, route: '/employee/employee' },
+  {
+    text: 'User-Dashboard',
+    icon: <AccountCircleIcon />,
+    route: '/users'
+  },
   { text: 'Leave-Types-Mgmt', icon: <PeopleIcon />, route: '/leaves-type/' },
   { text: 'Gen-Confirmation-Letter', icon: <FactCheckIcon />, route: '/letters/gen-confirmation-letter/' },
   { text: 'Gen-Offer-Letter', icon: <DescriptionIcon />, route: '/letters/get-offer-letter/' },
@@ -111,6 +116,11 @@ export const menuItemsForSuperAdmin: MenuItem[] = [
     icon: <BusinessIcon />,
     route: '/tenant/dashboard'
   },
+  {
+    text: 'User-Dashboard',
+    icon: <AccountCircleIcon />,
+    route: '/users'
+  },
   { text: 'Settings', icon: <SettingsIcon />, route: '/settings' },
 
 ]
@@ -119,14 +129,14 @@ export const getMenuItemsForRole = (role: string): MenuItem[] => {
     return menuItemsForSuperAdmin
   }
   if (role === NANOSOFT_ROLES.ADMIN) {
-    return nanosoftMenuItems
+    return menuItemsForAdmin
   }
   if (role === NANOSOFT_ROLES.EMPLOYEE) {
     return menuItemsForEmployee
   }
   if (role === NANOSOFT_ROLES.SUPERVISOR) {
-    return nanosoftMenuItems.filter(item => item.text === 'Leave-Mgmt')
+    return menuItemsForAdmin.filter(item => item.text === 'Leave-Mgmt')
   }
   // For other roles, remove the Settings menu item
-  return nanosoftMenuItems.filter(item => item.text !== 'Settings')
+  return menuItemsForAdmin.filter(item => item.text !== 'Settings')
 }

@@ -11,24 +11,6 @@ export async function GET(
   try {
     const userId = params.userId
     console.log('userId:', userId)
-    // const user = await nanosoftPrisma.user.findUnique({
-    //   where: { id: userId },
-    //   select: {
-    //     id: true,
-    //     name: true,
-    //     email: true,
-    //     emailVerified: true,
-    //     createdAt: true,
-    //     updatedAt: true,
-    //     tenantId: true,
-    //     Tenant: {
-    //       select: {
-    //         name: true,
-    //       },
-    //     },
-    //   },
-    // })
-
     const user = await getUserWithRelations(userId)
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })

@@ -1,5 +1,3 @@
-import nanosoftPrisma from "@/lib/prisma";
-
 export const getEmployeeByUserId = async (userId: string):
     Promise<EmployeeData | null> => {
     const response = await fetch(`/api/user-employee/${userId}`)

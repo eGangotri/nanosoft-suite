@@ -19,8 +19,6 @@ import {
 } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { UserFormData, userSchema } from '../schema'
-import { getUserWithRelations } from '@/services/UserService'
-
 
 interface UserFormProps {
   userId?: string
@@ -40,7 +38,7 @@ export default function UserForm({ userId }: UserFormProps) {
   } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      tenantId: '',
+      tenantName: '',
       name: '',
       email: '',
       password: '',
@@ -51,16 +49,20 @@ export default function UserForm({ userId }: UserFormProps) {
     const fetchUserData = async () => {
       if (userId) {
         try {
-          const userWithData = await getUserWithRelations(userId)
-          console.log('userWithData:', userWithData);
+          const userWithData = await fetch(`/api/users/${userId}`);
+          const response = await userWithData.json();
           const userData = {
-            tenantId: userWithData?.Tenant.id.toString() || '',
-            name: userWithData?.name || "",
-            email: userWithData?.email || "",
-            password: userWithData?.Tenant.password || "",
+            tenantName: response?.tenantName || "",
+            roleName: response?.roleName || "",
+            employeeName: response?.employeeName || "",
+            employeeId: response?.employeeId || "",
+            name: response?.name || "",
+            email: response?.email || "",
+            password: response?.Tenant.password || "",
           }
-          setTenantName(userWithData?.Tenant?.name || "");
+          setTenantName(response?.Tenant?.name || "");
           reset(userData)
+          console.log('userWithData:', JSON.stringify(userWithData, null, 2));
         } catch (error) {
           console.error('Error fetching user data:', error)
         }
@@ -104,10 +106,8 @@ export default function UserForm({ userId }: UserFormProps) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <FormControl fullWidth error={!!errors.tenantId}>
-              <InputLabel id="tenant-select-label">Tenant</InputLabel>
-              <Typography>{tenantName}</Typography>
-            </FormControl>
+            <InputLabel id="tenant-select-label">Tenant</InputLabel>
+            <Typography>{tenantName}</Typography>
           </Grid>
           <Grid item xs={12}>
             <Controller

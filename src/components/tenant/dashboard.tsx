@@ -11,6 +11,7 @@ import {
   Block as BlockIcon
 } from '@mui/icons-material'
 import Link from 'next/link'
+
 import { useRouter } from 'next/navigation'
 
 interface DashboardProps {
@@ -19,7 +20,7 @@ interface DashboardProps {
 
 export default function Dashboard({ initialTenants }: DashboardProps) {
   const [tenants, setTenants] = useState<Tenant[]>(initialTenants)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter()
 
   

@@ -94,49 +94,51 @@ model Client {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model Employee {
-  id                       Int                        @id(map: "employee_pkey") @default(autoincrement())
-  firstName                String
-  lastName                 String
-  designation              String
-  dateOfBirth              DateTime                   @db.Date
-  nationality              String
-  email                    String                     @unique(map: "employee_email_key")
-  mobile                   String
-  citizenshipStatus        String
-  nricOrFinNo              String                     @unique(map: "employee_nric_or_fin_no_key")
-  expiryDate               DateTime?                  @db.Date
-  maritalStatus            String
-  foreignAddressLine1      String?
-  foreignAddressLine2      String?
-  foreignAddressCity       String?
-  foreignAddressCountry    String?
-  foreignAddressPostalCode String?
-  active                   Boolean                    @default(true)
-  deleted                  Boolean                    @default(false)
-  middleName               String?
-  gender                   String?
-  race                     String?
-  photo                    String?                    @db.VarChar(255)
-  localAddressLine1        String?
-  localAddressLine2        String?
-  localPostalCode          String                     @db.VarChar(6)
-  foreignAddressState      String?
-  localAddressLine3        String?
-  levelOrUnitNo            String?
-  empId                    String?
-  tenantId                 Int
-  Claim                    Claim[]
-  Tenant                   Tenant                     @relation(fields: [tenantId], references: [id])
-  EmployeeBankDetails      EmployeeBankDetails?
-  EmployeeEmergencyContact EmployeeEmergencyContact[]
-  EmployeeHrDetails        EmployeeHrDetails?
-  EmployeeLeaveBalance     EmployeeLeaveBalance[]
-  EmployeeWorkHistory      EmployeeWorkHistory[]
-  Leave                    Leave[]
-  LoanApplication          LoanApplication[]
-  Payslip                  Payslip[]
-  TaxInformation           TaxInformation[]
-  UserEmployee             UserEmployee?
+  id                                                                         Int                          @id(map: "employee_pkey") @default(autoincrement())
+  firstName                                                                  String
+  lastName                                                                   String
+  designation                                                                String
+  dateOfBirth                                                                DateTime                     @db.Date
+  nationality                                                                String
+  email                                                                      String                       @unique(map: "employee_email_key")
+  mobile                                                                     String
+  citizenshipStatus                                                          String
+  nricOrFinNo                                                                String                       @unique(map: "employee_nric_or_fin_no_key")
+  expiryDate                                                                 DateTime?                    @db.Date
+  maritalStatus                                                              String
+  foreignAddressLine1                                                        String?
+  foreignAddressLine2                                                        String?
+  foreignAddressCity                                                         String?
+  foreignAddressCountry                                                      String?
+  foreignAddressPostalCode                                                   String?
+  active                                                                     Boolean                      @default(true)
+  deleted                                                                    Boolean                      @default(false)
+  middleName                                                                 String?
+  gender                                                                     String?
+  race                                                                       String?
+  photo                                                                      String?                      @db.VarChar(255)
+  localAddressLine1                                                          String?
+  localAddressLine2                                                          String?
+  localPostalCode                                                            String                       @db.VarChar(6)
+  foreignAddressState                                                        String?
+  localAddressLine3                                                          String?
+  levelOrUnitNo                                                              String?
+  empId                                                                      String?
+  tenantId                                                                   Int
+  Claim                                                                      Claim[]
+  Tenant                                                                     Tenant                       @relation(fields: [tenantId], references: [id])
+  EmployeeBankDetails                                                        EmployeeBankDetails?
+  EmployeeEmergencyContact                                                   EmployeeEmergencyContact[]
+  EmployeeHrDetails                                                          EmployeeHrDetails?
+  EmployeeLeaveBalance                                                       EmployeeLeaveBalance[]
+  EmployeeReportingStructure_EmployeeReportingStructure_employeeIdToEmployee EmployeeReportingStructure[] @relation("EmployeeReportingStructure_employeeIdToEmployee")
+  EmployeeReportingStructure_EmployeeReportingStructure_managerIdToEmployee  EmployeeReportingStructure[] @relation("EmployeeReportingStructure_managerIdToEmployee")
+  EmployeeWorkHistory                                                        EmployeeWorkHistory[]
+  Leave                                                                      Leave[]
+  LoanApplication                                                            LoanApplication[]
+  Payslip                                                                    Payslip[]
+  TaxInformation                                                             TaxInformation[]
+  UserEmployee                                                               UserEmployee?
 
   @@unique([email, tenantId])
   @@unique([nricOrFinNo, tenantId])
@@ -298,34 +300,35 @@ model UserRole {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model Tenant {
-  id                       Int                        @id @default(autoincrement())
-  name                     String                     @db.VarChar(255)
-  email                    String                     @db.VarChar(255)
-  password                 String                     @db.VarChar(255)
-  companyName              String                     @db.VarChar(255)
-  uenNo                    String                     @db.VarChar(255)
-  entityType               String                     @db.VarChar(255)
-  industry                 String                     @db.VarChar(255)
-  contactNo                String                     @db.VarChar(255)
-  domain                   String                     @unique @db.VarChar(255)
-  createdAt                DateTime                   @default(now()) @db.Timestamptz(6)
-  updatedAt                DateTime                   @db.Timestamptz(6)
-  active                   Boolean                    @default(true)
-  deleted                  Boolean                    @default(false)
-  Claim                    Claim[]
-  Client                   Client[]
-  Employee                 Employee[]
-  EmployeeBankDetails      EmployeeBankDetails[]
-  EmployeeEmergencyContact EmployeeEmergencyContact[]
-  EmployeeHrDetails        EmployeeHrDetails[]
-  EmployeeLeaveBalance     EmployeeLeaveBalance[]
-  EmployeeWorkHistory      EmployeeWorkHistory[]
-  Leave                    Leave[]
-  LeaveType                LeaveType[]
-  LoanApplication          LoanApplication[]
-  User                     User[]
-  UserEmployee             UserEmployee[]
-  UserRole                 UserRole[]
+  id                         Int                          @id @default(autoincrement())
+  name                       String                       @db.VarChar(255)
+  email                      String                       @db.VarChar(255)
+  password                   String                       @db.VarChar(255)
+  companyName                String                       @db.VarChar(255)
+  uenNo                      String                       @db.VarChar(255)
+  entityType                 String                       @db.VarChar(255)
+  industry                   String                       @db.VarChar(255)
+  contactNo                  String                       @db.VarChar(255)
+  domain                     String                       @unique @db.VarChar(255)
+  createdAt                  DateTime                     @default(now()) @db.Timestamptz(6)
+  updatedAt                  DateTime                     @db.Timestamptz(6)
+  active                     Boolean                      @default(true)
+  deleted                    Boolean                      @default(false)
+  Claim                      Claim[]
+  Client                     Client[]
+  Employee                   Employee[]
+  EmployeeBankDetails        EmployeeBankDetails[]
+  EmployeeEmergencyContact   EmployeeEmergencyContact[]
+  EmployeeHrDetails          EmployeeHrDetails[]
+  EmployeeLeaveBalance       EmployeeLeaveBalance[]
+  EmployeeReportingStructure EmployeeReportingStructure[]
+  EmployeeWorkHistory        EmployeeWorkHistory[]
+  Leave                      Leave[]
+  LeaveType                  LeaveType[]
+  LoanApplication            LoanApplication[]
+  User                       User[]
+  UserEmployee               UserEmployee[]
+  UserRole                   UserRole[]
 }
 
 model Payslip {
@@ -393,6 +396,21 @@ model Claim {
 
   @@index([employeeId])
   @@index([tenantId])
+}
+
+model EmployeeReportingStructure {
+  id                                                       Int       @id @default(autoincrement())
+  employeeId                                               Int
+  managerId                                                Int
+  startDate                                                DateTime  @db.Date
+  endDate                                                  DateTime? @db.Date
+  tenantId                                                 Int
+  isPrimary                                                Boolean   @default(true)
+  relationshipType                                         String    @default("Direct")
+  effectiveDate                                            DateTime  @default(dbgenerated("CURRENT_DATE")) @db.Date
+  Employee_EmployeeReportingStructure_employeeIdToEmployee Employee  @relation("EmployeeReportingStructure_employeeIdToEmployee", fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee")
+  Employee_EmployeeReportingStructure_managerIdToEmployee  Employee  @relation("EmployeeReportingStructure_managerIdToEmployee", fields: [managerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_manager")
+  Tenant                                                   Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tenant")
 }
 
 enum UserRoleType {

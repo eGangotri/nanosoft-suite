@@ -46,7 +46,7 @@ export async function GET() {
             return NextResponse.json(formattedUsers)
         }
         else if (isAdmin(session.user.role)) {
-            const filteredUsers = users.filter(user => user.tenantId === session.user.tenantId);
+            const filteredUsers = users.filter(user => (user.tenantId === session.user.tenantId) && !isSuperAdmin(user.UserRole[0]?.Role.name));
             const formattedUsers = getFormattedUsers(filteredUsers);
             return NextResponse.json(formattedUsers)
         }
