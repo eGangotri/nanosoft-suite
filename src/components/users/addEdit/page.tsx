@@ -27,8 +27,8 @@ interface UserFormProps {
 export default function UserForm({ userId }: UserFormProps) {
   const router = useRouter()
   const [userData, setUserData] = useState<UserFormData | null>(null)
-  const [tenantName, setTenantName] = useState<string>('');
   const [loading, setLoading] = useState(true)
+  const [roles, setRoles] = useState<{ id: number; name: string }[]>([])
 
   const {
     control,
@@ -38,10 +38,15 @@ export default function UserForm({ userId }: UserFormProps) {
   } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      tenantName: '',
-      name: '',
-      email: '',
-      password: '',
+      tenantName: "",
+      roleName: "",
+      roleId: "",
+      employeeName: "",
+      employeeId: "",
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   })
 
@@ -51,17 +56,20 @@ export default function UserForm({ userId }: UserFormProps) {
         try {
           const userWithData = await fetch(`/api/users/${userId}`);
           const response = await userWithData.json();
-          const userData = {
+          const _userData = {
             tenantName: response?.tenantName || "",
             roleName: response?.roleName || "",
+            roleId: response?.roleId || "",
             employeeName: response?.employeeName || "",
             employeeId: response?.employeeId || "",
             name: response?.name || "",
             email: response?.email || "",
             password: response?.Tenant.password || "",
+            confirmPassword: response?.Tenant.password || "",
           }
-          setTenantName(response?.Tenant?.name || "");
-          reset(userData)
+          setUserData(_userData);
+       //   setTenantName(response?.Tenant?.name || "");
+          reset(_userData)
           console.log('userWithData:', JSON.stringify(userWithData, null, 2));
         } catch (error) {
           console.error('Error fetching user data:', error)
@@ -107,7 +115,7 @@ export default function UserForm({ userId }: UserFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <div>
             <InputLabel id="tenant-select-label">Tenant</InputLabel>
-            <Typography>{tenantName}</Typography>
+            <Typography>{userData?.tenantName}</Typography>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <Controller
@@ -169,17 +177,47 @@ export default function UserForm({ userId }: UserFormProps) {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button
-                type="button"
-                variant="contained" 
-                onClick={() => router.push('/users')}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" variant="contained" color="primary">
-                {userId ? 'Update' : 'Create'} User
-              </Button>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+            <Controller
+              name="roleId"
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth error={!!errors.roleId}>
+                  <InputLabel id="role-select-label">User Role</InputLabel>
+                  <Select {...field} labelId="role-select-label" label="User Role">
+                    <MenuItem value="">
+                      <em>Select a role</em>
+                    </MenuItem>
+                    {roles.map((role) => (
+                      <MenuItem key={role.id} value={role.id}>
+                        {role.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.roleId && <FormHelperText>{errors.roleId.message}</FormHelperText>}
+                </FormControl>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button
+              type="button"
+              variant="contained"
+              onClick={() => reset()}
+            >
+              Reset
+            </Button>
+            <Button
+              type="button"
+              variant="contained"
+              onClick={() => router.push('/users')}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              {userId ? 'Update' : 'Create'} User
+            </Button>
           </div>
         </div>
       </form>

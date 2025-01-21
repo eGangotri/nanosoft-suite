@@ -3,7 +3,8 @@ import * as z from 'zod'
 // Define the form schema using Zod
 export const userSchema = z.object({
     tenantName: z.string().min(1, 'Tenant is required'),
-    roleName: z.string().optional(),
+    roleName: z.string(),
+    roleId: z.string(),
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Invalid email address'),
     employeeId: z.string().optional(),
