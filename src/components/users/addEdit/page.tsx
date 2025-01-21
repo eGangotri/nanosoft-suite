@@ -51,6 +51,17 @@ export default function UserForm({ userId }: UserFormProps) {
   })
 
   useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await fetch("/api/roles")
+        const data = await response.json()
+        setRoles(data)
+      } catch (error) {
+        console.error("Error fetching roles:", error)
+      }
+    }
+    fetchRoles();
+    
     const fetchUserData = async () => {
       if (userId) {
         try {
@@ -68,7 +79,6 @@ export default function UserForm({ userId }: UserFormProps) {
             confirmPassword: response?.Tenant.password || "",
           }
           setUserData(_userData);
-       //   setTenantName(response?.Tenant?.name || "");
           reset(_userData)
           console.log('userWithData:', JSON.stringify(userWithData, null, 2));
         } catch (error) {
