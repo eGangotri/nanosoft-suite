@@ -6,7 +6,7 @@ import UserForm from '@/components/users/addEdit/page';
 import UserListingPage from '@/components/users/page';
 import React from 'react';
 
-const ClaimsListing: React.FC = () => {
+const AddUser: React.FC = () => {
     return (
         <MainLayout>
             <UserForm />
@@ -14,5 +14,5 @@ const ClaimsListing: React.FC = () => {
     );
 };
 
-export default ClaimsListing;
+export default AddUser;
 

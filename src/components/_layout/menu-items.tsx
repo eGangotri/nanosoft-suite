@@ -22,6 +22,7 @@ import {
   Receipt as ReceiptIcon,
   ReceiptLong as ReceiptLongIcon,
   AccountCircle as AccountCircleIcon,
+  AssignmentInd as AssignmentIndIcon
 } from '@mui/icons-material'
 
 import { NANOSOFT_ROLES } from '@/globalConstants'
@@ -116,11 +117,19 @@ export const menuItemsForSuperAdmin: MenuItem[] = [
     icon: <BusinessIcon />,
     route: '/tenant/dashboard'
   },
+  
+  {
+    text: 'Roles',
+    icon: <AssignmentIndIcon />,
+    route: '/roles'
+  },
+  
   {
     text: 'User-Dashboard',
     icon: <AccountCircleIcon />,
     route: '/users'
   },
+
   { text: 'Settings', icon: <SettingsIcon />, route: '/settings' },
 
 ]

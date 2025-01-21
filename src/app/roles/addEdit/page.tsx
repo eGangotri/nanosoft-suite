@@ -2,16 +2,16 @@
 'use client'
 
 import MainLayout from '@/components/_layout/main-layout';
-import UserListingPage from '@/components/users/page';
+import RolesForm from '@/components/roles/addEdit/page';
 import React from 'react';
 
-const UserListing: React.FC = () => {
+const AddRoles: React.FC = () => {
     return (
         <MainLayout>
-            <UserListingPage />
+            <RolesForm />
         </MainLayout>
     );
 };
 
-export default UserListing;
+export default AddRoles;
 

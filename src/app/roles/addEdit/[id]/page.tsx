@@ -2,19 +2,19 @@
 'use client'
 
 import MainLayout from '@/components/_layout/main-layout';
-import UserForm from '@/components/users/addEdit/page';
+import RolesForm from '@/components/roles/addEdit/page';
 import { useParams } from 'next/navigation';
 import React from 'react';
 
-const EditUser: React.FC = () => {
+const EditRoles: React.FC = () => {
 const params = useParams();
 
     return (
         <MainLayout>
-            <UserForm userId={params?.id as string || ""}/>
+            <RolesForm userId={params?.id as string || ""}/>
         </MainLayout>
     );
 };
 
-export default EditUser;
+export default EditRoles;
 

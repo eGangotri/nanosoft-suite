@@ -2,9 +2,8 @@ import { NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 import { getServerSessionWithDefaultAuthOptions } from "../auth/[...nextauth]/route";
 import { isAdmin, isAdminOrSuperAdmin, isSuperAdmin } from "@/utils/utils";
-import { is } from "date-fns/locale";
+import nanosoftPrisma from "@/lib/prisma";
 
-const prisma = new PrismaClient()
 
 export async function GET(request: Request) {
     const session = await getServerSessionWithDefaultAuthOptions();
@@ -13,24 +12,17 @@ export async function GET(request: Request) {
     }
 
     try {
-        const userRoles = await prisma.role.findMany({
-            select: {
-                id: true,
-                name: true
-            }
-        })
+        const _roles = await nanosoftPrisma.role.findMany()
 
         if (isAdmin(session.user.role)) {
-            return NextResponse.json(userRoles.filter(role => !isSuperAdmin(role.name)))
+            return NextResponse.json(_roles.filter(role => !isSuperAdmin(role.name)))
         }
         else {
-            return NextResponse.json(userRoles)
+            return NextResponse.json(_roles)
         }
     } catch (error) {
         console.error("Error fetching user roles:", error)
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
-    } finally {
-        await prisma.$disconnect()
-    }
+    } 
 }
 

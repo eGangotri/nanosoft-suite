@@ -66,10 +66,12 @@ model VerificationToken {
 }
 
 model Role {
-  id       Int        @id @default(autoincrement())
-  name     String     @unique
-  level    Int
-  UserRole UserRole[]
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  level       Int
+  description String
+  Code        String
+  UserRole    UserRole[]
 }
 
 model Client {
