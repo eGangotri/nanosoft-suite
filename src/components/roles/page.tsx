@@ -44,7 +44,6 @@ export default function RolesList() {
                     throw new Error('Failed to delete employee')
                 }
                 fetchRoles()
-                //  filteredUsers = users.filter(emp => emp.id !== id)
                 window.alert(`Deletion Successful`)
             } catch (error) {
                 setLoading(`del-${id}`, false)
@@ -107,6 +106,12 @@ export default function RolesList() {
         fetchRoles();
     }, []);
 
+    const filteredRoles = roles.filter(role =>
+        role?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        role?.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        role?.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        role?.level.toString().includes(searchTerm.toLowerCase())
+    )
 
     return (
         <Paper elevation={3} sx={{ p: 3, m: 2 }}>
@@ -139,7 +144,7 @@ export default function RolesList() {
             </Box>
             <div style={{ height: 400 }}>
                 <DataGrid
-                    rows={roles}
+                    rows={filteredRoles}
                     columns={columns}
                     initialState={{
                         pagination: {
