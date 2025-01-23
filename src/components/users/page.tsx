@@ -18,7 +18,8 @@ import {
     Paper,
     TextField,
     CircularProgress
-} from '@mui/material'
+} from '@mui/material';
+
 import {
     Add as AddIcon,
     Business as BusinessIcon,
@@ -180,6 +181,7 @@ export default function UserListingPage() {
     const handleAddUser = () => {
         router.push(`/users/addEdit/`)
     }
+    
     const handleDelete = async (id: number) => {
         if (window.confirm('Are you sure you want to delete this employee?')) {
             setLoading(`del-${id}`, true)
